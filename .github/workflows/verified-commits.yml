@@ -1,4 +1,5 @@
-name: An example workflow
+name: Github sanity check
+run-name: ${{ github.actor }} launching Github sanity check
 
 on:
   push:

@@ -1,5 +1,5 @@
-name: Unit tests backend
-run-name: ${{ github.actor }} launching tests
+name: Backend tests
+run-name: ${{ github.actor }} launching backend tests
 
 on:
   push:
