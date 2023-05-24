@@ -1,0 +1,12 @@
+name: An example workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  verified_commit_check:
+    name: Check for verified commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: nadock/verified_commits_check@main
