@@ -3,6 +3,7 @@ const users = [];
 export default {
   findAll: async function (criteria, options = {}) {
     let filteredUsers = users.filter((user) => {
+      if (!criteria) return true;
       return Object.keys(criteria).every((key) => {
         return user[key] === criteria[key];
       });
