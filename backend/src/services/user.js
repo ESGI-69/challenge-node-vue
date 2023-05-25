@@ -1,11 +1,7 @@
-/**
- * User service
- * @type {typeof require('./../db/models/user.js')}
-**/
 import { User } from './../db/index.js';
 
 export default {
-  findAll: async function (criteria, options = {}) {
+  findAll: function (criteria, options = {}) {
     console.log(User);
     return User.findAll({
       where: criteria,
@@ -13,10 +9,10 @@ export default {
       order: Object.entries(options.order || {}),
     });
   },
-  findById: async function (id) {
+  findById: function (id) {
     return User.findByPk(id);
   },
-  create: async function (data) {
+  create: function (data) {
     return User.create(data);
   },
   update: async function (criteria, data) {
@@ -28,7 +24,7 @@ export default {
     console.log(nb, users);
     return users;
   },
-  remove: async function (criteria) {
+  remove: function (criteria) {
     return User.destroy({
       where: criteria,
     });
