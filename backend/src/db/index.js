@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import user from './models/user.js';
+import user from './models/User.js';
 
 // change connection string to use the PG_DATABASE_URL environment variable
 /**
