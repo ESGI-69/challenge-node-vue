@@ -46,7 +46,7 @@ export default (connection) => {
 
   User.addHook('beforeCreate', encryptPassword);
 
-  User.addHook('beforeUpdate', encryptPassword); // TODO: check if password has changed
+  User.addHook('beforeUpdate', encryptPassword);
 
   return User;
 };

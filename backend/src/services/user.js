@@ -23,6 +23,7 @@ export default {
     const [nb, users = []] = await User.update(data, {
       where: criteria,
       returning: true,
+      individualHooks: true, // to trigger the encryption hook on update (see user model)
     });
     console.log(nb, users);
     return users;
