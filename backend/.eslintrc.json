@@ -30,6 +30,8 @@
         "eol-last": [
             "error",
             "always"
-        ]
+        ],
+        "require-await": "error",
+        "no-return-await": "error"
     }
 }

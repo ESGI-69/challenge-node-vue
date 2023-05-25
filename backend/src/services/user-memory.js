@@ -1,7 +1,7 @@
 const users = [];
 
 export default {
-  findAll: async function (criteria, options = {}) {
+  findAll: function (criteria, options = {}) {
     let filteredUsers = users.filter((user) => {
       if (!criteria) return true;
       return Object.keys(criteria).every((key) => {
@@ -22,10 +22,10 @@ export default {
 
     return filteredUsers;
   },
-  findById: async function (id) {
+  findById: function (id) {
     return users.find((user) => user.id === id);
   },
-  create: async function (data) {
+  create: function (data) {
     const user = { id: Date.now(), ...data };
     users.push(user);
     return user;

@@ -1,5 +1,11 @@
 FROM node:lts-alpine
 
+# Install bcryp
+RUN apk add --no-cache --virtual .build-deps alpine-sdk python \
+    && npm install --quiet node-gyp -g \
+    && npm install --quiet bcrypt --save \
+    && apk del .build-deps
+
 # Create app directory
 WORKDIR /app
 

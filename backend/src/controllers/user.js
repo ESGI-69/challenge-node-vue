@@ -1,6 +1,13 @@
-import userService from '../services/user-memory.js';
+import userService from '../services/user.js';
 
 export default {
+  /**
+   * Express.js controller for GET /users
+   * @param {import('express').Request} req 
+   * @param {import('express').Response} res 
+   * @param {import('express').NextFunction} next 
+   * @returns {Promise<void>}
+   */
   cget: async (req, res, next) => {
     const {
       _page = 1,
@@ -19,6 +26,13 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for POST /users
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
   post: async (req, res, next) => {
     try {
       const user = await userService.create(req.body);
@@ -27,6 +41,13 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for GET /users/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
   get: async (req, res, next) => {
     try {
       const user = await userService.findById(parseInt(req.params.id));
@@ -36,6 +57,13 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for PUT /users/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
   put: async (req, res, next) => {
     try {
       const nbRemoved = await userService.remove({
@@ -50,6 +78,13 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for PATCH /users/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
   patch: async (req, res, next) => {
     try {
       const [user] = await userService.update(
@@ -62,6 +97,13 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for DELETE /users/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
   delete: async (req, res, next) => {
     try {
       const nbRemoved = await userService.remove({
