@@ -1,5 +1,10 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: './../.env'});
+}
 
 /**
  * @param {typeof import('../services/user.js').default} userService
@@ -16,8 +21,8 @@ export default (userService) => {
     if (!await user.checkPassword(password)) {
       return res.sendStatus(401);
     }
-    // Use env variable for JWT secret
-    const token = jwt.sign({ id: user.id }, 'JWT_SECRET', {
+    
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: '1y',
       algorithm: 'HS256',
     });

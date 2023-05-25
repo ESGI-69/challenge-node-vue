@@ -5,9 +5,9 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "NODE_ENV=development nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "node --test */**/__tests__/*.spec.js",
+    "test": "NODE_ENV=test node --test */**/__tests__/*.spec.js",
     "lint": "eslint src/**/*.js"
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ESGI-69/challenge-node-vue#readme",
   "devDependencies": {
+    "dotenv": "^16.0.3",
     "eslint": "^8.41.0",
     "nodemon": "^2.0.22"
   },

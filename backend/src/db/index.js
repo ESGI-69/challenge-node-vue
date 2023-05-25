@@ -1,12 +1,25 @@
 import Sequelize from 'sequelize';
-import user from './models/user.js';
+import user from './models/User.js';
+import dotenv from 'dotenv';
 
-// change connection string to use the PG_DATABASE_URL environment variable
+/**
+ * The domain name of the postgres database
+ * @type {'localhost' | 'postgres'}
+ */
+let postgresDomainName;
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: './../.env'});
+  postgresDomainName = 'localhost';
+} else {
+  postgresDomainName = 'postgres';
+}
+
 /**
  * Sequelize connection
  * @type {import('sequelize').Sequelize}
  */
-const connection = new Sequelize('postgres://root:password@localhost:5432/app', {});
+const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${postgresDomainName}:5432/${process.env.POSTGRES_DB}`, {});
 
 const User = user(connection);
 

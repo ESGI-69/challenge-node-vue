@@ -1,14 +1,5 @@
 version: '3.8'
 services:
-  # backend:
-  #   image: node
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./backend:/app
-  #   depends_on:
-  #     - mongo
-
   # mongo:
   #   image: mongo
   #   ports:
@@ -20,28 +11,12 @@ services:
   #   volumes:
   #     - ./db-data:/data/db
 
-  posgres:
+  postgres:
     image: postgres
-    ports:
-      - 5432:5432
     environment:
-      # POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_USER: root
-      # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./pg-data:/var/lib/postgresql/data
-    
-  # frontend:
-  #   image: frontend
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 8080:8080
-  #   volumes:
-  #     - ./frontend:/app
-  #   depends_on:
-  #     - backend
   
