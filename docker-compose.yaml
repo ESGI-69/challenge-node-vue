@@ -2,6 +2,8 @@ version: '3.8'
 services:
   # mongo:
   #   image: mongo
+  #   networks:
+  #     - database
   #   ports:
   #     - 27017:27017
   #   environment:
@@ -13,10 +15,17 @@ services:
 
   postgres:
     image: postgres
+    networks:
+      - database
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./pg-data:/var/lib/postgresql/data
+
+networks:
+  database:
+    name: database
+  
   

@@ -5,6 +5,7 @@ services:
     container_name: challenge-2023-backend
     networks:
       - swag
+      - database
     image: backend
     build:
       context: ./backend
