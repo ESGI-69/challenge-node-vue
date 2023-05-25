@@ -1,7 +1,7 @@
 import express from 'express';
 import GenericRouter from './routes/genericCRUD.js';
 import GenericController from './controllers/genericCRUD.js';
-import userService from './services/user-memory.js';
+import userService from './services/user.js';
 
 import userRouter from './routes/user.js';
 

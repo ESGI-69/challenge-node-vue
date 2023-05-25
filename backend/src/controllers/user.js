@@ -1,4 +1,4 @@
-import userService from '../services/user-memory.js';
+import userService from '../services/user.js';
 
 export default {
   cget: async (req, res, next) => {
