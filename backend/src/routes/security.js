@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 
+/**
+ * @param {typeof import('../services/user.js').default} userService
+ */
 export default (userService) => {
   const router = Router();
 

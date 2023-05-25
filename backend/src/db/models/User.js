@@ -2,6 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+/**
+ * @param {import('sequelize').Sequelize} connection
+ */
 export default (connection) => {
   class User extends Model {
     /**
@@ -54,6 +57,11 @@ export default (connection) => {
     }
   );
 
+  /**
+   * Encrypt the password before creating or updating the user
+   * @param {User} user User model
+   * @param {import('sequelize').UpdateOptions} options 
+   */
   const encryptPassword = async (user, options) => {
     if (!options?.fields.includes('password')) {
       return;
