@@ -1,8 +1,26 @@
 import { Model, DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export default (connection) => {
-  class User extends Model {}
+  class User extends Model {
+    /**
+     * Check if the given password is correct
+     * @param {string} password User plain password
+     * @returns {Promise<boolean>}
+     */
+    checkPassword(password) {
+      return bcrypt.compare(password, this.password);
+    }
+
+    /**
+     * Generate a JWT token for the user
+     * @returns {string} JWT token
+     */
+    generateToken() {
+      return jwt.sign({ id: this.id }, 'JWT_SECRET', { expiresIn: '1y' });
+    }
+  }
 
   User.init(
     {
@@ -47,6 +65,6 @@ export default (connection) => {
   User.addHook('beforeCreate', encryptPassword);
 
   User.addHook('beforeUpdate', encryptPassword);
-
+  
   return User;
 };

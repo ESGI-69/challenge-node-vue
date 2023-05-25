@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export default (userService) => {
@@ -11,8 +10,7 @@ export default (userService) => {
     if (!user) {
       return res.sendStatus(401);
     }
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
+    if (!await user.checkPassword(password)) {
       return res.sendStatus(401);
     }
     // Use env variable for JWT secret
