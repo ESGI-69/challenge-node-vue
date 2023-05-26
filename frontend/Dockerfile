@@ -1,5 +1,8 @@
 FROM node:lts-alpine
 
+# install simple http server for serving static content
+RUN npm install -g http-server
+
 # Create app directory
 WORKDIR /app
 
@@ -10,6 +13,9 @@ RUN npm install
 # Copy app source code
 COPY . .
 
+# Build app
+RUN npm run build
+
 # Expose port and start application
 EXPOSE 8080
-CMD ["npm", "start"]
+CMD ["http-server", "--proxy", "http://localhost:8080?", "dist"]

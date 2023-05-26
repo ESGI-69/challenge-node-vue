@@ -1,0 +1,39 @@
+name: Backend tests
+run-name: ${{ github.actor }} launching frontend tests
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'frontend/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'frontend/**' ]
+
+jobs:
+  unit-tests:
+    name: Unit tests (frontend)
+    defaults:
+      run:
+        working-directory: frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: npm test
+  eslint:
+    name: Eslint (frontend)
+    defaults:
+      run:
+        working-directory: frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install eslint
+        run: npm install eslint
+      - name: Launch eslint
+        run: npm run lint

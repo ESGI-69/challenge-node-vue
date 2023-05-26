@@ -13,9 +13,17 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 
     The container will wait for the database to be ready (based on the postgres container healthcheck) before launching the application.
 
+  - The frontend is a vue3 application.
+
+    The container will wait for the backend to be ready (based on the backend container healthcheck) before launching the application.
+
 - Backend unit tests, running in github action with the node.js test suite `node:test` (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
 
   You can find the backend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/backend-test.yml).
+
+- Frontend unit tests, running in github action with the vitest test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
+
+  You can find the frontend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/frontend-test.yml)
 
 ## Launch the project locally **for development**
 
@@ -69,9 +77,9 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 
 Theses tests are launched in the CI/CD pipeline, but you can launch them locally for ensuring that your code is clean.
 
-- You can launch the backend tests with
+- You can launch the tests with
   ```bash
-  cd backend
+  cd backend # or cd frontend
   npm test
   ```
 - You can verify the code sanity (for frontend & backend) with
