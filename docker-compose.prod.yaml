@@ -26,7 +26,6 @@ services:
     container_name: challenge-2023
     networks:
       - swag
-    image: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
