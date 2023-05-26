@@ -14,7 +14,8 @@ services:
       - 3000:3000
     depends_on:
       # - mongo
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

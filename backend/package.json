@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/index.js",
-    "start": "node src/index.js",
+    "start": "NODE_ENV=production npx sequelize-cli db:migrate && node src/index.js",
     "test": "NODE_ENV=test node --test */**/__tests__/*.spec.js",
     "lint": "eslint src/**/*.js"
   },
@@ -23,7 +23,8 @@
   "devDependencies": {
     "dotenv": "^16.0.3",
     "eslint": "^8.41.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
