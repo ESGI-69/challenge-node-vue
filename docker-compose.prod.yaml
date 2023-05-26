@@ -6,7 +6,6 @@ services:
     networks:
       - swag
       - database
-    image: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
