@@ -1,5 +1,22 @@
 # Challenge stack 2023 IW4
 
+The goal of this challenge is to create a web card game. The game is a simplified version of ??? game.
+
+## Notable features
+
+- Dockerized project with healthchecks:
+  - The postgres database, with docker healthcheck that will check if the database is up and ready to accept connections.
+
+  - The backend is a node.js application, with a healthcheck endpoint that is used by the docker healthcheck.
+  
+    The healthcheck endpoint is available at `/healthcheck`. It will return a 200 status code if the application is connected to the database, and a 500 status code otherwise.
+
+    The container will wait for the database to be ready (based on the postgres container healthcheck) before launching the application.
+
+- Backend unit tests, running in github action with the node.js test suite `node:test` (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
+
+  You can find the backend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/backend-test.yml).
+
 ## Launch the project locally **for development**
 
 ### Prerequisites
