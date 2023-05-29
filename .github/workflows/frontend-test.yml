@@ -1,4 +1,4 @@
-name: Backend tests
+name: Frontend tests
 run-name: ${{ github.actor }} launching frontend tests
 
 on:
