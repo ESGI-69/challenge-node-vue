@@ -58,6 +58,10 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   cd backend
   npm install
   ```
+- Migration the database
+  ```bash
+  npm run migrate
+  ```
 - Launch the backend
   ```bash
   npm run dev
@@ -115,4 +119,4 @@ Environment variables are used to configure the application. You can find the li
 | `POSTGRES_USER` | The username of the postgres database | `root` |
 | `POSTGRES_PASSWORD` | The password of the postgres database | `password` |
 | `POSTGRES_DB` | The name of the postgres database | `app` |
-| `JWT_SECRET` | The secret use for the JWT generation | |
+| `JWT_SECRET` | The secret use for the JWT generation (please genereate a random >32 letter string) | |
