@@ -7,6 +7,7 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig(({ mode }) =>{
   if (mode === 'development') {
     return {
+      envDir: '../',
       server: {
         port: 8080,
         proxy: {
@@ -35,6 +36,7 @@ export default defineConfig(({ mode }) =>{
     };
   }
   return {
+    envDir: '../',
     plugins: [ vue() ],
     resolve: {
       alias: {
