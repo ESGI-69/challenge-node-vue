@@ -1,14 +1,24 @@
-import './assets/main.css'
+import './assets/main.scss';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
 
-import App from './App.vue'
-import router from './router'
+import ElementPlus from 'element-plus';
+import { createPinia } from 'pinia';
 
-const app = createApp(App)
+import App from '@/App.vue';
+import $API from '@/plugins/axios';
+import addInterceptors from '@/plugins/interceptors';
+import router from '@/router';
+// import { useAuthStore } from '@/store/authStore';
+// import { useProfileStore } from '@/store/profileStore';
 
-app.use(createPinia())
-app.use(router)
+const app = createApp(App);
 
-app.mount('#app')
+app.config.globalProperties.$API = $API;
+
+app.use(ElementPlus);
+app.use(createPinia());
+app.use(router);
+addInterceptors($API, router);
+
+app.mount('#app');

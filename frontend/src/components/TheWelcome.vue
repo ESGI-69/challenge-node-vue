@@ -1,86 +1,143 @@
-<script setup>
-import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
+<template>
+  <main>
+    <draggable
+      v-model="myArray"
+      class="draggableBox"
+      group="people"
+      item-key="id"
+      ghost-class="ghost"
+    >
+      <template #item="{element}">
+        <card v-bind="element" />
+      </template>
+    </draggable>
+    <draggable
+      v-model="myArray2"
+      class="draggableBox"
+      group="people"
+      ghost-class="ghost"
+      item-key="id"
+    >
+      <template #item="{element}">
+        <card v-bind="element" />
+      </template>
+    </draggable>
+  </main>
+</template>
+
+<script>
+import { ref } from 'vue';
+import Draggable from 'vuedraggable';
+import Card from '@/components/Card.vue';
+
+export default {
+  name: 'TheWelcome',
+  components: {
+    Card,
+    Draggable,
+  },
+  setup() {
+    /**
+     * @typedef {{
+     *  id: number,
+     *  cost: number,
+     *  image: string,
+     *  name: string,
+     *  rarity: 'common' | 'rare' | 'epic' | 'legendary',
+     *  description: string,
+     *  type: string,
+     *  attack: number,
+     *  health: number,
+     * }} Card
+     */
+
+    /**
+     * @typedef {import("vue").Ref<Card[]>}
+     */
+    const myArray = ref([
+      {
+        id: 1,
+        cost: 1,
+        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
+        name: 'John',
+        rarity: 'common',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl.',
+        attack: 1,
+        health: 2,
+      },
+      {
+        id: 2,
+        cost: 12,
+        image: 'https://art.hearthstonejson.com/v1/orig/EX1_116.png',
+        name: 'Jane',
+        rarity: 'rare',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl.',
+        attack: 1,
+        health: 2,
+      },
+      {
+        id: 3,
+        cost: 12,
+        image: 'https://art.hearthstonejson.com/v1/orig/CS2_231.png',
+        name: 'Jean',
+        rarity: 'epic',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl.',
+        attack: 1,
+        health: 2,
+      },
+      {
+        id: 4,
+        cost: 12,
+        image: 'https://art.hearthstonejson.com/v1/orig/CS2_073.png',
+        name: 'Juan',
+        rarity: 'legendary',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl.',
+        attack: 1,
+        health: 2,
+      },
+    ]);
+    const myArray2 = ref([
+      {
+        id: 1,
+        cost: 12,
+        image: 'https://art.hearthstonejson.com/v1/orig/NAX11_02.png',
+        name: 'Johan',
+        rarity: 'rare',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl. Donec auctor, nisl eget ultricies ultricies, nunc nunc ultricies nunc, vitae ultricies nisl nisl eget nisl.',
+        attack: 1,
+        health: 2,
+      },
+    ]);
+
+    return {
+      myArray,
+      myArray2,
+    };
+  },
+};
 </script>
 
-<template>
-  <WelcomeItem>
-    <template #icon>
-      <DocumentationIcon />
-    </template>
-    <template #heading>Documentation</template>
+<style lang="scss" scoped>
+main {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  .draggableBox {
+    border: 1px solid black;
+    display: flex;
+    gap: 0.25rem;
+  }
+}
 
-    Vue’s
-    <a href="https://vuejs.org/" target="_blank" rel="noopener">official documentation</a>
-    provides you with all information you need to get started.
-  </WelcomeItem>
+.ghost {
+  opacity: 0.5;
+}
 
-  <WelcomeItem>
-    <template #icon>
-      <ToolingIcon />
-    </template>
-    <template #heading>Tooling</template>
+.drag {
+  background-color: green;
+}
 
-    This project is served and bundled with
-    <a href="https://vitejs.dev/guide/features.html" target="_blank" rel="noopener">Vite</a>. The
-    recommended IDE setup is
-    <a href="https://code.visualstudio.com/" target="_blank" rel="noopener">VSCode</a> +
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank" rel="noopener">Volar</a>. If
-    you need to test your components and web pages, check out
-    <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and
-    <a href="https://on.cypress.io/component" target="_blank">Cypress Component Testing</a>.
-
-    <br />
-
-    More instructions are available in <code>README.md</code>.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <EcosystemIcon />
-    </template>
-    <template #heading>Ecosystem</template>
-
-    Get official tools and libraries for your project:
-    <a href="https://pinia.vuejs.org/" target="_blank" rel="noopener">Pinia</a>,
-    <a href="https://router.vuejs.org/" target="_blank" rel="noopener">Vue Router</a>,
-    <a href="https://test-utils.vuejs.org/" target="_blank" rel="noopener">Vue Test Utils</a>, and
-    <a href="https://github.com/vuejs/devtools" target="_blank" rel="noopener">Vue Dev Tools</a>. If
-    you need more resources, we suggest paying
-    <a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">Awesome Vue</a>
-    a visit.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <CommunityIcon />
-    </template>
-    <template #heading>Community</template>
-
-    Got stuck? Ask your question on
-    <a href="https://chat.vuejs.org" target="_blank" rel="noopener">Vue Land</a>, our official
-    Discord server, or
-    <a href="https://stackoverflow.com/questions/tagged/vue.js" target="_blank" rel="noopener"
-      >StackOverflow</a
-    >. You should also subscribe to
-    <a href="https://news.vuejs.org" target="_blank" rel="noopener">our mailing list</a> and follow
-    the official
-    <a href="https://twitter.com/vuejs" target="_blank" rel="noopener">@vuejs</a>
-    twitter account for latest news in the Vue world.
-  </WelcomeItem>
-
-  <WelcomeItem>
-    <template #icon>
-      <SupportIcon />
-    </template>
-    <template #heading>Support Vue</template>
-
-    As an independent project, Vue relies on community backing for its sustainability. You can help
-    us by
-    <a href="https://vuejs.org/sponsor/" target="_blank" rel="noopener">becoming a sponsor</a>.
-  </WelcomeItem>
-</template>
+.chosen {
+  // background-color: yellow;
+}
+</style>
