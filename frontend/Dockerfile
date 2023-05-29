@@ -18,4 +18,4 @@ RUN npm run build
 
 # Expose port and start application
 EXPOSE 8080
-CMD ["http-server", "--proxy", "http://localhost:8080?", "dist"]
+CMD ["http-server", "-c-1", "--proxy", "http://localhost:8080?", "dist"]
