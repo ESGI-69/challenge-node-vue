@@ -7,11 +7,12 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig(({ mode }) =>{
   if (mode === 'development') {
     return {
+      envDir: '../',
       server: {
         port: 8080,
         proxy: {
           '^/api': {
-            target: 'http://localhost',
+            target: 'http://localhost:3000',
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api/, ''),
           },
@@ -20,7 +21,7 @@ export default defineConfig(({ mode }) =>{
       preview: {
         proxy: {
           '^/api': {
-            target: 'http://localhost',
+            target: 'http://localhost:3000',
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api/, ''),
           },
@@ -35,6 +36,7 @@ export default defineConfig(({ mode }) =>{
     };
   }
   return {
+    envDir: '../',
     plugins: [ vue() ],
     resolve: {
       alias: {
