@@ -30,33 +30,11 @@ export default {
 
 <style lang="scss" scoped>
 .not-logged {
-  display: grid;
-  grid-template-areas: "logo" "main";
-  grid-template-rows: auto 1fr;
-
-  &__logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 0;
-    transition: all 0.3s ease-in-out;
-
-    &--login {
-      padding: 48px 0;
-    }
-
-    &__image {
-      height: 75px;
-    }
-  }
-
   &__main {
+    box-sizing: border-box;
+    height: 100%;
     padding: 24px;
     overflow-y: auto;
-
-    @media (max-width: 768px) {
-      padding: 24px 16px;
-    }
   }
 }
 .fade-enter-active,
