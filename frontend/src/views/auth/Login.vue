@@ -1,43 +1,44 @@
 <template>
-  <div class="login">
-    <form @submit.prevent="login">
-      <div class="login__form__input">
-        <label for="email">Email</label>
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          placeholder="Email"
-          required
-        >
-      </div>
-      <div class="login__form__input">
-        <label for="password">Password</label>
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          required
-        >
-      </div>
-      <div class="login__form__input">
-        <button
-          type="submit"
-          class="btn btn--primary"
-        >
-          Login
-        </button>
+  <form
+    class="login"
+    @submit.prevent="login"
+  >
+    <div class="login__input">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        v-model="email"
+        type="email"
+        placeholder="Email"
+        required
+      >
+    </div>
+    <div class="login__input">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        v-model="password"
+        type="password"
+        placeholder="Password"
+        required
+      >
+    </div>
+    <div class="login__input">
+      <button
+        type="submit"
+        class="btn btn--primary"
+      >
+        Login
+      </button>
 
-        <div
-          v-if="error"
-          class="login__form__error"
-        >
-          Invalid credentials
-        </div>
+      <div
+        v-if="error"
+        class="login__error"
+      >
+        Invalid credentials
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </template>
 
 <script>
@@ -78,3 +79,28 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.login {
+  &__input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+
+    label {
+      margin-bottom: 5px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  }
+
+  &__error {
+    color: red;
+    margin-top: 10px;
+  }
+}
+</style>
