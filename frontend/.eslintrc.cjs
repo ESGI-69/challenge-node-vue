@@ -161,5 +161,15 @@ module.exports = {
     'no-else-return': 'error',
     'vue/component-api-style': [ 'error', [ 'composition' ] ],
     'no-trailing-spaces': 'error',
+    'prefer-destructuring': [
+      'error',
+      {
+        array: true,
+        object: true,
+      },
+      {
+        enforceForRenamedProperties: false,
+      },
+    ],
   },
 };
