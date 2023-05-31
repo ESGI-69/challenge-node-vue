@@ -9,7 +9,30 @@ on:
     branches: [ main ]
     paths: [ 'backend/**', '.github/**' ]
 
+env:
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: app
+  NODE_ENV: test
+  # TODO: use github secrets
+  SECRET_KEY: QHUP0R3vieku9oG0zvpJ96WCCv2RI1g0B1S4e9i1tIxZGfLfrOIiWdGf5vyA98aw
+
 jobs:
+  # Setup postgresql database
+  database:
+    name: Setup postgresql database
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 1s --health-timeout 5s --health-retries 5
+
   unit-tests:
     name: Unit tests (backend)
     defaults:
@@ -21,7 +44,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - run: npm test
+      - name: Install dependencies
+        run: npm install
+      - name: Launch unit tests
+        run: npm test
   eslint:
     name: Eslint (backend)
     defaults:

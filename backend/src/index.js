@@ -26,3 +26,5 @@ app.get('/health', async (req, res) => {
 });
 
 app.listen(3000, () => console.log('Server started on port 3000'));
+
+export { app };
