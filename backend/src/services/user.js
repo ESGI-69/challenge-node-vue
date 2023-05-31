@@ -2,7 +2,6 @@ import { User } from './../db/index.js';
 
 export default {
   findAll: function (criteria, options = {}) {
-    console.log(User);
     return User.findAll({
       where: criteria,
       ...options,

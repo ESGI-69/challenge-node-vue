@@ -9,6 +9,14 @@ on:
     branches: [ main ]
     paths: [ 'backend/**', '.github/**' ]
 
+env:
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: app
+  NODE_ENV: test
+  # TODO: use github secrets
+  SECRET_KEY: QHUP0R3vieku9oG0zvpJ96WCCv2RI1g0B1S4e9i1tIxZGfLfrOIiWdGf5vyA98aw
+
 jobs:
   unit-tests:
     name: Unit tests (backend)
@@ -16,12 +24,34 @@ jobs:
       run:
         working-directory: backend
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 1s --health-timeout 5s --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - run: npm test
+      - name: Wait for postgresql
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for postgresql to start..."
+            sleep 1;
+          done
+      - name: Install dependencies
+        run: npm install
+      - name: Initialize database (migrations)
+        run: NODE_ENV=test node src/migrate.js
+      - name: Launch unit tests
+        run: npm test
   eslint:
     name: Eslint (backend)
     defaults:

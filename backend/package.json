@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/index.js",
     "start": "NODE_ENV=production npx sequelize-cli db:migrate && node src/index.js",
-    "test": "NODE_ENV=test node --test */**/__tests__/*.spec.js",
+    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test:dev": "NODE_ENV=development NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
     "lint": "eslint src/**/*.js",
     "migrate": "npx sequelize-cli db:migrate"
   },
@@ -22,10 +23,13 @@
   },
   "homepage": "https://github.com/ESGI-69/challenge-node-vue#readme",
   "devDependencies": {
+    "babel-jest": "^29.5.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.41.0",
+    "jest": "^29.5.0",
     "nodemon": "^2.0.22",
-    "sequelize-cli": "^6.6.0"
+    "sequelize-cli": "^6.6.0",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
