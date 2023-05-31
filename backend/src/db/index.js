@@ -6,11 +6,10 @@ import dotenv from 'dotenv';
  * The domain name of the postgres database
  * @type {'localhost' | 'postgres'}
  */
-let postgresDomainName;
+let postgresDomainName  = 'localhost';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './../.env'});
-  postgresDomainName = 'localhost';
 } else {
   postgresDomainName = 'postgres';
 }
