@@ -23,6 +23,14 @@ export default (connection) => {
     generateToken() {
       return jwt.sign({ id: this.id }, 'JWT_SECRET', { expiresIn: '1y' });
     }
+
+    /**
+     * Check if the user is an admin
+     * @returns {boolean}
+     */
+    isAdmin() {
+      return this.role === 'ADMIN';
+    } 
   }
 
   User.init(

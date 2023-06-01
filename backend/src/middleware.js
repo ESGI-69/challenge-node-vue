@@ -46,7 +46,7 @@ const isLogged = (req, res, next) => {
  */
 const isAdmin = (req, res, next) => {
   if (!req.user) return res.sendStatus(401);
-  if (req.user.role !== 'ADMIN') return res.sendStatus(403);
+  if (!req.user.isAdmin()) return res.sendStatus(403);
   next();
 };
 

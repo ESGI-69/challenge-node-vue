@@ -50,7 +50,7 @@ export default {
    */
   get: async (req, res, next) => {
     try {
-      if (req.user.id !== parseInt(req.params.id) && req.user.role !== 'ADMIN') return res.sendStatus(403);
+      if (req.user.id !== parseInt(req.params.id) && !req.user.isAdmin()) return res.sendStatus(403);
       const user = await userService.findById(parseInt(req.params.id));
       if (!user) return res.sendStatus(404);
       res.json(user);
