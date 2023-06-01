@@ -190,6 +190,27 @@ describe('User Update flow', () => {
       .catch(done);
   });
 
+  it('GET /users/ should contain the updated user', (done) => {
+    request(app)
+      .get('/users/')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        const user = res.body.find((u) => u.id === userId);
+        expect(typeof user.id).toBe('number');
+        expect(user.email).toBe(updatedUser.email);
+        expect(user.firstname).toBe(user.firstname);
+        expect(user.lastname).toBe(user.lastname);
+        expect(user.updatedAt).toBeDefined();
+        expect(typeof new Date(user.updatedAt).toISOString()).toBe('string');
+        expect(user.createdAt).toBeDefined();
+        expect(typeof new Date(user.createdAt).toISOString()).toBe('string');
+        expect(user.createdAt).toBe(user.createdAt);
+        // TODO: Check if password absent from the response
+        done();
+      })
+      .catch(done);
+  });
 });
 
 describe('User Delete flow', () => {
