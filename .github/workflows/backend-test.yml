@@ -48,8 +48,10 @@ jobs:
           done
       - name: Install dependencies
         run: npm install
-      - name: Initialize database (migrations)
-        run: NODE_ENV=test node src/migrate.js
+      - name: Migrate database
+        run: NODE_ENV=test npm run migrate:force
+      - name: Seed database
+        run: NODE_ENV=test npm run seed
       - name: Launch unit tests
         run: npm test
   eslint:

@@ -10,7 +10,9 @@
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test:dev": "NODE_ENV=development NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
     "lint": "eslint src/**/*.js",
-    "migrate": "npx sequelize-cli db:migrate"
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:force": "node src/migrate.js",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "repository": {
     "type": "git",

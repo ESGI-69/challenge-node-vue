@@ -2,28 +2,16 @@ import { describe, it, expect } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 
+const user = {
+  email: 'test@test.test',
+  password: 'Testtest1234!',
+  firstname: 'Firstname',
+  lastname: 'Lastname',
+};
 
-describe('Users endpoints', () => {
-  const user = {
-    email: 'test@test.test',
-    password: 'Testtest1234!',
-    firstname: 'Firstname',
-    lastname: 'Lastname',
-  };
+let userId;
 
-  let userId;
-
-  it('GET /users/ should return 0 users', (done) => {
-    request(app)
-      .get('/users/')
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((res) => {
-        expect(res.body).toHaveLength(0);
-        done();
-      })
-      .catch(done);
-  });
+describe('Register flow', () => {
 
   it('POST /users/ should create a new user', (done) => {
     request(app)
@@ -78,14 +66,13 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
-  it('GET /users/ should return only the created user', (done) => {
+  it('GET /users/ should contain the created user', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        expect(res.body).toHaveLength(1);
-        const user = res.body[0];
+        const user = res.body.find((u) => u.id === userId);
         expect(typeof user.id).toBe('number');
         expect(user.id).toBe(userId);
         expect(user.email).toBe(user.email);
@@ -132,7 +119,9 @@ describe('Users endpoints', () => {
       })
       .catch(done);
   });
+});
 
+describe('User Update flow', () => {
   it('PUT /users/:id should update a user', (done) => {
     const updatedUser = {
       email: 'test1@test.test',
@@ -161,10 +150,11 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
+  const updatedUser = {
+    email: 'test2@test.test',
+  };
+
   it('PATCH /users/:id should update a user with a new email', (done) => {
-    const updatedUser = {
-      email: 'test2@test.test',
-    };
     request(app)
       .patch(`/users/${userId}`)
       .send(updatedUser)
@@ -187,12 +177,12 @@ describe('Users endpoints', () => {
   });
 
   it('PATCH /users/:id that does not exist should return 404', (done) => {
-    const updatedUser = {
+    const failUpdatedUser = {
       email: 'test123@test.test',
     };
     request(app)
       .patch('/users/999998')
-      .send(updatedUser)
+      .send(failUpdatedUser)
       .expect(404)
       .then(() => {
         done();
@@ -200,6 +190,30 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
+  it('GET /users/ should contain the updated user', (done) => {
+    request(app)
+      .get('/users/')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        const user = res.body.find((u) => u.id === userId);
+        expect(typeof user.id).toBe('number');
+        expect(user.email).toBe(updatedUser.email);
+        expect(user.firstname).toBe(user.firstname);
+        expect(user.lastname).toBe(user.lastname);
+        expect(user.updatedAt).toBeDefined();
+        expect(typeof new Date(user.updatedAt).toISOString()).toBe('string');
+        expect(user.createdAt).toBeDefined();
+        expect(typeof new Date(user.createdAt).toISOString()).toBe('string');
+        expect(user.createdAt).toBe(user.createdAt);
+        // TODO: Check if password absent from the response
+        done();
+      })
+      .catch(done);
+  });
+});
+
+describe('User Delete flow', () => {
   it('DELETE /users/:id should delete a user', (done) => {
     request(app)
       .delete(`/users/${userId}`)
@@ -212,7 +226,7 @@ describe('Users endpoints', () => {
 
   it('DELETE /users/:id that does not exist should return 404', (done) => {
     request(app)
-      .delete('/users/999995')
+      .delete(`/users/${userId}`)
       .expect(404)
       .then(() => {
         done();
@@ -220,13 +234,14 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
-  it('GET /users/ should return 0 users', (done) => {
+  it('GET /users/ should not contain the deleted user', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        expect(res.body).toHaveLength(0);
+        const user = res.body.find((u) => u.id === userId);
+        expect(user).toBeUndefined();
         done();
       })
       .catch(done);

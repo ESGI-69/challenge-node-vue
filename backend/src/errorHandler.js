@@ -41,5 +41,10 @@ export default (err, req, res, _next) => {
   if (Object.keys(response).length > 0) {
     return res.status(400).json(response);
   }
-  return res.status(500).send(err);
+
+  if (process.env.NODE_ENV !== 'production') {
+    return res.status(500).send(err);
+  }
+
+  return res.sendStatus(500);
 };
