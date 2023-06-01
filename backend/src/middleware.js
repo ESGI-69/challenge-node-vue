@@ -27,4 +27,31 @@ const populateUser = async (req, res, next) => {
   }
 };
 
-export { populateUser };
+/**
+ * Check if the user is logged in. If not, return 401.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
+const isLogged = (req, res, next) => {
+  if (!req.user) return res.sendStatus(401);
+  next();
+};
+
+/**
+ * Check if the user is an Admin. If not, return 401.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
+const isAdmin = (req, res, next) => {
+  if (!req.user) return res.sendStatus(401);
+  if (req.user.role !== 'ADMIN') return res.sendStatus(403);
+  next();
+};
+
+export {
+  populateUser,
+  isLogged,
+  isAdmin,
+};

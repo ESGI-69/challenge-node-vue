@@ -50,6 +50,11 @@ export default (connection) => {
           is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
         },
       },
+      role: {
+        type: DataTypes.ENUM('ADMIN', 'PLAYER'),
+        allowNull: false,
+        defaultValue: 'PLAYER',
+      },
     },
     {
       sequelize: connection,

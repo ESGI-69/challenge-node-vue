@@ -11,6 +11,12 @@ const user = {
   password: '123456',
 };
 
+/**
+ * JWT token for the user
+ * @type {string}
+ */
+let token;
+
 describe('Login userflow', () => {
   it('POST /login should return 401 if user does not exist', (done) => {
     request(app)
@@ -43,7 +49,7 @@ describe('Login userflow', () => {
       .expect(200)
       .then((res) => {
         expect(res.body.token).toBeDefined();
-        const token = res.body.token;
+        token = res.body.token;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         delete decoded.iat;
         delete decoded.exp;
@@ -57,6 +63,7 @@ describe('Login userflow', () => {
   it('GET /users/:id should return the correct info about the user', (done) => {
     request(app)
       .get(`/users/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .then((res) => {
         expect(res.body.id).toBe(user.id);

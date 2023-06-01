@@ -1,6 +1,7 @@
 import { describe, it, expect } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
+import getJwt from '../../../tests/getJwt.js';
 
 const user = {
   email: 'test@test.test',
@@ -10,9 +11,10 @@ const user = {
 };
 
 let userId;
+let playerToken;
+const adminToken = await getJwt('admin@example.com', '123456');
 
 describe('Register flow', () => {
-
   it('POST /users/ should create a new user', (done) => {
     request(app)
       .post('/users/')
@@ -58,17 +60,43 @@ describe('Register flow', () => {
       .send(noEmailUser)
       .expect(400)
       .expect('Content-Type', /json/)
-      .then((res) => {
+      .then(async (res) => {
         expect(res.body.missingFields).toContain('email');
         expect(res.body.invalidFields).not.toBeDefined();
+        playerToken = await getJwt(user.email, user.password);
         done();
       })
       .catch(done);
   });
 
+  it(`GET /users/${userId} should return the user`, (done) => {
+    request(app)
+      .get(`/users/${userId}`)
+      .set('Authorization', `Bearer ${playerToken}`)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(typeof res.body.id).toBe('number');
+        expect(res.body.email).toBe(user.email);
+        expect(res.body.firstname).toBe(user.firstname);
+        expect(res.body.lastname).toBe(user.lastname);
+        expect(res.body.updatedAt).toBeDefined();
+        expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBeDefined();
+        expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBe(user.createdAt);
+        // TODO: Check if password absent from the response
+        done();
+      })
+      .catch(done);
+  });
+});
+
+describe('User info access (Admin)', () => {
   it('GET /users/ should contain the created user', (done) => {
     request(app)
       .get('/users/')
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
@@ -88,32 +116,43 @@ describe('Register flow', () => {
       })
       .catch(done);
   });
+});
 
-  it('GET /users/:id should return a user', (done) => {
+describe('User not authenticated access', () => {
+  it('GET /users/ should return 401', (done) => {
     request(app)
-      .get(`/users/${userId}`)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((res) => {
-        expect(typeof res.body.id).toBe('number');
-        expect(res.body.email).toBe(user.email);
-        expect(res.body.firstname).toBe(user.firstname);
-        expect(res.body.lastname).toBe(user.lastname);
-        expect(res.body.updatedAt).toBeDefined();
-        expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
-        expect(res.body.createdAt).toBeDefined();
-        expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
-        expect(res.body.createdAt).toBe(user.createdAt);
-        // TODO: Check if password absent from the response
+      .get('/users/')
+      .expect(401)
+      .then(() => {
         done();
       })
       .catch(done);
   });
 
-  it('GET /users/:id that does not exist should return 404', (done) => {
+  it('GET /users/:id should return 401', (done) => {
     request(app)
-      .get('/users/999997')
-      .expect(404)
+      .get(`/users/${userId}`)
+      .expect(401)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+
+  it('PUT /users/:id should return 401', (done) => {
+    request(app)
+      .put(`/users/${userId}`)
+      .expect(401)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+
+  it('DELETE /users/:id should return 401', (done) => {
+    request(app)
+      .delete(`/users/${userId}`)
+      .expect(401)
       .then(() => {
         done();
       })
@@ -121,7 +160,53 @@ describe('Register flow', () => {
   });
 });
 
-describe('User Update flow', () => {
+describe('User info access (Player)', () => {
+  it('GET /users/ should return 403', (done) => {
+    request(app)
+      .get('/users/')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .expect(403)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+
+  it('GET /users/:id on an other user should return 403', (done) => {
+    request(app)
+      .get(`/users/${userId + 1}`)
+      .set('Authorization', `Bearer ${playerToken}`)
+      .expect(403)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+
+  it('PUT /users/:id should return 403', (done) => {
+    request(app)
+      .put(`/users/${userId}`)
+      .set('Authorization', `Bearer ${playerToken}`)
+      .expect(403)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+
+  it('DELETE /users/:id should return 403', (done) => {
+    request(app)
+      .delete(`/users/${userId}`)
+      .set('Authorization', `Bearer ${playerToken}`)
+      .expect(403)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+});
+
+describe('User Update flow (Admin)', () => {
   it('PUT /users/:id should update a user', (done) => {
     const updatedUser = {
       email: 'test1@test.test',
@@ -131,6 +216,7 @@ describe('User Update flow', () => {
     };
     request(app)
       .put(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send(updatedUser)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -157,6 +243,7 @@ describe('User Update flow', () => {
   it('PATCH /users/:id should update a user with a new email', (done) => {
     request(app)
       .patch(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send(updatedUser)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -182,6 +269,7 @@ describe('User Update flow', () => {
     };
     request(app)
       .patch('/users/999998')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send(failUpdatedUser)
       .expect(404)
       .then(() => {
@@ -193,6 +281,7 @@ describe('User Update flow', () => {
   it('GET /users/ should contain the updated user', (done) => {
     request(app)
       .get('/users/')
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
@@ -213,10 +302,11 @@ describe('User Update flow', () => {
   });
 });
 
-describe('User Delete flow', () => {
+describe('User Delete flow (Admin)', () => {
   it('DELETE /users/:id should delete a user', (done) => {
     request(app)
       .delete(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(204)
       .then(() => {
         done();
@@ -227,6 +317,7 @@ describe('User Delete flow', () => {
   it('DELETE /users/:id that does not exist should return 404', (done) => {
     request(app)
       .delete(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(404)
       .then(() => {
         done();
@@ -237,6 +328,7 @@ describe('User Delete flow', () => {
   it('GET /users/ should not contain the deleted user', (done) => {
     request(app)
       .get('/users/')
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
@@ -250,6 +342,7 @@ describe('User Delete flow', () => {
   it('GET /users/:id should return 404', (done) => {
     request(app)
       .get(`/users/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .expect(404)
       .then(() => {
         done();
