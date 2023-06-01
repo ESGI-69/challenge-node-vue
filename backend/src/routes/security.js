@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './../.env'});
@@ -21,7 +22,10 @@ export default (userService) => {
       return res.sendStatus(401);
     }
     
-    const token = user.generateToken();
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: '1y',
+      algorithm: 'HS256',
+    });
     res.status(200).json({ token });
   });
 
