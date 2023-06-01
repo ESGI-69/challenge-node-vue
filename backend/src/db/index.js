@@ -18,7 +18,9 @@ if (process.env.NODE_ENV !== 'production') {
  * Sequelize connection
  * @type {import('sequelize').Sequelize}
  */
-const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${postgresDomainName}:5432/${process.env.POSTGRES_DB}`, {});
+const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${postgresDomainName}:5432/${process.env.POSTGRES_DB}`, {
+  logging: false,
+});
 
 const User = user(connection);
 

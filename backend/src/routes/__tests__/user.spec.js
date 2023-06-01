@@ -3,7 +3,7 @@ import request from 'supertest';
 import { app } from '../../index.js';
 
 
-describe('endpoint /users', () => {
+describe('Users endpoints', () => {
   const user = {
     email: 'test@test.test',
     password: 'Testtest1234!',
@@ -13,7 +13,7 @@ describe('endpoint /users', () => {
 
   let userId;
 
-  it('GET / should return 0 users', (done) => {
+  it('GET /users/ should return 0 users', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
@@ -25,7 +25,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('POST / should create a new user', (done) => {
+  it('POST /users/ should create a new user', (done) => {
     request(app)
       .post('/users/')
       .send(user)
@@ -48,7 +48,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('POST / should return 400 if email is invalid', (done) => {
+  it('POST /users/ should return 400 if email is invalid', (done) => {
     request(app)
       .post('/users/')
       .send({ ...user, email: 'invalid' })
@@ -62,7 +62,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('POST / should return 400 if email is missing', (done) => {
+  it('POST /users/ should return 400 if email is missing', (done) => {
     const noEmailUser = { ...user };
     delete noEmailUser.email;
     request(app)
@@ -78,7 +78,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('GET / should return only the created user', (done) => {
+  it('GET /users/ should return only the created user', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
@@ -102,7 +102,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('GET /:id should return a user', (done) => {
+  it('GET /users/:id should return a user', (done) => {
     request(app)
       .get(`/users/${userId}`)
       .expect(200)
@@ -123,7 +123,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('GET /:id that does not exist should return 404', (done) => {
+  it('GET /users/:id that does not exist should return 404', (done) => {
     request(app)
       .get('/users/999997')
       .expect(404)
@@ -133,7 +133,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('PUT /:id should update a user', (done) => {
+  it('PUT /users/:id should update a user', (done) => {
     const updatedUser = {
       email: 'test1@test.test',
       password: user.password,
@@ -161,7 +161,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('PATCH /:id should update a user with a new email', (done) => {
+  it('PATCH /users/:id should update a user with a new email', (done) => {
     const updatedUser = {
       email: 'test2@test.test',
     };
@@ -186,7 +186,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('PATCH /:id that does not exist should return 404', (done) => {
+  it('PATCH /users/:id that does not exist should return 404', (done) => {
     const updatedUser = {
       email: 'test123@test.test',
     };
@@ -200,7 +200,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('DELETE /:id should delete a user', (done) => {
+  it('DELETE /users/:id should delete a user', (done) => {
     request(app)
       .delete(`/users/${userId}`)
       .expect(204)
@@ -210,7 +210,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('DELETE /:id that does not exist should return 404', (done) => {
+  it('DELETE /users/:id that does not exist should return 404', (done) => {
     request(app)
       .delete('/users/999995')
       .expect(404)
@@ -220,7 +220,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('GET / should return 0 users', (done) => {
+  it('GET /users/ should return 0 users', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
@@ -232,7 +232,7 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
-  it('GET /:id should return 404', (done) => {
+  it('GET /users/:id should return 404', (done) => {
     request(app)
       .get(`/users/${userId}`)
       .expect(404)
