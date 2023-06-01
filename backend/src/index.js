@@ -3,8 +3,10 @@ import errorHandler from './errorHandler.js';
 import GenericRouter from './routes/genericCRUD.js';
 import GenericController from './controllers/genericCRUD.js';
 import userService from './services/user.js';
+import cardService from './services/card.js';
 
 import userRouter from './routes/user.js';
+import cardRouter from './routes/card.js';
 import securityRouter from './routes/security.js';
 
 import { connection } from './db/index.js';
@@ -16,8 +18,10 @@ app.use(express.json());
 app.use(populateUser);
 
 app.use(securityRouter(userService));
+app.use(securityRouter(cardService));
 app.use('/users', userRouter);
 
+app.use('/cards', cardRouter);
 app.use('/users2', new GenericRouter(new GenericController(userService)));
 
 app.get('/health', async (req, res) => {
