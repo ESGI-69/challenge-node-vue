@@ -3,7 +3,15 @@ import request from 'supertest';
 import { app } from '../../index.js';
 import jwt from 'jsonwebtoken';
 
-describe('Security endpoints', () => {
+/**
+ * A user object with valid credentials previously seeded in the database
+ */
+const user = {
+  email: 'johndoe@example.com',
+  password: '123456',
+};
+
+describe('Login userflow', () => {
   it('POST /login should return 401 if user does not exist', (done) => {
     request(app)
       .post('/login')
@@ -11,28 +19,6 @@ describe('Security endpoints', () => {
       .expect(401)
       .then((res) => {
         expect(res.body).toEqual({});
-        done();
-      })
-      .catch(done);
-  });
-
-  // TODO: remove this test when we have seeders
-  const user = {
-    firstname: 'Gatien',
-    lastname: 'Leboss',
-    email: 'gatienekeleboss@mail.com',
-    password: 'Testtest1234!',
-  };
-
-  // TODO: remove this test when we have seeders
-  it('POST /users create a new user for test purpose', (done) => {
-    request(app)
-      .post('/users')
-      .send(user)
-      .expect(201)
-      .then((res) => {
-        expect(res.body.id).toBeDefined();
-        user.id = res.body.id;
         done();
       })
       .catch(done);
@@ -61,16 +47,29 @@ describe('Security endpoints', () => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         delete decoded.iat;
         delete decoded.exp;
-        expect(decoded.id).toEqual(user.id);
+        user.id = decoded.id;
         expect(Object.keys(decoded)).toEqual(['id']);
         done();
       })
       .catch(done);
   });
 
-  // TODO: remove this test when we have seeders
-  it('DELETE /users/:id should return 204', () => request(app)
-    .delete(`/users/${user.id}`)
-    .expect(204)
-  );
+  it('GET /users/:id should return the correct info about the user', (done) => {
+    request(app)
+      .get(`/users/${user.id}`)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.id).toBe(user.id);
+        expect(res.body.email).toBe(user.email);
+        expect(res.body.firstname).toBe('John');
+        expect(res.body.lastname).toBe('Doe');
+        expect(res.body.updatedAt).toBeDefined();
+        expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBeDefined();
+        expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+        // TODO: Check if password absent from the response
+        done();
+      })
+      .catch(done);
+  });
 });
