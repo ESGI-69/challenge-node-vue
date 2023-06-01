@@ -50,7 +50,7 @@ describe('Security endpoints', () => {
       .catch(done);
   });
 
-  it('POST /login should return 200 and a token if credentials are valid', (done) => {
+  it('POST /login should return 200 and a token with the user ID if credentials are valid', (done) => {
     request(app)
       .post('/login')
       .send({ email: user.email, password: user.password })
