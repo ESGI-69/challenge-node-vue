@@ -1,4 +1,5 @@
 import express from 'express';
+import errorHandler from './errorHandler.js';
 import GenericRouter from './routes/genericCRUD.js';
 import GenericController from './controllers/genericCRUD.js';
 import userService from './services/user.js';
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use(securityRouter(userService));
 app.use('/users', userRouter);
+
 app.use('/users2', new GenericRouter(new GenericController(userService)));
 
 app.get('/health', async (req, res) => {
@@ -24,6 +26,8 @@ app.get('/health', async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+app.use(errorHandler);
 
 app.listen(3000, () => console.log('Server started on port 3000'));
 

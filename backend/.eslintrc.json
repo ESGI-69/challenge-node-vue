@@ -32,6 +32,12 @@
             "always"
         ],
         "require-await": "error",
-        "no-return-await": "error"
+        "no-return-await": "error",
+        "no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ]
     }
 }
