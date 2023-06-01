@@ -17,7 +17,7 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 
     The container will wait for the backend to be ready (based on the backend container healthcheck) before launching the application.
 
-- Backend unit tests, running in github action with the node.js test suite `node:test` (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
+- Backend unit tests, running in github action with `jest` test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
 
   You can find the backend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/backend-test.yml).
 
@@ -62,6 +62,9 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   ```bash
   npm run migrate
   ```
+
+  You can also use the `npm run migrate:
+
 - Launch the backend
   ```bash
   npm run dev
@@ -80,6 +83,8 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 ## Launch the tests
 
 Theses tests are launched in the CI/CD pipeline, but you can launch them locally for ensuring that your code is clean.
+
+Before launching the tests, you need to install the dependencies of the project (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details). You also need to launch the docker containers (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details) and have an empty migrated database.
 
 - You can launch the tests with
   ```bash
@@ -120,3 +125,6 @@ Environment variables are used to configure the application. You can find the li
 | `POSTGRES_PASSWORD` | The password of the postgres database | `password` |
 | `POSTGRES_DB` | The name of the postgres database | `app` |
 | `JWT_SECRET` | The secret use for the JWT generation (please genereate a random >32 letter string) | |
+| `VITE_API` | The url that match the proxy in the frontend. For avoiding CORS issues | `/api` |
+| `VITE_API_TIMEOUT` | The timeout of the api calls, in milliseconds | `30000` |
+| `VITE_COOKIE_TOKEN_NAME` | The name of the cookie that contains the JWT token | `challenge-token` |
