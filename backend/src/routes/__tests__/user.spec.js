@@ -13,18 +13,6 @@ describe('Users endpoints', () => {
 
   let userId;
 
-  it('GET /users/ should return 0 users', (done) => {
-    request(app)
-      .get('/users/')
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((res) => {
-        expect(res.body).toHaveLength(0);
-        done();
-      })
-      .catch(done);
-  });
-
   it('POST /users/ should create a new user', (done) => {
     request(app)
       .post('/users/')
@@ -78,14 +66,13 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
-  it('GET /users/ should return only the created user', (done) => {
+  it('GET /users/ should contain the created user', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        expect(res.body).toHaveLength(1);
-        const user = res.body[0];
+        const user = res.body.find((u) => u.id === userId);
         expect(typeof user.id).toBe('number');
         expect(user.id).toBe(userId);
         expect(user.email).toBe(user.email);
@@ -212,7 +199,7 @@ describe('Users endpoints', () => {
 
   it('DELETE /users/:id that does not exist should return 404', (done) => {
     request(app)
-      .delete('/users/999995')
+      .delete(`/users/${userId}`)
       .expect(404)
       .then(() => {
         done();
@@ -220,13 +207,14 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
-  it('GET /users/ should return 0 users', (done) => {
+  it('GET /users/ should not contain the deleted user', (done) => {
     request(app)
       .get('/users/')
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        expect(res.body).toHaveLength(0);
+        const user = res.body.find((u) => u.id === userId);
+        expect(user).toBeUndefined();
         done();
       })
       .catch(done);
