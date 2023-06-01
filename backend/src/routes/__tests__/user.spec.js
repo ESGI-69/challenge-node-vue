@@ -3,7 +3,7 @@ import request from 'supertest';
 import { app } from '../../index.js';
 
 
-describe('endpoint /users', () => {
+describe('Users endpoints', () => {
   const user = {
     email: 'test@test.test',
     password: 'Testtest1234!',
