@@ -38,6 +38,14 @@ export default (err, req, res, _next) => {
     }
   }
 
+  if (err.name === 'JsonWebTokenError') {
+    response.invalidToken = true;
+  }
+  
+  if (err.name === 'Error') {
+    response.reason = err.message;
+  }
+
   if (Object.keys(response).length > 0) {
     return res.status(400).json(response);
   }

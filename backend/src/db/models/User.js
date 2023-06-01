@@ -23,6 +23,14 @@ export default (connection) => {
     generateToken() {
       return jwt.sign({ id: this.id }, 'JWT_SECRET', { expiresIn: '1y' });
     }
+
+    /**
+     * Check if the user is an admin
+     * @returns {boolean}
+     */
+    isAdmin() {
+      return this.role === 'ADMIN';
+    } 
   }
 
   User.init(
@@ -49,6 +57,11 @@ export default (connection) => {
           min: 8,
           is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
         },
+      },
+      role: {
+        type: DataTypes.ENUM('ADMIN', 'PLAYER'),
+        allowNull: false,
+        defaultValue: 'PLAYER',
       },
     },
     {

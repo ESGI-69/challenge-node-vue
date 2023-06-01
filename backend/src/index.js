@@ -8,10 +8,12 @@ import userRouter from './routes/user.js';
 import securityRouter from './routes/security.js';
 
 import { connection } from './db/index.js';
+import { populateUser } from './middleware.js';
 
 const app = express();
 
 app.use(express.json());
+app.use(populateUser);
 
 app.use(securityRouter(userService));
 app.use('/users', userRouter);
