@@ -1,6 +1,7 @@
 import { describe, it, expect } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
+import jwt from 'jsonwebtoken';
 
 describe('Security endpoints', () => {
   it('POST /login should return 401 if user does not exist', (done) => {
@@ -56,6 +57,12 @@ describe('Security endpoints', () => {
       .expect(200)
       .then((res) => {
         expect(res.body.token).toBeDefined();
+        const token = res.body.token;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        delete decoded.iat;
+        delete decoded.exp;
+        expect(decoded.id).toEqual(user.id);
+        expect(Object.keys(decoded)).toEqual(['id']);
         done();
       })
       .catch(done);
