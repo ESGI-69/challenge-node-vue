@@ -58,12 +58,21 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   cd backend
   npm install
   ```
-- Migration the database
+- Migrate the database
   ```bash
   npm run migrate
   ```
 
-  You can also use the `npm run migrate:
+  You can also use the `npm run migrate:force` to force the migration. This command is useful if you want to reset the database. **⚠️ Be careful, this command will drop all the tables of the database. ⚠️**
+
+- Seed the database
+  ```bash
+  npm run seed
+  ```
+
+  This command will create a 2 users with the following credentials:
+  - email: `johndoe@example.com`, password: `123456`
+  - email: `janedoe@example.com`, password: `123456`
 
 - Launch the backend
   ```bash
