@@ -15,12 +15,11 @@ export default {
     return User.create(data);
   },
   update: async function (criteria, data) {
-    const [nb, users = []] = await User.update(data, {
+    const [, users = []] = await User.update(data, {
       where: criteria,
       returning: true,
       individualHooks: true, // to trigger the encryption hook on update (see user model)
     });
-    console.log(nb, users);
     return users;
   },
   remove: function (criteria) {
