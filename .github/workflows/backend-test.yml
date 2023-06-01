@@ -15,7 +15,7 @@ env:
   POSTGRES_DB: app
   NODE_ENV: test
   # TODO: use github secrets
-  SECRET_KEY: QHUP0R3vieku9oG0zvpJ96WCCv2RI1g0B1S4e9i1tIxZGfLfrOIiWdGf5vyA98aw
+  JWT_SECRET: QHUP0R3vieku9oG0zvpJ96WCCv2RI1g0B1S4e9i1tIxZGfLfrOIiWdGf5vyA98aw
 
 jobs:
   unit-tests:
