@@ -2,16 +2,16 @@ import { describe, it, expect } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 
+const user = {
+  email: 'test@test.test',
+  password: 'Testtest1234!',
+  firstname: 'Firstname',
+  lastname: 'Lastname',
+};
 
-describe('Users endpoints', () => {
-  const user = {
-    email: 'test@test.test',
-    password: 'Testtest1234!',
-    firstname: 'Firstname',
-    lastname: 'Lastname',
-  };
+let userId;
 
-  let userId;
+describe('Register flow', () => {
 
   it('POST /users/ should create a new user', (done) => {
     request(app)
@@ -119,7 +119,9 @@ describe('Users endpoints', () => {
       })
       .catch(done);
   });
+});
 
+describe('User Update flow', () => {
   it('PUT /users/:id should update a user', (done) => {
     const updatedUser = {
       email: 'test1@test.test',
@@ -148,10 +150,11 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
+  const updatedUser = {
+    email: 'test2@test.test',
+  };
+
   it('PATCH /users/:id should update a user with a new email', (done) => {
-    const updatedUser = {
-      email: 'test2@test.test',
-    };
     request(app)
       .patch(`/users/${userId}`)
       .send(updatedUser)
@@ -174,12 +177,12 @@ describe('Users endpoints', () => {
   });
 
   it('PATCH /users/:id that does not exist should return 404', (done) => {
-    const updatedUser = {
+    const failUpdatedUser = {
       email: 'test123@test.test',
     };
     request(app)
       .patch('/users/999998')
-      .send(updatedUser)
+      .send(failUpdatedUser)
       .expect(404)
       .then(() => {
         done();
@@ -187,6 +190,9 @@ describe('Users endpoints', () => {
       .catch(done);
   });
 
+});
+
+describe('User Delete flow', () => {
   it('DELETE /users/:id should delete a user', (done) => {
     request(app)
       .delete(`/users/${userId}`)
