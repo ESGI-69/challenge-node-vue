@@ -48,6 +48,36 @@ describe('endpoint /users', () => {
       .catch(done);
   });
 
+  it('POST / should return 400 if email is invalid', (done) => {
+    request(app)
+      .post('/users/')
+      .send({ ...user, email: 'invalid' })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.invalidFields).toContain('email');
+        expect(res.body.missingFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('POST / should return 400 if email is missing', (done) => {
+    const noEmailUser = { ...user };
+    delete noEmailUser.email;
+    request(app)
+      .post('/users/')
+      .send(noEmailUser)
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.missingFields).toContain('email');
+        expect(res.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
+
   it('GET / should return only the created user', (done) => {
     request(app)
       .get('/users/')
