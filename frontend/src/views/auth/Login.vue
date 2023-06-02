@@ -3,11 +3,12 @@
     class="login"
     @submit.prevent="login"
   >
-    <div class="login__input">
+    <div class="login__input nes-field">
       <label for="email">Email</label>
       <input
         id="email"
         v-model="email"
+        class="nes-input"
         type="email"
         placeholder="Email"
         required
@@ -18,6 +19,7 @@
       <input
         id="password"
         v-model="password"
+        class="nes-input"
         type="password"
         placeholder="Password"
         required
@@ -26,18 +28,17 @@
     <div class="login__input">
       <button
         type="submit"
-        class="btn btn--primary"
+        class="nes-btn is-primary"
       >
         Login
       </button>
-
-      <div
-        v-if="error"
-        class="login__error"
-      >
-        Invalid credentials
-      </div>
     </div>
+    <span
+      v-if="error"
+      class="nes-text is-error"
+    >
+      Invalid credentials
+    </span>
   </form>
 </template>
 
@@ -82,25 +83,13 @@ export default {
 
 <style lang="scss" scoped>
 .login {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
   &__input {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
-
-    label {
-      margin-bottom: 5px;
-    }
-
-    input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-  }
-
-  &__error {
-    color: red;
-    margin-top: 10px;
   }
 }
 </style>
