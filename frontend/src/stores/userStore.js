@@ -4,6 +4,7 @@ import $API from '@/plugins/axios';
 
 export const useUserStore = defineStore('userStore', {
   state: () => ({
+    isRegisterLoading: false,
   }),
 
   actions: {
@@ -16,7 +17,7 @@ export const useUserStore = defineStore('userStore', {
       try {
         await $API.post('/users/', payload);
       } catch (err) {
-        console.error(err);
+        throw err.response.data;
       } finally {
         this.isRegisterLoading = false;
       }

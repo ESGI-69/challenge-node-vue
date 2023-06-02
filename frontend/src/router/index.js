@@ -9,6 +9,7 @@ const router = createRouter({
       name: 'home',
       component: () => import('@/views/HomeView.vue'),
       meta: {
+        displayName: 'Home',
         authRequired: true,
       },
     },
@@ -20,6 +21,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/AboutView.vue'),
       meta: {
+        displayName: 'About',
         authRequired: true,
       },
     },
@@ -33,11 +35,17 @@ const router = createRouter({
           path: 'login',
           name: 'login',
           component: () => import('@/views/auth/Login.vue'),
+          meta: {
+            displayName: 'Login',
+          },
         },
         {
           path: 'register',
           name: 'register',
           component: () => import('@/views/auth/Register.vue'),
+          meta: {
+            displayName: 'Register',
+          },
         },
       ],
     },

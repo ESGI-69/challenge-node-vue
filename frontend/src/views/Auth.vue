@@ -1,28 +1,40 @@
 <template>
   <div class="auth">
-    <div class="auth__card">
-      <div class="auth__card__header">
-        <router-link
-          :to="{ name: 'register' }"
-        >
-          <span>Register</span>
-        </router-link>
-        <router-link
-          :to="{ name: 'login' }"
-        >
-          <span>Login</span>
-        </router-link>
-      </div>
+    <div class="auth__card nes-container with-title">
+      <h1 class="title">
+        {{ routeName }}
+      </h1>
       <div class="auth__card__body">
         <router-view />
+        <router-link
+          :to="{ name: currentRoute === 'register' ? 'login' : 'register' }"
+          class="auth__card__body__link"
+        >
+          <span v-if="currentRoute === 'register'">You already have an account? Login</span>
+          <span v-else>You don't have an account? Register</span>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
 export default {
   name: 'Auth',
+  setup() {
+    const route = useRoute();
+
+    const routeName = computed(() => route.meta.displayName);
+    const currentRoute = computed(() => route.name);
+
+    return {
+      routeName,
+      currentRoute,
+    };
+  },
 };
 </script>
 
@@ -31,34 +43,22 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
   height: 100%;
 
   .auth__card {
-    width: 300px;
-    background-color: #2f003f;
-    border-radius: 2rem;
+    background-color: #fff;
+    width: 500px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-    .auth__card__header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      border-bottom: 1px solid #eee;
-      a {
-        text-decoration: none;
-        font-weight: bold;
-        color: #eee;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-    .auth__card__body {
-      padding: 20px;
+    &__body__link {
+      margin-top: 1rem;
+      display: block;
+      text-align: center;
     }
   }
+}
+
+.title {
+  font-weight: normal;
 }
 </style>

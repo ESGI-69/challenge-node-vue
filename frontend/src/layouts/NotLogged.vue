@@ -1,5 +1,8 @@
 <template>
-  <div class="not-logged">
+  <div
+    class="not-logged"
+    :style="{ backgroundImage: `url(${notLoggedBackground})` }"
+  >
     <!-- <div
       class="not-logged__logo"
       :class="{ 'not-logged__logo--login': $route.name === 'login' }"
@@ -21,9 +24,14 @@
 </template>
 
 <script>
+import notLoggedBackground from '@/assets/notLoggedBackground.webp';
+
 export default {
   name: 'LoggedLayout',
-  components: {
+  setup() {
+    return {
+      notLoggedBackground,
+    };
   },
 };
 </script>
