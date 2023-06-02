@@ -1,4 +1,4 @@
-import 'nes.css/scss/nes.scss';
+import 'nes.css/css/nes.min.css';
 import './assets/main.scss';
 
 import { createApp } from 'vue';
