@@ -9,9 +9,10 @@
         id="email"
         v-model="email"
         class="nes-input"
-        type="email"
+        :class="{ 'is-error': !isEmail || (email === '' && error) }"
+        type="text"
         placeholder="Email"
-        required
+        @keypress="error = false"
       >
     </div>
     <div class="login__input">
@@ -20,9 +21,10 @@
         id="password"
         v-model="password"
         class="nes-input"
+        :class="{ 'is-error': password === '' && error }"
         type="password"
         placeholder="Password"
-        required
+        @keypress="error = false"
       >
     </div>
     <div class="login__input">
@@ -34,16 +36,34 @@
       </button>
     </div>
     <span
-      v-if="error"
+      v-if="error && email !== '' && password !== '' && isEmail"
       class="nes-text is-error"
     >
       Invalid credentials
+    </span>
+    <span
+      v-if="!isEmail"
+      class="nes-text is-error"
+    >
+      Invalid email
+    </span>
+    <span
+      v-if="email === '' && error"
+      class="nes-text is-error"
+    >
+      Email required
+    </span>
+    <span
+      v-if="password === '' && error"
+      class="nes-text is-error"
+    >
+      Password required
     </span>
   </form>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAuthStore } from '@/stores/authStore';
@@ -57,10 +77,16 @@ export default {
     const authStore = useAuthStore();
     const router = useRouter();
 
+    const isEmail = computed(() => {
+      if (!email.value || email.value === '') return true;
+      const re = /\S+@\S+\.\S+/;
+      return re.test(email.value);
+    });
+
     const login = async () => {
       try {
-        error.value = false;
         await authStore.login(email.value, password.value);
+        error.value = false;
       } catch {
         console.log('error');
         error.value = true;
@@ -76,6 +102,7 @@ export default {
       password,
       login,
       error,
+      isEmail,
     };
   },
 };

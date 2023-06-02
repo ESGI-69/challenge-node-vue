@@ -72,8 +72,6 @@ import { ref, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import router from '@/router';
 
-import { isMatch } from 'lodash';
-
 export default {
   name: 'Register',
   setup() {
@@ -147,10 +145,7 @@ export default {
 
     const register = async () => {
       try {
-        if (!isPasswordMatch.value) {
-          console.log('passwords do not match');
-          return;
-        }
+        if (!isPasswordMatch.value) return;
         removeFieldsInError();
         await userStore.register({
           firstname: firstname.value,
