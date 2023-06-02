@@ -88,7 +88,6 @@ export default {
         await authStore.login(email.value, password.value);
         error.value = false;
       } catch {
-        console.log('error');
         error.value = true;
       }
     };

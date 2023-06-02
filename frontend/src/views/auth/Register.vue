@@ -153,7 +153,6 @@ export default {
           email: email.value,
           password: password.value,
         });
-        console.log('registered');
         router.push({ name: 'login' });
       } catch (err) {
         const fieldsInError = Object.keys(err).map(type => err[type]).flat();
