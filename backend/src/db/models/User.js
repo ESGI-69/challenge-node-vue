@@ -35,8 +35,20 @@ export default (connection) => {
 
   User.init(
     {
-      lastname: DataTypes.STRING,
-      firstname: DataTypes.STRING,
+      lastname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      firstname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
       email: {
         type: DataTypes.STRING,
         unique: true,
@@ -48,6 +60,7 @@ export default (connection) => {
               throw new Error('Email cannot be null');
             }
           },
+          notEmpty: true,
         },
       },
       password: {

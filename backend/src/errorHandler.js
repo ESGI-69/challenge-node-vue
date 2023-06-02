@@ -5,7 +5,7 @@
 export default (err, req, res, _next) => {
   /**
    * The response payload. It will be populated with the errors
-   * @type {{ missingFields?: string[], invalidFields?: string[] }}
+   * @type {import('./errorMessage').ErrorMessage}
    */
   const response = {};
 
@@ -36,6 +36,10 @@ export default (err, req, res, _next) => {
     if (invalidFields.length > 0) {
       response.invalidFields = invalidFields.map((e) => e.path);
     }
+  }
+
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    response.nonUniqueFields = err.errors.map((e) => e.path);
   }
 
   if (err.name === 'JsonWebTokenError') {
