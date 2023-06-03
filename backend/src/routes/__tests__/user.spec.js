@@ -100,17 +100,17 @@ describe('User info access (Admin)', () => {
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        const user = res.body.find((u) => u.id === userId);
-        expect(typeof user.id).toBe('number');
-        expect(user.id).toBe(userId);
-        expect(user.email).toBe(user.email);
-        expect(user.firstname).toBe(user.firstname);
-        expect(user.lastname).toBe(user.lastname);
-        expect(user.updatedAt).toBeDefined();
-        expect(typeof new Date(user.updatedAt).toISOString()).toBe('string');
-        expect(user.createdAt).toBeDefined();
-        expect(typeof new Date(user.createdAt).toISOString()).toBe('string');
-        expect(user.createdAt).toBe(user.createdAt);
+        const responseUser = res.body.find((u) => u.id === userId);
+        expect(typeof responseUser.id).toBe('number');
+        expect(responseUser.id).toBe(userId);
+        expect(responseUser.email).toBe(user.email);
+        expect(responseUser.firstname).toBe(user.firstname);
+        expect(responseUser.lastname).toBe(user.lastname);
+        expect(responseUser.updatedAt).toBeDefined();
+        expect(typeof new Date(responseUser.updatedAt).toISOString()).toBe('string');
+        expect(responseUser.createdAt).toBeDefined();
+        expect(typeof new Date(responseUser.createdAt).toISOString()).toBe('string');
+        expect(responseUser.createdAt).toBe(user.createdAt);
         // TODO: Check if password absent from the response
         done();
       })
@@ -285,16 +285,16 @@ describe('User Update flow (Admin)', () => {
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        const user = res.body.find((u) => u.id === userId);
-        expect(typeof user.id).toBe('number');
-        expect(user.email).toBe(updatedUser.email);
-        expect(user.firstname).toBe(user.firstname);
-        expect(user.lastname).toBe(user.lastname);
-        expect(user.updatedAt).toBeDefined();
-        expect(typeof new Date(user.updatedAt).toISOString()).toBe('string');
-        expect(user.createdAt).toBeDefined();
-        expect(typeof new Date(user.createdAt).toISOString()).toBe('string');
-        expect(user.createdAt).toBe(user.createdAt);
+        const responseUser = res.body.find((u) => u.id === userId);
+        expect(typeof responseUser.id).toBe('number');
+        expect(responseUser.email).toBe(updatedUser.email);
+        expect(user.firstname).toBe(responseUser.firstname);
+        expect(user.lastname).toBe(responseUser.lastname);
+        expect(responseUser.updatedAt).toBeDefined();
+        expect(typeof new Date(responseUser.updatedAt).toISOString()).toBe('string');
+        expect(responseUser.createdAt).toBeDefined();
+        expect(typeof new Date(responseUser.createdAt).toISOString()).toBe('string');
+        expect(user.createdAt).toBe(responseUser.createdAt);
         // TODO: Check if password absent from the response
         done();
       })
