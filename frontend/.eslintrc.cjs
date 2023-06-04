@@ -96,6 +96,7 @@ module.exports = {
       { SwitchCase: 1 },
     ],
     'object-curly-spacing': [ 'error', 'always' ],
+    'object-shorthand': [ 'error', 'always' ],
     'array-bracket-newline': [
       'error',
       {

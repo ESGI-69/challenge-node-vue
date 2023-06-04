@@ -1,6 +1,6 @@
 <template>
   <div class="logged">
-    <nav>
+    <nav class="logged__topbar">
       <router-link to="/">
         Home
       </router-link>
@@ -19,9 +19,28 @@
 </template>
 
 <script>
+import { computed, onErrorCaptured } from 'vue';
+
+import { useCardStore } from '@/stores/cardStore';
+import { useAppStore } from '@/stores/appStore';
 export default {
   name: 'LoggedLayout',
-  components: {
+  async setup() {
+    onErrorCaptured((error) => {
+      console.error('Error captured in LoggedLayout');
+      console.error(error);
+    });
+
+    const cardStore = useCardStore();
+    const appStore = useAppStore();
+    const cards = computed(() => cardStore.cards);
+
+    await cardStore.getCards();
+
+    const cardImages = cards.value.map((card) => card.image);
+    await appStore.preloadCardImages(cardImages);
+
+    return {};
   },
 };
 </script>
@@ -29,24 +48,13 @@ export default {
 <style lang="scss" scoped>
 .logged {
   display: grid;
-  grid-template-areas: "topbar topbar" "sidebar main";
+  grid-template-areas: "topbar" "main";
   grid-template-rows: auto 1fr;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 1fr;
   min-height: 100%;
-
-  @media (max-width: 768px) {
-    grid-template-areas: "topbar" "main";
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr;
-    padding-bottom: 4rem;
-  }
 
   &__topbar {
     grid-area: topbar;
-  }
-
-  &__sidebar {
-    grid-area: sidebar;
   }
 
   &__main {

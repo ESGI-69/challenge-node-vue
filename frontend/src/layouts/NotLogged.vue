@@ -3,23 +3,7 @@
     class="not-logged"
     :style="{ backgroundImage: `url(${notLoggedBackground})` }"
   >
-    <!-- <div
-      class="not-logged__logo"
-      :class="{ 'not-logged__logo--login': $route.name === 'login' }"
-    >
-      <img
-        :src="logo"
-        alt="jaji logo"
-        class="not-logged__logo__image"
-      >
-    </div> -->
-    <transition-group
-      name="fade"
-      tag="main"
-      class="not-logged__main"
-    >
-      <slot />
-    </transition-group>
+    <slot />
   </div>
 </template>
 
@@ -44,19 +28,5 @@ export default {
     padding: 24px;
     overflow-y: auto;
   }
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave {
-  opacity: 1;
 }
 </style>

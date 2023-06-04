@@ -87,14 +87,12 @@ export default {
       try {
         await authStore.login(email.value, password.value);
         error.value = false;
+        // force reload
+        router.go();
       } catch {
         error.value = true;
       }
     };
-
-    if (authStore.token) {
-      router.push({ name: 'home' });
-    }
 
     return {
       email,
