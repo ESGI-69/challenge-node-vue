@@ -8,20 +8,42 @@
     </h1>
     <progress
       class="nes-progress is-dark is-primary"
-      value="80"
-      max="100"
+      :value="progress"
+      :max="cardCount"
     />
+    <span>
+      {{ status }}
+    </span>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+
+import { useCardStore } from '@/stores/cardStore';
+import { useAppStore } from '@/stores/appStore';
+
 import wall from '@/assets/tiling_wall.png';
 
 export default {
   name: 'Loading',
   setup() {
+    const cardStore = useCardStore();
+    const appStore = useAppStore();
+    const cardCount = computed(() => cardStore.cards.length);
+    const progress = computed(() => appStore.preloadedCardImages);
+    const status = computed(() => {
+      if (cardCount.value === 0) return 'Retrieving cards...';
+      if (progress.value !== cardCount.value) return `Loading card images ${progress.value}/${cardCount.value} ...`;
+      if (progress.value === cardCount.value) return 'Done!';
+      return 'Downloading more ram...';
+    });
+
     return {
       wall,
+      cardCount,
+      progress,
+      status,
     };
   },
 };

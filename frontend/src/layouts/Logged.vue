@@ -19,18 +19,27 @@
 </template>
 
 <script>
-const asyncLoading = async () => {
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 1000);
-  });
-};
+import { computed, onErrorCaptured } from 'vue';
 
+import { useCardStore } from '@/stores/cardStore';
+import { useAppStore } from '@/stores/appStore';
 export default {
   name: 'LoggedLayout',
   async setup() {
-    await asyncLoading();
+    onErrorCaptured((error) => {
+      console.error('Error captured in LoggedLayout');
+      console.error(error);
+    });
+
+    const cardStore = useCardStore();
+    const appStore = useAppStore();
+    const cards = computed(() => cardStore.cards);
+
+    await cardStore.getCards();
+
+    const cardImages = cards.value.map((card) => card.image);
+    await appStore.preloadCardImages(cardImages);
+
     return {};
   },
 };
