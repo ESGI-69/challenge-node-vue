@@ -51,7 +51,11 @@
     <div class="register__input">
       <button
         type="submit"
-        class="nes-btn is-primary"
+        class="nes-btn"
+        :class="{
+          'is-disabled': !isPasswordMatch,
+          'is-primary': isPasswordMatch,
+        }"
         :disabled="!isPasswordMatch"
       >
         Register
