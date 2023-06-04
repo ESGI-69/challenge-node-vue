@@ -11,7 +11,7 @@ export default {
   cget: async (req, res, next) => {
     const {
       _page = 1,
-      _itemsPerPage = 10,
+      _itemsPerPage = 40,
       _sort = {},
       ...criteria
     } = req.query;

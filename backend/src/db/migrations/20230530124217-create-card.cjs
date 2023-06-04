@@ -15,7 +15,25 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      title: {
+      cost: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      rarity: {
+        type: Sequelize.ENUM('common', 'rare', 'epic', 'legendary'),
+        allowNull: false,
+        defaultValue: 'common',
+      },
+      type: Sequelize.STRING,
+      attack: {
+        type: Sequelize.INTEGER,
+        defaultValue: null,
+      },
+      health: {
+        type: Sequelize.INTEGER,
+        defaultValue: null,
+      },
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
