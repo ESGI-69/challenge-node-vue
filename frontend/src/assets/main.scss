@@ -10,3 +10,8 @@ html, body, #app {
   margin: 0;
   height: 100%;
 }
+
+/* Fix for border that should not show as a line */
+.nes-progress {
+  border-image-repeat: unset;
+}
