@@ -1,5 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Cookies from 'js-cookie';
+import { useAuthStore } from '@/stores/authStore';
+
+const isNotLogged = (to, from, next) => {
+  const authStore = useAuthStore();
+
+  if (!authStore.token) {
+    return next();
+  }
+  if (to.query.next) {
+    return next(decodeURIComponent(to.query.next));
+  }
+  return next({ name: 'home' });
+};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +43,7 @@ const router = createRouter({
       name: 'auth',
       component: () => import('@/views/Auth.vue'),
       redirect: { name: 'login' },
+      beforeEnter: isNotLogged,
       children: [
         {
           path: 'login',

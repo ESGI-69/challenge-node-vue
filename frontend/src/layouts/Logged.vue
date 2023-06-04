@@ -1,6 +1,6 @@
 <template>
   <div class="logged">
-    <nav>
+    <nav class="logged__topbar">
       <router-link to="/">
         Home
       </router-link>
@@ -19,9 +19,19 @@
 </template>
 
 <script>
+const asyncLoading = async () => {
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+};
+
 export default {
   name: 'LoggedLayout',
-  components: {
+  async setup() {
+    await asyncLoading();
+    return {};
   },
 };
 </script>
@@ -29,24 +39,13 @@ export default {
 <style lang="scss" scoped>
 .logged {
   display: grid;
-  grid-template-areas: "topbar topbar" "sidebar main";
+  grid-template-areas: "topbar" "main";
   grid-template-rows: auto 1fr;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 1fr;
   min-height: 100%;
-
-  @media (max-width: 768px) {
-    grid-template-areas: "topbar" "main";
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr;
-    padding-bottom: 4rem;
-  }
 
   &__topbar {
     grid-area: topbar;
-  }
-
-  &__sidebar {
-    grid-area: sidebar;
   }
 
   &__main {

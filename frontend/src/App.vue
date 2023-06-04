@@ -1,34 +1,33 @@
 <template>
-  <router-view
-    v-slot="{ Component }"
-  >
-    <transition-group
-      name="fade"
-      tag="div"
-      class="app"
+  <div class="app">
+    <router-view
+      v-slot="{ Component }"
     >
-      <component
-        :is="LayoutComponent"
-        v-if="!isAppLoading"
+      <transition
+        name="layout"
+        mode="out-in"
       >
-        <component :is="Component" />
-      </component>
-      <!-- <loading-screen v-else /> -->
-      <div
-        v-else
-        class="loading-screen"
-      >
-        <h1>LOADING</h1>
-      </div>
-    </transition-group>
-  </router-view>
+        <suspense>
+          <template #fallback>
+            <loading />
+          </template>
+          <component
+            :is="LayoutComponent"
+          >
+            <component :is="Component" />
+          </component>
+        </suspense>
+      </transition>
+    </router-view>
+  </div>
 </template>
 
 <script>
-import Cookies from 'js-cookie';
 import { computed } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from './stores/authStore';
+
+import Loading from './views/Loading.vue';
 import LoggedLayout from '@/layouts/Logged.vue';
 import NotLoggedLayout from '@/layouts/NotLogged.vue';
 
@@ -37,17 +36,10 @@ export default {
   components: {
     RouterLink,
     RouterView,
+    Loading,
   },
   setup() {
     const authStore = useAuthStore();
-    const isAppLoading = computed(() => {
-      if (!Cookies.get(import.meta.env.VITE_COOKIE_TOKEN_NAME)) {
-        return false;
-      } else if (authStore.isLoginLoading) {
-        return true;
-      }
-      return false;
-    });
 
     const LayoutComponent = computed(() => {
       if (authStore.token) {
@@ -58,30 +50,38 @@ export default {
 
     return {
       LayoutComponent,
-      isAppLoading,
     };
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .app {
   display: grid;
   height: 100%;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
+/* Layout transition */
+.layout-enter-from {
   opacity: 0;
+  transform: scale(0.9);
 }
 
-.fade-enter-to,
-.fade-leave {
+.layout-enter-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.layout-enter-to {
   opacity: 1;
+  transform: scale(1);
+}
+
+.layout-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.layout-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
 }
 </style>
