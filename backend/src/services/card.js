@@ -21,6 +21,9 @@ export default {
     });
     return cards;
   },
+  validate: function (data) {
+    return Card.build(data).validate();
+  },
   remove: function (criteria) {
     return Card.destroy({
       where: criteria,

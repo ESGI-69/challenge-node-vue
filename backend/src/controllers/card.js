@@ -66,6 +66,8 @@ export default {
    */
   put: async (req, res, next) => {
     try {
+      await cardService.validate(req.body);
+      
       const nbRemoved = await cardService.remove({
         id: parseInt(req.params.id),
       });

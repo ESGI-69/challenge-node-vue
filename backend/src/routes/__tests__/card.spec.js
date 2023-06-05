@@ -410,84 +410,84 @@ describe('Updating a Card PUT', () => {
       .catch(done);
   });
 
-  // it('PUT /cards/:id should return 400 if name is not provided', (done) => {
-  //   const noTitleCard = {...card};
-  //   delete noTitleCard.name;
-  //   request(app)
-  //     .put(`/cards/${cardId}`)
-  //     .set('Authorization', `Bearer ${adminToken}`)
-  //     .send(noTitleCard)
-  //     .expect(400)
-  //     .expect('Content-Type', /json/)
-  //     .then((response) => {
-  //       expect(response.body.missingFields).toContain('name');
-  //       expect(response.body.invalidFields).not.toBeDefined();
-  //       done();
-  //     })
-  //     .catch(done);
-  // });
+  it('PUT /cards/:id should return 400 if name is not provided', (done) => {
+    const noTitleCard = {...card};
+    delete noTitleCard.name;
+    request(app)
+      .put(`/cards/${cardId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send(noTitleCard)
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((response) => {
+        expect(response.body.missingFields).toContain('name');
+        expect(response.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
 
-  // it('PUT /cards/:id should return 400 if description is empty', (done) => {
-  //   request(app)
-  //     .put(`/cards/${cardId}`)
-  //     .set('Authorization', `Bearer ${adminToken}`)
-  //     .send({ ...card, description: '' })
-  //     .expect(400)
-  //     .expect('Content-Type', /json/)
-  //     .then((response) => {
-  //       expect(response.body.invalidFields).toContain('description');
-  //       done();
-  //     })
-  //     .catch(done);
-  // });
+  it('PUT /cards/:id should return 400 if description is empty', (done) => {
+    request(app)
+      .put(`/cards/${cardId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ ...card, description: '' })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((response) => {
+        expect(response.body.invalidFields).toContain('description');
+        done();
+      })
+      .catch(done);
+  });
 
-  // it('PUT /cards/:id should return 400 if description is not provided', (done) => {
-  //   const noDescriptionCard = {...card};
-  //   delete noDescriptionCard.description;
-  //   request(app)
-  //     .put(`/cards/${cardId}`)
-  //     .set('Authorization', `Bearer ${adminToken}`)
-  //     .send(noDescriptionCard)
-  //     .expect(400)
-  //     .expect('Content-Type', /json/)
-  //     .then((response) => {
-  //       expect(response.body.missingFields).toContain('description');
-  //       expect(response.body.invalidFields).not.toBeDefined();
-  //       done();
-  //     })
-  //     .catch(done);
-  // });
+  it('PUT /cards/:id should return 400 if description is not provided', (done) => {
+    const noDescriptionCard = {...card};
+    delete noDescriptionCard.description;
+    request(app)
+      .put(`/cards/${cardId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send(noDescriptionCard)
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((response) => {
+        expect(response.body.missingFields).toContain('description');
+        expect(response.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
 
-  // it('PUT /cards/:id should return 400 if image is empty', (done) => {
-  //   request(app)
-  //     .put(`/cards/${cardId}`)
-  //     .set('Authorization', `Bearer ${adminToken}`)
-  //     .send({ ...card, image: '' })
-  //     .expect(400)
-  //     .expect('Content-Type', /json/)
-  //     .then((response) => {
-  //       expect(response.body.invalidFields).toContain('image');
-  //       done();
-  //     })
-  //     .catch(done);
-  // });
+  it('PUT /cards/:id should return 400 if image is empty', (done) => {
+    request(app)
+      .put(`/cards/${cardId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ ...card, image: '' })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((response) => {
+        expect(response.body.invalidFields).toContain('image');
+        done();
+      })
+      .catch(done);
+  });
 
-  // it('PUT /cards/:id should return 400 if image is not provided', (done) => {
-  //   const noImageCard = {...card};
-  //   delete noImageCard.image;
-  //   request(app)
-  //     .put(`/cards/${cardId}`)
-  //     .set('Authorization', `Bearer ${adminToken}`)
-  //     .send(noImageCard)
-  //     .expect(400)
-  //     .expect('Content-Type', /json/)
-  //     .then((response) => {
-  //       expect(response.body.missingFields).toContain('image');
-  //       expect(response.body.invalidFields).not.toBeDefined();
-  //       done();
-  //     })
-  //     .catch(done);
-  // });
+  it('PUT /cards/:id should return 400 if image is not provided', (done) => {
+    const noImageCard = {...card};
+    delete noImageCard.image;
+    request(app)
+      .put(`/cards/${cardId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send(noImageCard)
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((response) => {
+        expect(response.body.missingFields).toContain('image');
+        expect(response.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
 });
 
 describe('Deleting a Card', () => {
