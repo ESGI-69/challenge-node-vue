@@ -20,6 +20,8 @@ import grass from '@/assets/totally-not-stolen-grass.png';
 
 import { useCardStore } from '@/stores/cardStore';
 import { useAppStore } from '@/stores/appStore';
+import { useProfileStore } from '@/stores/profileStore';
+
 export default {
   name: 'LoggedLayout',
   async setup() {
@@ -30,7 +32,10 @@ export default {
 
     const cardStore = useCardStore();
     const appStore = useAppStore();
+    const profileSotre = useProfileStore();
     const cards = computed(() => cardStore.cards);
+
+    await profileSotre.getProfile();
 
     await cardStore.getCards();
 

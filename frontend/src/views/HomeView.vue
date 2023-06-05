@@ -24,6 +24,7 @@
         </router-link>
         <div class="nes-separator" />
         <router-link
+          v-if="isAdmin"
           to="/admin"
           class="nes-btn"
         >
@@ -47,10 +48,16 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+
 import logo from '@/assets/logo.png';
+
 import Container from '@/components/Container.vue';
-import { useAuthStore } from '@/stores/authStore';
+
 import { useRouter } from 'vue-router';
+
+import { useAuthStore } from '@/stores/authStore';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default {
   name: 'HomeView',
@@ -59,7 +66,11 @@ export default {
   },
   setup() {
     const authStore = useAuthStore();
+    const profileStore = useProfileStore();
     const router = useRouter();
+
+    const isAdmin = computed(() => profileStore.isAdmin);
+
     const logout = () => {
       authStore.logout();
       // reload the page to reset the app
@@ -68,6 +79,7 @@ export default {
     return {
       logo,
       logout,
+      isAdmin,
     };
   },
 };
