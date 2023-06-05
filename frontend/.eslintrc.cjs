@@ -172,5 +172,6 @@ module.exports = {
         enforceForRenamedProperties: false,
       },
     ],
+    'eol-last': [ 'error', 'always' ],
   },
 };
