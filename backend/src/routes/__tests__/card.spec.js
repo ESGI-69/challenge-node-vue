@@ -161,7 +161,7 @@ describe('Adding a card as a Player', () => {
       .send(card)
       .expect(403)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -175,7 +175,7 @@ describe('Adding a card as Unlogged ', () => {
       .send(card)
       .expect(401)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -235,7 +235,7 @@ describe('Getting Cards as Unlogged', () => {
       .get('/cards/')
       .expect(401)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -281,7 +281,7 @@ describe('Updating a Card PATCH', () => {
       .send(updatedCard)
       .expect(403)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -298,7 +298,7 @@ describe('Updating a Card PATCH', () => {
       .send(updatedCard)
       .expect(401)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -373,7 +373,7 @@ describe('Updating a Card PUT', () => {
       .send(updatedCard)
       .expect(403)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -385,7 +385,7 @@ describe('Updating a Card PUT', () => {
       .send(updatedCard)
       .expect(401)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -496,7 +496,7 @@ describe('Deleting a Card', () => {
       .delete(`/cards/${cardId}`)
       .expect(401)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
@@ -508,7 +508,7 @@ describe('Deleting a Card', () => {
       .set('Authorization', `Bearer ${playerToken}`)
       .expect(403)
       .then((response) => {
-        expect(response.body).not.toBe({});
+        expect(response.body).toStrictEqual({});
         done();
       })
       .catch(done);
