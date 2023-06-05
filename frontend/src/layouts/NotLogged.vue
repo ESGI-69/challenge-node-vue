@@ -4,6 +4,9 @@
     :style="{ backgroundImage: `url(${notLoggedBackground})` }"
   >
     <slot />
+    <span class="not-logged__hash">
+      Version {{ hash }}
+    </span>
   </div>
 </template>
 
@@ -13,7 +16,9 @@ import notLoggedBackground from '@/assets/notLoggedBackground.webp';
 export default {
   name: 'LoggedLayout',
   setup() {
+    const hash = import.meta.env.VITE_GIT_HASH;
     return {
+      hash,
       notLoggedBackground,
     };
   },
@@ -22,11 +27,15 @@ export default {
 
 <style lang="scss" scoped>
 .not-logged {
-  &__main {
-    box-sizing: border-box;
-    height: 100%;
-    padding: 24px;
-    overflow-y: auto;
+  &__hash {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 0.5rem;
+    color: white;
+    background-color: black;
+    padding: 0.25rem;
+    opacity: 0.5;
   }
 }
 </style>

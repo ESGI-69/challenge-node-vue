@@ -2,6 +2,16 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import child_process from 'child_process';
+
+try {
+  process.env.VITE_GIT_HASH = child_process
+    .execSync('git rev-parse --short HEAD')
+    .toString()
+    .trim();
+} catch (_) {
+  process.env.VITE_GIT_HASH = '';
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) =>{
