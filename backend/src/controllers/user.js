@@ -67,6 +67,8 @@ export default {
    */
   put: async (req, res, next) => {
     try {
+      await userService.validate(req.body);
+
       const nbRemoved = await userService.remove({
         id: parseInt(req.params.id),
       });
