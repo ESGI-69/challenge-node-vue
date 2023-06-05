@@ -1,5 +1,9 @@
 FROM node:lts-alpine
 
+# install git
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
 # install simple http server for serving static content
 RUN npm install -g http-server
 

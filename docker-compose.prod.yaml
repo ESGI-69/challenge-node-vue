@@ -35,9 +35,9 @@ services:
       backend:
         condition: service_healthy
     environment:
-      VITE_API: ${VITE_API}
-      VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
-      VITE_COOKIE_TOKEN_NAME: ${VITE_COOKIE_TOKEN_NAME}
+      VITE_API: ${API}
+      VITE_API_TIMEOUT: ${API_TIMEOUT}
+      VITE_COOKIE_TOKEN_NAME: $COOKIE_TOKEN_NAME}
       NODE_ENV: production
 
 networks:
