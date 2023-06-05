@@ -38,6 +38,7 @@ services:
       VITE_API: ${VITE_API}
       VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
       VITE_COOKIE_TOKEN_NAME: ${VITE_COOKIE_TOKEN_NAME}
+      NODE_ENV: production
 
 networks:
   swag:
