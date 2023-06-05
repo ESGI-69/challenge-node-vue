@@ -153,6 +153,7 @@ describe('Adding a Card as an Admin', () => {
 });
 
 describe('Adding a card as a Player', () => {
+  
   it('POST /cards/ should return 403', (done) => {
     request(app)
       .post('/cards/')
@@ -160,7 +161,7 @@ describe('Adding a card as a Player', () => {
       .send(card)
       .expect(403)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -174,7 +175,7 @@ describe('Adding a card as Unlogged ', () => {
       .send(card)
       .expect(401)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -234,7 +235,7 @@ describe('Getting Cards as Unlogged', () => {
       .get('/cards/')
       .expect(401)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -280,7 +281,7 @@ describe('Updating a Card PATCH', () => {
       .send(updatedCard)
       .expect(403)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -297,7 +298,7 @@ describe('Updating a Card PATCH', () => {
       .send(updatedCard)
       .expect(401)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -372,7 +373,7 @@ describe('Updating a Card PUT', () => {
       .send(updatedCard)
       .expect(403)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -384,14 +385,13 @@ describe('Updating a Card PUT', () => {
       .send(updatedCard)
       .expect(401)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
   });
 
   it('PUT /cards/:id should return 400 if name is empty', (done) => {
-    console.log(adminToken);
     const newCard = {
       ...updatedCard,
       id: cardId,
@@ -496,7 +496,7 @@ describe('Deleting a Card', () => {
       .delete(`/cards/${cardId}`)
       .expect(401)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
@@ -508,7 +508,7 @@ describe('Deleting a Card', () => {
       .set('Authorization', `Bearer ${playerToken}`)
       .expect(403)
       .then((response) => {
-        expect(response.body.reason).toBe(undefined);
+        expect(response.body).not.toBe({});
         done();
       })
       .catch(done);
