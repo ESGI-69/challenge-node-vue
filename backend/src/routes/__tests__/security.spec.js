@@ -60,9 +60,9 @@ describe('Login userflow', () => {
       .catch(done);
   });
 
-  it('GET /users/:id should return the correct info about the user', (done) => {
+  it('GET /users/me should return the correct info about the user', (done) => {
     request(app)
-      .get(`/users/${user.id}`)
+      .get('/users/me')
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .then((res) => {
