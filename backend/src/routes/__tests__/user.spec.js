@@ -139,6 +139,16 @@ describe('User not authenticated access', () => {
       .catch(done);
   });
 
+  it('GET /users/me should return 401', (done) => {
+    request(app)
+      .get('/users/me')
+      .expect(401)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
+
   it('PUT /users/:id should return 401', (done) => {
     request(app)
       .put(`/users/${userId}`)
