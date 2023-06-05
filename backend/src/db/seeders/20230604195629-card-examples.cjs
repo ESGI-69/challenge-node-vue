@@ -15,7 +15,7 @@ module.exports = {
     await queryInterface.bulkInsert('cards', [
       {
         name: 'Fireball',
-        image: 'https://picsum.photos/200/300',
+        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
         cost: 4,
         rarity: 'common',
         type: 'spell',
@@ -27,7 +27,7 @@ module.exports = {
       },
       {
         name: 'Instant Death',
-        image: 'https://picsum.photos/200/300',
+        image: 'https://art.hearthstonejson.com/v1/orig/EX1_116.png',
         cost: 10,
         rarity: 'legendary',
         type: null,
@@ -39,7 +39,7 @@ module.exports = {
       },
       {
         name: 'Pillgrim',
-        image: 'https://picsum.photos/200/300',
+        image: 'https://art.hearthstonejson.com/v1/orig/CS2_073.png',
         cost: 2,
         rarity: 'common',
         type: 'minion',
