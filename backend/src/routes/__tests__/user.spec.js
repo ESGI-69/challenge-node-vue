@@ -69,9 +69,9 @@ describe('Register flow', () => {
       .catch(done);
   });
 
-  it(`GET /users/${userId} should return the user`, (done) => {
+  it('GET /users/me should return the user', (done) => {
     request(app)
-      .get(`/users/${userId}`)
+      .get('/users/me')
       .set('Authorization', `Bearer ${playerToken}`)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -172,9 +172,9 @@ describe('User info access (Player)', () => {
       .catch(done);
   });
 
-  it('GET /users/:id on an other user should return 403', (done) => {
+  it('GET /users/:id should return 403', (done) => {
     request(app)
-      .get(`/users/${userId + 1}`)
+      .get('/users/444')
       .set('Authorization', `Bearer ${playerToken}`)
       .expect(403)
       .then(() => {
