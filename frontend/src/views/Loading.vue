@@ -55,12 +55,13 @@ export default {
   display: flex;
   height: 100%;
   width: 100%;
-  background-size: 200px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 1rem;
   padding: 6rem;
+  image-rendering: pixelated;
+  background-size: 256px;
 
   h1 {
     font-weight: normal;
