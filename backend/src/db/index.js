@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 import user from './models/User.js';
+import card from './models/Card.js';
 import dotenv from 'dotenv';
 
 /**
@@ -23,9 +24,11 @@ const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${proc
 });
 
 const User = user(connection);
+const Card = card(connection);
 
 export {
   connection,
   User,
+  Card,
 };
 
