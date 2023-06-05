@@ -17,6 +17,7 @@ export default {
   name: 'LoggedLayout',
   setup() {
     const hash = import.meta.env.VITE_GIT_HASH;
+    console.log(import.meta.env.VITE_API);
     return {
       hash,
       notLoggedBackground,

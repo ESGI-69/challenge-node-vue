@@ -15,7 +15,7 @@ try {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) =>{
-  if (mode === 'development') {
+  if (mode !== 'production') {
     return {
       envDir: '../',
       server: {
@@ -46,7 +46,6 @@ export default defineConfig(({ mode }) =>{
     };
   }
   return {
-    envDir: '../',
     plugins: [ vue() ],
     resolve: {
       alias: {
