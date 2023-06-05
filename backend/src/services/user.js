@@ -22,6 +22,9 @@ export default {
     });
     return users;
   },
+  validate: function (data) {
+    return User.build(data).validate();
+  },
   remove: function (criteria) {
     return User.destroy({
       where: criteria,
