@@ -1,5 +1,12 @@
 FROM node:lts-alpine
 
+ARG VITE_API
+ENV VITE_API=$VITE_API
+ARG VITE_API_TIMEOUT
+ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
+ARG VITE_COOKIE_TOKEN_NAME
+ENV VITE_COOKIE_TOKEN_NAME=$VITE_COOKIE_TOKEN_NAME
+
 # install git
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
