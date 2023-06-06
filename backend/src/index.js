@@ -18,7 +18,7 @@ const app = express();
 
 let origin = 'http://localhost:8080';
 if (process.env.NODE_ENV === 'production') {
-  origin = 'https://challenge-2023.mrpink.com';
+  origin = 'https://challenge-2023.mrpink.dev';
 }
 
 app.use(cors({
