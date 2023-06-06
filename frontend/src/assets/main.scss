@@ -12,7 +12,7 @@ html, body, #app {
 }
 
 /* Fix for border that should not show as a line */
-.nes-progress {
+.nes-progress, .nes-input, .nes-btn {
   border-image-repeat: unset;
 }
 

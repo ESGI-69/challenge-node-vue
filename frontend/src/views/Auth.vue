@@ -47,7 +47,7 @@ export default {
 
   .auth__card {
     background-color: #fff;
-    width: 500px;
+    width: 40vw;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     &__body__link {

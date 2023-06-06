@@ -3,23 +3,31 @@
     class="register"
     @submit.prevent="register"
   >
-    <div class="register__input nes-field">
-      <label for="firstname">First name</label>
-      <input
-        id="firstname"
-        v-model="firstname"
-        class="nes-input"
-        type="text"
-      >
-    </div>
-    <div class="register__input nes-field">
-      <label for="lastname">Last name</label>
-      <input
-        id="lastname"
-        v-model="lastname"
-        class="nes-input"
-        type="text"
-      >
+    <image-upload
+      v-model="avatar"
+      :no-file-selected-text="'Upload your avatar'"
+      :change-file-selected-text="'Change your avatar'"
+      :default-image-url="defaultImageUrl"
+    />
+    <div class="register__double-col">
+      <div class="register__input nes-field">
+        <label for="firstname">First name</label>
+        <input
+          id="firstname"
+          v-model="firstname"
+          class="nes-input"
+          type="text"
+        >
+      </div>
+      <div class="register__input nes-field">
+        <label for="lastname">Last name</label>
+        <input
+          id="lastname"
+          v-model="lastname"
+          class="nes-input"
+          type="text"
+        >
+      </div>
     </div>
     <div class="register__input nes-field">
       <label for="email">Email</label>
@@ -73,18 +81,29 @@
 
 <script>
 import { ref, computed } from 'vue';
+
 import { useUserStore } from '@/stores/userStore';
 import router from '@/router';
 
+import ImageUpload from '../ImageUpload.vue';
+
 export default {
   name: 'Register',
+  components: {
+    ImageUpload,
+  },
   setup() {
     const firstname = ref('');
     const lastname = ref('');
     const email = ref('');
     const password = ref('');
     const password_confirmation = ref('');
+    /**
+     * @type {File | null}
+     */
+    const avatar = ref(null);
     const errorMessages = ref([]);
+    const defaultImageUrl = `${import.meta.env.VITE_API}/uploads/avatars/default.png`;
 
     const isPasswordMatch = computed(() => {
       const isMatch = password.value === password_confirmation.value;
@@ -173,6 +192,8 @@ export default {
       register,
       isPasswordMatch,
       errorMessages,
+      avatar,
+      defaultImageUrl,
     };
   },
 };
@@ -184,9 +205,25 @@ export default {
   flex-direction: column;
   gap: 1rem;
 
+  & > * {
+    width: 100%;
+  }
+
+  &__double-col {
+    display: flex;
+    gap: 1rem;
+  }
+
   &__input {
     display: flex;
     flex-direction: column;
+
+    &__avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 10%;
+      margin-bottom: 1rem;
+    }
   }
 }
 </style>

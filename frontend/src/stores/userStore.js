@@ -10,12 +10,12 @@ export const useUserStore = defineStore('userStore', {
   actions: {
     /**
      * Register a new user
-     * @param {{ email: string, password: string, firstname: string, lastname: string }} payload The payload sent to the API
+     * @param {{ email: string, password: string, firstname: string, lastname: string, avatar: import('fs').ReadStream }} payload The payload sent to the API
      */
     async register(payload) {
       this.isRegisterLoading = true;
       try {
-        await $API.post('/users/', payload);
+        await $API.post('/users/', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
       } catch (err) {
         throw err.response.data;
       } finally {
