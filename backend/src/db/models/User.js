@@ -106,6 +106,10 @@ export default (connection) => {
         allowNull: false,
         defaultValue: 50,
       },
+      mailToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize: connection,
@@ -156,8 +160,16 @@ export default (connection) => {
       });
     }
   };
+  const mailToken = (user, options) => {
+    if (!options?.fields.includes('mailToken')) {
+      return;
+    }
+    const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    user.mailToken = `${randomString}${Date.now()}`;
+  };
 
   User.addHook('beforeCreate', encryptPassword);
+  User.addHook('beforeCreate', mailToken);
 
   User.addHook('beforeUpdate', encryptPassword);
 
