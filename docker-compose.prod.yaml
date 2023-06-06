@@ -29,16 +29,23 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
+        VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
+        VITE_API: ${VITE_API}
+        VITE_COOKIE_TOKEN_NAME: ${VITE_COOKIE_TOKEN_NAME}
+        VITE_LAST_COMMIT: ${VITE_LAST_COMMIT}
     ports:
       - 8080:8080
     depends_on:
       backend:
         condition: service_healthy
     environment:
-      VITE_API: ${VITE_API}
-      VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
-      VITE_COOKIE_TOKEN_NAME: ${VITE_COOKIE_TOKEN_NAME}
       NODE_ENV: production
+      VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
+      VITE_API: ${VITE_API}
+      VITE_COOKIE_TOKEN_NAME: ${VITE_COOKIE_TOKEN_NAME}
+      VITE_LAST_COMMIT: $(git rev-parse HEAD)
 
 networks:
   swag:

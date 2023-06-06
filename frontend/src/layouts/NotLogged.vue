@@ -16,8 +16,7 @@ import notLoggedBackground from '@/assets/notLoggedBackground.webp';
 export default {
   name: 'LoggedLayout',
   setup() {
-    const hash = import.meta.env.VITE_GIT_HASH;
-    console.log(import.meta.env.VITE_API);
+    const hash = import.meta.env.VITE_LAST_COMMIT;
     return {
       hash,
       notLoggedBackground,

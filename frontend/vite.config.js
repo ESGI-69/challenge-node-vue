@@ -4,17 +4,15 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import child_process from 'child_process';
 
-console.log('hash gen');
-try {
-  process.env.VITE_GIT_HASH = child_process
-    .execSync('git rev-parse --short HEAD')
-    .toString()
-    .trim();
-  console.log('hash gen', process.env.VITE_GIT_HASH);
-} catch (err) {
-  process.env.VITE_GIT_HASH = '';
-  console.log(err);
-  console.log('no hash');
+if (!process.env.VITE_LAST_COMMIT || process.env.VITE_LAST_COMMIT === '') {
+  try {
+    process.env.VITE_LAST_COMMIT = child_process
+      .execSync('git rev-parse --short HEAD')
+      .toString()
+      .trim();
+  } catch (err) {
+    process.env.VITE_LAST_COMMIT = '';
+  }
 }
 
 let env = '';
