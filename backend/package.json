@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/index.js",
-    "start": "NODE_ENV=production npx sequelize-cli db:migrate && node src/index.js",
+    "start": "NODE_ENV=production npx sequelize-cli db:migrate && npx sequelize-cli db:seed && node src/index.js",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test:dev": "NODE_ENV=development NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
     "lint": "eslint src/**/*.js",
