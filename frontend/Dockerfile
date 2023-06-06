@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-ARG VITE_API=http://challenge-2023-backend.mrpink.dev
+ARG VITE_API=https://challenge-2023-backend.mrpink.dev
 ENV VITE_API=$VITE_API
 ARG VITE_API_TIMEOUT=30000
 ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
