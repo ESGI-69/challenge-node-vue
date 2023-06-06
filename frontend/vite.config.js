@@ -4,14 +4,24 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import child_process from 'child_process';
 
+console.log('hash gen');
 try {
   process.env.VITE_GIT_HASH = child_process
     .execSync('git rev-parse --short HEAD')
     .toString()
     .trim();
-} catch (_) {
+  console.log('hash gen', process.env.VITE_GIT_HASH);
+} catch (err) {
   process.env.VITE_GIT_HASH = '';
+  console.log(err);
+  console.log('no hash');
 }
+
+let env = '';
+Object.keys(process.env).forEach(async (key) => {
+  env += `${key} = ${JSON.stringify(process.env[key])}; - ;`;
+});
+console.log(env);
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) =>{
