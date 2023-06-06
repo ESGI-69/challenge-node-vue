@@ -45,8 +45,8 @@ services:
       VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
       VITE_API: ${VITE_API}
       VITE_COOKIE_TOKEN_NAME: ${VITE_COOKIE_TOKEN_NAME}
-      VITE_LAST_COMMIT: $(git rev-parse HEAD)
-
+      VITE_LAST_COMMIT: ${VITE_LAST_COMMIT}
+      
 networks:
   swag:
     name: swag
