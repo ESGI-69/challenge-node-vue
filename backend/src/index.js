@@ -1,4 +1,6 @@
 import express from 'express';
+import cors from 'cors';
+
 import errorHandler from './errorHandler.js';
 import GenericRouter from './routes/genericCRUD.js';
 import GenericController from './controllers/genericCRUD.js';
@@ -13,6 +15,15 @@ import { connection } from './db/index.js';
 import { populateUser } from './middleware.js';
 
 const app = express();
+
+let origin = 'http://localhost:8080';
+if (process.env.NODE_ENV === 'production') {
+  origin = 'https://challenge-2023.mrpink.com';
+}
+
+app.use(cors({
+  origin,
+}));
 
 app.use(express.json());
 app.use(populateUser);
