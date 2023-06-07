@@ -13,11 +13,14 @@ import securityRouter from './routes/security.js';
 
 import { connection } from './db/index.js';
 import { populateUser } from './middleware.js';
+import path from 'path';
 
 const app = express();
 
+process.env.PWD = process.cwd();
 let origin = 'http://localhost:8080';
 if (process.env.NODE_ENV === 'production') {
+  // TODO: Change this to your frontend URL ENV VAR
   origin = 'https://challenge-2023.mrpink.dev';
 }
 
@@ -25,6 +28,7 @@ app.use(cors({
   origin,
 }));
 
+app.use('/profile-pictures', express.static(path.join(process.env.PWD, 'public', 'profile-pictures')));
 app.use(express.json());
 app.use(populateUser);
 
