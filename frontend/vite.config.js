@@ -15,12 +15,6 @@ if (!process.env.VITE_LAST_COMMIT || process.env.VITE_LAST_COMMIT === '') {
   }
 }
 
-let env = '';
-Object.keys(process.env).forEach(async (key) => {
-  env += `${key} = ${JSON.stringify(process.env[key])}; - ;`;
-});
-console.log(env);
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) =>{
   if (mode !== 'production') {
