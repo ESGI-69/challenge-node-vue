@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import mailer from '../../utils/mailer.js';
 
 import { Card, User_Card } from '../index.js';
 
@@ -168,6 +169,22 @@ export default (connection) => {
     user.mailToken = `${randomString}${Date.now()}`;
   };
 
+  const sendConfirmationEmail = async (user, options) => {
+    if (!options?.fields.includes('mailToken')) {
+      return;
+    }
+    console.log('sendConfirmationEmail');
+    const url = `${process.env.FRONTEND_URL}/confirm/${user.mailToken}`;
+    const html = `<p>Please confirm your email by clicking <a href="${url}">here</a>.</p>`;
+    try {
+      await mailer(user.email, 'Confirm your email', html);
+    } catch (err) {
+      console.error(err);
+    }
+
+  };
+
+
   User.addHook('beforeCreate', encryptPassword);
   User.addHook('beforeCreate', mailToken);
 
@@ -190,6 +207,8 @@ export default (connection) => {
 
   // Remove profile picture from the server when the user is deleted
   User.addHook('afterDestroy', deleteAvatar);
+
+  User.addHook('afterCreate', sendConfirmationEmail);
 
   return User;
 };
