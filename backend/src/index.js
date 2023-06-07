@@ -13,7 +13,6 @@ import securityRouter from './routes/security.js';
 
 import { connection } from './db/index.js';
 import { populateUser } from './middleware.js';
-import path from 'path';
 
 const app = express();
 
@@ -28,7 +27,6 @@ app.use(cors({
   origin,
 }));
 
-app.use('/profile-pictures', express.static(path.join(process.env.PWD, 'public', 'profile-pictures')));
 app.use(express.json());
 app.use(populateUser);
 

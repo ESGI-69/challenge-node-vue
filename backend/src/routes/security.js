@@ -14,7 +14,7 @@ export default (userService) => {
 
   router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    const [user] = await userService.findAll({ email });
+    const user = await userService.findLogin({ email });
     if (!user) {
       return res.sendStatus(401);
     }

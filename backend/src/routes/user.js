@@ -35,7 +35,9 @@ const addProfilePicture = (req, res, next) => {
 router.get('/', isAdmin, userController.cget);
 router.post('/', profilePictureUpload.single('avatar'), addProfilePicture, userController.post);
 router.get('/me', isLogged, userController.me);
+router.get('/me/avatar', isLogged, userController.meAvatar);
 router.get('/:id', isAdmin, userController.get);
+router.get('/:id/avatar', isLogged, userController.getAvatar);
 router.put('/:id', isAdmin, userController.put);
 router.patch('/:id', isAdmin, userController.patch);
 router.delete('/:id', isAdmin, userController.delete);

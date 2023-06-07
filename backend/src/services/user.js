@@ -1,12 +1,31 @@
 import { User } from './../db/index.js';
 
 export default {
+  /**
+   * Find a user by email and return it with its password
+   * @param {import('sequelize').WhereOptions} criteria 
+   * @returns 
+   */
+  findLogin: function (criteria) {
+    return User.scope('withPassword').findOne({
+      where: criteria,
+    });
+  },
+  /**
+   * Find all users matching the criteria
+   * @param {import('sequelize').WhereOptions} criteria 
+   * @param {import('sequelize').FindOptions} options 
+   * @returns 
+   */
   findAll: function (criteria, options = {}) {
     return User.findAll({
       where: criteria,
       ...options,
       order: Object.entries(options.order || {}),
     });
+  },
+  findByIdAvatar: function (id) {
+    return User.scope('withAvatar').findByPk(id);
   },
   findById: function (id) {
     return User.findByPk(id);

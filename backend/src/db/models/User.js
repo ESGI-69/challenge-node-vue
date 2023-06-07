@@ -90,6 +90,17 @@ export default (connection) => {
     {
       sequelize: connection,
       tableName: 'users',
+      defaultScope: {
+        attributes: { exclude: ['password', 'avatar'] },
+      },
+      scopes: {
+        withPassword: {
+          attributes: { include: ['password'] },
+        },
+        withAvatar: {
+          attributes: { include: ['avatar'] },
+        },
+      },
     }
   );
 
