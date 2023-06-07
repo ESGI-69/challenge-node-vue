@@ -103,7 +103,7 @@ export default {
      */
     const avatar = ref(null);
     const errorMessages = ref([]);
-    const defaultImageUrl = `${import.meta.env.VITE_API}/uploads/avatars/default.png`;
+    const defaultImageUrl = `${import.meta.env.VITE_API}/profile-pictures/default.png`;
 
     const isPasswordMatch = computed(() => {
       const isMatch = password.value === password_confirmation.value;
@@ -171,6 +171,7 @@ export default {
         if (!isPasswordMatch.value) return;
         removeFieldsInError();
         await userStore.register({
+          avatar: avatar.value,
           firstname: firstname.value,
           lastname: lastname.value,
           email: email.value,

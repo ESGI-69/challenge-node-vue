@@ -10,7 +10,7 @@ export const useUserStore = defineStore('userStore', {
   actions: {
     /**
      * Register a new user
-     * @param {{ email: string, password: string, firstname: string, lastname: string, avatar: import('fs').ReadStream }} payload The payload sent to the API
+     * @param {{ email: string, password: string, firstname: string, lastname: string, avatar: File }} payload The payload sent to the API
      */
     async register(payload) {
       this.isRegisterLoading = true;
