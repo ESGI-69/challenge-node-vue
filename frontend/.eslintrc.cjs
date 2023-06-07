@@ -142,8 +142,8 @@ module.exports = {
           'loading',
           'inheritAttrs',
           'model',
-          'emits',
           [ 'props', 'propsData' ],
+          'emits',
           'setup',
           'asyncData',
           'data',
@@ -173,5 +173,7 @@ module.exports = {
       },
     ],
     'eol-last': [ 'error', 'always' ],
+    'keyword-spacing': [ 'error', { before: true, after: true } ],
+    'comma-spacing': [ 'error', { before: false, after: true } ],
   },
 };

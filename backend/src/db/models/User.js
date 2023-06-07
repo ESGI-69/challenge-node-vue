@@ -1,6 +1,8 @@
 import { Model, DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * @param {import('sequelize').Sequelize} connection
@@ -35,6 +37,14 @@ export default (connection) => {
 
   User.init(
     {
+      avatar: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'default.png',
+        validate: {
+          notEmpty: true,
+        }
+      },
       lastname: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -80,13 +90,24 @@ export default (connection) => {
     {
       sequelize: connection,
       tableName: 'users',
+      defaultScope: {
+        attributes: { exclude: ['password', 'avatar'] },
+      },
+      scopes: {
+        withPassword: {
+          attributes: { include: ['password'] },
+        },
+        withAvatar: {
+          attributes: { include: ['avatar'] },
+        },
+      },
     }
   );
 
   /**
    * Encrypt the password before creating or updating the user
    * @param {User} user User model
-   * @param {import('sequelize').UpdateOptions} options 
+   * @param {import('sequelize').UpdateOptions} [options] Update options
    */
   const encryptPassword = async (user, options) => {
     if (!options?.fields.includes('password')) {
@@ -96,9 +117,47 @@ export default (connection) => {
     user.password = await bcrypt.hash(user.password, salt);
   };
 
+  /**
+   * Delete the avatar from the server
+   * @param {User} user User model
+   * @param {import('sequelize').UpdateOptions} [options] Update options
+   * @returns 
+   */
+  const deleteAvatar = ({ avatar }, options) => {
+    if (options && !options.fields.includes('avatar')) {
+      return;
+    }
+    if (avatar !== 'default.png') {
+      const avatarPath = path.join(process.env.PWD, 'public', 'profile-pictures', avatar);
+      fs.unlinkSync(avatarPath, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
+  };
+
   User.addHook('beforeCreate', encryptPassword);
 
   User.addHook('beforeUpdate', encryptPassword);
+
+  // Remove password & avatar from the return value after the user is created
+  User.addHook('afterCreate', (user) => {
+    delete user.dataValues.password;
+    delete user.dataValues.avatar;
+  });
+
+  // Remove password & avatar from the return value after the user is updated
+  User.addHook('afterUpdate', (user) => {
+    delete user.dataValues.password;
+    delete user.dataValues.avatar;
+  });
+
+  // Remove profile picture from the server when the user is updated
+  User.addHook('beforeUpdate', deleteAvatar);
+
+  // Remove profile picture from the server when the user is deleted
+  User.addHook('afterDestroy', deleteAvatar);
   
   return User;
 };

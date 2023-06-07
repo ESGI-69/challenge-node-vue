@@ -71,6 +71,8 @@ export default {
 
     const isAdmin = computed(() => profileStore.isAdmin);
 
+    const avatarUrl = computed(() => profileStore.avatarUrl);
+
     const logout = () => {
       authStore.logout();
       // reload the page to reset the app
@@ -80,6 +82,7 @@ export default {
       logo,
       logout,
       isAdmin,
+      avatarUrl,
     };
   },
 };
