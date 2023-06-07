@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import $API from '@/plugins/axios';
 
+const createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL;
+
 export const useProfileStore = defineStore('profileStore', {
   state: () => ({
     isProfileLoading: false,
@@ -8,6 +10,10 @@ export const useProfileStore = defineStore('profileStore', {
      * @type {{ id: number, email: string, firstname: string, lastname: string, avatar: string, role: string, createdAt: string, updatedAt: string }
      */
     profile: {},
+    /**
+     * @type {string | null}
+     */
+    avatarUrl: null,
     isAdmin: false,
   }),
 
@@ -23,6 +29,16 @@ export const useProfileStore = defineStore('profileStore', {
         throw err.response.data;
       } finally {
         this.isProfileLoading = false;
+      }
+    },
+
+    async getProfileAvatar() {
+      try {
+        const { data } = await $API.get('/users/me/avatar', { responseType: 'blob' });
+        this.avatarUrl = createObjectURL(data);
+        return data;
+      } catch (err) {
+        throw err.response.data;
       }
     },
   },

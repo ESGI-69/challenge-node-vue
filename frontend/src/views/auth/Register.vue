@@ -7,7 +7,7 @@
       v-model="avatar"
       :no-file-selected-text="'Upload your avatar'"
       :change-file-selected-text="'Change your avatar'"
-      :default-image-url="defaultImageUrl"
+      :default-image-url="defaultAvatar"
     />
     <div class="register__double-col">
       <div class="register__input nes-field">
@@ -87,6 +87,8 @@ import router from '@/router';
 
 import ImageUpload from '../ImageUpload.vue';
 
+import defaultAvatar from '@/assets/default-avatar.png';
+
 export default {
   name: 'Register',
   components: {
@@ -103,7 +105,6 @@ export default {
      */
     const avatar = ref(null);
     const errorMessages = ref([]);
-    const defaultImageUrl = `${import.meta.env.VITE_API}/profile-pictures/default.png`;
 
     const isPasswordMatch = computed(() => {
       const isMatch = password.value === password_confirmation.value;
@@ -194,7 +195,7 @@ export default {
       isPasswordMatch,
       errorMessages,
       avatar,
-      defaultImageUrl,
+      defaultAvatar,
     };
   },
 };

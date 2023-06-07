@@ -36,6 +36,7 @@ export default {
     const cards = computed(() => cardStore.cards);
 
     await profileSotre.getProfile();
+    await profileSotre.getProfileAvatar();
 
     await cardStore.getCards();
 
