@@ -161,6 +161,7 @@ export default (connection) => {
       });
     }
   };
+
   const mailToken = (user, options) => {
     if (!options?.fields.includes('mailToken')) {
       return;
@@ -186,7 +187,6 @@ export default (connection) => {
 
 
   User.addHook('beforeCreate', encryptPassword);
-  User.addHook('beforeCreate', mailToken);
 
   User.addHook('beforeUpdate', encryptPassword);
 
@@ -208,6 +208,10 @@ export default (connection) => {
   // Remove profile picture from the server when the user is deleted
   User.addHook('afterDestroy', deleteAvatar);
 
+  // Create a random token for the user when it is created
+  User.addHook('beforeCreate', mailToken);
+
+  // Send a confirmation email to the user with the token when it is created
   User.addHook('afterCreate', sendConfirmationEmail);
 
   return User;
