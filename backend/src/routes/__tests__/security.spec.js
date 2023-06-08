@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import jwt from 'jsonwebtoken';

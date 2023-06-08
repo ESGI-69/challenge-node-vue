@@ -1,4 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
@@ -32,7 +32,7 @@ export default (connection) => {
      */
     isAdmin() {
       return this.role === 'ADMIN';
-    } 
+    }
   }
 
   User.init(
@@ -121,7 +121,7 @@ export default (connection) => {
    * Delete the avatar from the server
    * @param {User} user User model
    * @param {import('sequelize').UpdateOptions} [options] Update options
-   * @returns 
+   * @returns
    */
   const deleteAvatar = ({ avatar }, options) => {
     if (options && !options.fields.includes('avatar')) {
@@ -158,6 +158,6 @@ export default (connection) => {
 
   // Remove profile picture from the server when the user is deleted
   User.addHook('afterDestroy', deleteAvatar);
-  
+
   return User;
 };

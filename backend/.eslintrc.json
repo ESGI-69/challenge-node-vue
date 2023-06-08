@@ -3,7 +3,9 @@
         "node": true,
         "es2021": true
     },
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended"
+    ],
     "overrides": [
     ],
     "parserOptions": {
@@ -41,6 +43,7 @@
         ],
         "keyword-spacing": [ "error", { "before": true, "after": true } ],
         "comma-spacing": [ "error", { "before": false, "after": true } ],
-        "no-trailing-spaces": "error"
+        "no-trailing-spaces": "error",
+        "sort-imports": [ "error", { "ignoreDeclarationSort": true } ]
     }
 }

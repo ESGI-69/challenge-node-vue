@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll } from '@jest/globals';
+import { afterAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';

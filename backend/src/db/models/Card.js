@@ -1,4 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 
 /**
  * @param {import('sequelize').Sequelize} connection

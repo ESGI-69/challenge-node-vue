@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import multer from 'multer';
 
+import userController from '../controllers/user.js';
+import { isAdmin, isLogged } from '../middleware.js';
+
 const profilePictureStorage = multer.diskStorage({
   destination: 'public/profile-pictures',
 });
@@ -12,9 +15,6 @@ const profilePictureUpload = multer({
     fileSize: 1024 * 1024 * 5, // 5MB
   },
 });
-
-import userController from '../controllers/user.js';
-import { isLogged, isAdmin } from '../middleware.js';
 const router = Router();
 
 /**
