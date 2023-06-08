@@ -10,7 +10,7 @@ const user = {
   password: 'Testtest1234!',
   firstname: 'Firstname',
   lastname: 'Lastname',
-  
+
 };
 
 // create a new avatar file

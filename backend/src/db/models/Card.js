@@ -6,7 +6,7 @@ import { Model, DataTypes } from 'sequelize';
 
 export default (connection) => {
   class Card extends Model {
-    
+
   }
 
   Card.init(

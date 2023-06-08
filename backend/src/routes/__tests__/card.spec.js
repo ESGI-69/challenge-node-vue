@@ -56,7 +56,7 @@ describe('Adding a Card as an Admin', () => {
       })
       .catch(done);
   });
-  
+
   it ('POST /cards/ should return 400 if name is empty', (done) => {
     request(app)
       .post('/cards/')
@@ -149,11 +149,11 @@ describe('Adding a Card as an Admin', () => {
       })
       .catch(done);
   });
-  
+
 });
 
 describe('Adding a card as a Player', () => {
-  
+
   it('POST /cards/ should return 403', (done) => {
     request(app)
       .post('/cards/')
@@ -286,7 +286,7 @@ describe('Updating a Card PATCH', () => {
       })
       .catch(done);
   });
-  
+
   it('PATCH /cards/:id as Unlogged should return 401', (done) => {
     const updatedCard = {
       name: 'New name',
@@ -378,7 +378,7 @@ describe('Updating a Card PUT', () => {
       })
       .catch(done);
   });
-  
+
   it('PUT /cards/:id as Unlogged should return 401', (done) => {
     request(app)
       .put(`/cards/${cardId}`)

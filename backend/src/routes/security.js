@@ -21,7 +21,7 @@ export default (userService) => {
     if (!await user.checkPassword(password)) {
       return res.sendStatus(401);
     }
-    
+
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: '1y',
       algorithm: 'HS256',

@@ -3,9 +3,9 @@ import userService from '../services/user.js';
 export default {
   /**
    * Express.js controller for GET /users
-   * @param {import('express').Request} req 
-   * @param {import('express').Response} res 
-   * @param {import('express').NextFunction} next 
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
    * @returns {Promise<void>}
    */
   cget: async (req, res, next) => {
