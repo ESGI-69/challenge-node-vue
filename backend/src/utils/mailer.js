@@ -8,6 +8,7 @@ const sendMail = async (to, subject, html) => {
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
   const defaultClient = SibApiV3Sdk.ApiClient.instance;
   defaultClient.authentications['api-key'].apiKey = apiKey;
+  console.log('mailto: ', to);
   try {
     await apiInstance.sendTransacEmail(message);
   } catch (error) {

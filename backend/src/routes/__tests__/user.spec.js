@@ -1,12 +1,18 @@
-import { afterAll, describe, expect, it } from '@jest/globals';
+import { afterAll, describe, expect, it, jest } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
 import removeUser from '../../../tests/removeUser.js';
 import fs from 'fs';
+import sendMail from '../../utils/mailer.js';
+
+//mock mailer
+jest.mock('../../utils/mailer.js', () => ({
+  sendMail: jest.fn(() => Promise.resolve()),
+}));
 
 const user = {
-  email: 'test@test.test',
+  email: 'tim89140@gmail.com',
   password: 'Testtest1234!',
   firstname: 'Firstname',
   lastname: 'Lastname',
