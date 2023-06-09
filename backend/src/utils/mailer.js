@@ -2,7 +2,6 @@ import SibApiV3Sdk from 'sib-api-v3-sdk';
 
 const sendMail = async (to, subject, html) => {
   const apiKey = process.env.SENDINBLUE_KEY;
-  console.log('apikey', apiKey);
   const sender = { email: process.env.SENDINBLUE_EMAIL, name: process.env.SENDINBLUE_NAME };
   const recipient = { email: to };
   const message = { htmlContent: html, subject, sender, to: [recipient] };
@@ -10,8 +9,7 @@ const sendMail = async (to, subject, html) => {
   const defaultClient = SibApiV3Sdk.ApiClient.instance;
   defaultClient.authentications['api-key'].apiKey = apiKey;
   try {
-    const response = await apiInstance.sendTransacEmail(message);
-    console.log(`Email sent to ${to}: ${response.messageId}`);
+    await apiInstance.sendTransacEmail(message);
   } catch (error) {
     console.error(`Failed to send email to ${to}: ${error}`);
   }
