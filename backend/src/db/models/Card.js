@@ -1,12 +1,16 @@
 import { DataTypes, Model } from 'sequelize';
 
+import { User, User_Cards } from '../index.js';
+
 /**
  * @param {import('sequelize').Sequelize} connection
  */
 
 export default (connection) => {
   class Card extends Model {
-
+    static associate() {
+      this.belongsToMany(User, { through: User_Cards, foreignKey: 'cardId' });
+    }
   }
 
   Card.init(

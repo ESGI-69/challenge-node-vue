@@ -6,6 +6,7 @@ import userService from './services/user.js';
 
 import userRouter from './routes/user.js';
 import cardRouter from './routes/card.js';
+import collectionRouter from './routes/collection.js';
 import securityRouter from './routes/security.js';
 
 import { connection } from './db/index.js';
@@ -31,6 +32,8 @@ app.use(securityRouter(userService));
 app.use('/users', userRouter);
 
 app.use('/cards', cardRouter);
+
+app.use('/collection', collectionRouter);
 
 app.get('/health', async (req, res) => {
   try {

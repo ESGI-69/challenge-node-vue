@@ -1,6 +1,7 @@
 import Sequelize from 'sequelize';
 import user from './models/User.js';
 import card from './models/Card.js';
+import user_Cards from './models/UserCard.js';
 import dotenv from 'dotenv';
 
 /**
@@ -25,10 +26,16 @@ const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${proc
 
 const User = user(connection);
 const Card = card(connection);
+const User_Cards = user_Cards(connection);
+
+// Launch associations methods for relations between tables
+User.associate();
+Card.associate();
 
 export {
   connection,
   User,
   Card,
+  User_Cards,
 };
 

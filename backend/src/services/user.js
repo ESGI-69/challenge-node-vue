@@ -1,4 +1,4 @@
-import { User } from './../db/index.js';
+import { Card, User } from './../db/index.js';
 
 export default {
   /**
@@ -49,4 +49,20 @@ export default {
       where: criteria,
     });
   },
+  /**
+   *
+   * @param {import('../db/index.js').User} userModel
+   */
+  getCards: function (userModel) {
+    return userModel.getCards();
+  },
+  /**
+   *
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} cardId
+   * @returns
+   */
+  addCard: function (userModel, cardId) {
+    return userModel.addCard(cardId);
+  }
 };

@@ -4,11 +4,17 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
+import { Card, User_Cards } from '../index.js';
+
 /**
  * @param {import('sequelize').Sequelize} connection
  */
 export default (connection) => {
   class User extends Model {
+    static associate() {
+      this.belongsToMany(Card, { through: User_Cards, foreignKey: 'userId' });
+    }
+
     /**
      * Check if the given password is correct
      * @param {string} password User plain password
