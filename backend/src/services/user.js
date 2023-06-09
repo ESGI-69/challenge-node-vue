@@ -1,4 +1,4 @@
-import { Card, User } from './../db/index.js';
+import { User } from './../db/index.js';
 
 export default {
   /**
