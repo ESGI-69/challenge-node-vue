@@ -3,7 +3,6 @@ import cors from 'cors';
 
 import errorHandler from './errorHandler.js';
 import userService from './services/user.js';
-import cardService from './services/card.js';
 
 import userRouter from './routes/user.js';
 import cardRouter from './routes/card.js';
@@ -29,7 +28,6 @@ app.use(express.json());
 app.use(populateUser);
 
 app.use(securityRouter(userService));
-app.use(securityRouter(cardService));
 app.use('/users', userRouter);
 
 app.use('/cards', cardRouter);
