@@ -15,24 +15,24 @@ module.exports = {
     // add user cards
     await queryInterface.bulkInsert('user_cards', [
       {
-        user_id: 1,
-        card_id: 1,
+        userId: 1,
+        cardId: 1,
       },
       {
-        user_id: 1,
-        card_id: 2,
+        userId: 1,
+        cardId: 2,
       },
       {
-        user_id: 2,
-        card_id: 2,
+        userId: 2,
+        cardId: 2,
       },
       {
-        user_id: 2,
-        card_id: 3,
+        userId: 2,
+        cardId: 3,
       },
       {
-        user_id: 3,
-        card_id: 3,
+        userId: 3,
+        cardId: 3,
       },
     ]);
   },
