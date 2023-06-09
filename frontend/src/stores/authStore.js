@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('authStore', {
   state: () => ({
     token: null,
     isLoginLoading: false,
+    isConfirmEmailLoading: false,
   }),
 
   actions: {
@@ -34,6 +35,20 @@ export const useAuthStore = defineStore('authStore', {
       } catch (error) {
         Cookies.remove(import.meta.env.VITE_COOKIE_TOKEN_NAME);
         throw error;
+      }
+    },
+
+    /**
+     * Confirm user email
+     */
+    async confirmEmail(mailToken) {
+      this.isConfirmEmailLoading = true;
+      try {
+        await $API.post('/users/confirm/', {
+          mailToken,
+        });
+      } finally {
+        this.isConfirmEmailLoading = false;
       }
     },
 
