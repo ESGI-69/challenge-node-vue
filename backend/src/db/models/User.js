@@ -174,8 +174,7 @@ export default (connection) => {
     if (!options?.fields.includes('mailToken')) {
       return;
     }
-    console.log('sendConfirmationEmail');
-    const url = `${process.env.FRONTEND_URL}/confirm/${user.mailToken}`;
+    const url = `${process.env.FRONTEND_URL}/auth/confirm?token=${user.mailToken}`;
     const html = `<p>Please confirm your email by clicking <a href="${url}">here</a>.</p>`;
     try {
       await mailer(user.email, 'Confirm your email', html);

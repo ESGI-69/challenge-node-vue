@@ -210,5 +210,14 @@ export default {
       console.log(err);
       next(err);
     }
-  }
+  },
+
+  confirm: async (req, res, next) => {
+    try {
+      await userService.confirm(req.body);
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  },
 };

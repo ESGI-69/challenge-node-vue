@@ -16,14 +16,9 @@ import { populateUser } from './middleware.js';
 const app = express();
 
 process.env.PWD = process.cwd();
-let origin = 'http://localhost:8080';
-if (process.env.NODE_ENV === 'production') {
-  // TODO: Change this to your frontend URL ENV VAR
-  origin = 'https://challenge-2023.mrpink.dev';
-}
 
 app.use(cors({
-  origin,
+  origin: process.env.FRONTEND_URL,
 }));
 
 app.use(express.json());

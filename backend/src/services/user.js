@@ -87,4 +87,15 @@ export default {
   removeMoney: function (userModel, amount) {
     return userModel.decrement('balance', { by: amount });
   },
+  confirm: async function (criteria) {
+    const user = await User.findOne({
+      where: {
+        mailToken: criteria.mailToken,
+      },
+    });
+    if (!user) throw new Error('User not found', { cause: 'Not Found' });
+    await user.update({
+      mailToken: null,
+    });
+  },
 };
