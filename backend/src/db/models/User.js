@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
-import { Card, User_Cards } from '../index.js';
+import { Card, User_Card } from '../index.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
@@ -12,7 +12,7 @@ import { Card, User_Cards } from '../index.js';
 export default (connection) => {
   class User extends Model {
     static associate() {
-      this.belongsToMany(Card, { through: User_Cards, foreignKey: 'userId' });
+      this.belongsToMany(Card, { through: User_Card, foreignKey: 'userId' });
     }
 
     /**

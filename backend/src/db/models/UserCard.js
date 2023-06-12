@@ -5,11 +5,11 @@ import { Model } from 'sequelize';
  */
 
 export default (connection) => {
-  class User_Cards extends Model {
+  class User_Card extends Model {
 
   }
 
-  User_Cards.init(
+  User_Card.init(
     {},
     {
       timestamps: false,
@@ -17,5 +17,5 @@ export default (connection) => {
       tableName: 'user_cards',
     }
   );
-  return User_Cards;
+  return User_Card;
 };
