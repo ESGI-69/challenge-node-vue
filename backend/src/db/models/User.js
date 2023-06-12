@@ -39,6 +39,15 @@ export default (connection) => {
     isAdmin() {
       return this.role === 'ADMIN';
     }
+
+    /**
+     * Check if the user has enough balance from the given amount
+     * @param {number} amount Amount to check
+     * @returns {boolean}
+     */
+    hasEnoughBalance(amount) {
+      return this.balance >= amount;
+    }
   }
 
   User.init(
@@ -91,6 +100,11 @@ export default (connection) => {
         type: DataTypes.ENUM('ADMIN', 'PLAYER'),
         allowNull: false,
         defaultValue: 'PLAYER',
+      },
+      balance: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 50,
       },
     },
     {

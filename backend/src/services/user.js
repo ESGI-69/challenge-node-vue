@@ -64,5 +64,13 @@ export default {
    */
   addCard: function (userModel, cardId) {
     return userModel.addCard(cardId);
-  }
+  },
+  /**
+   * Remove money from the user
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} amount
+   */
+  removeMoney: function (userModel, amount) {
+    return userModel.decrement('balance', { by: amount });
+  },
 };

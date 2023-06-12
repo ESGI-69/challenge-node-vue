@@ -48,6 +48,30 @@ module.exports = {
         description: 'Battlecry: Draw a card.',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        name: 'Explosive Shot',
+        image: 'https://art.hearthstonejson.com/v1/orig/EX1_537.png',
+        cost: 5,
+        rarity: 'rare',
+        type: 'spell',
+        attack: null,
+        health: null,
+        description: 'Deal 5 damage to a minion and 2 damage to adjacent ones.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Abominable Bowman',
+        image: 'https://art.hearthstonejson.com/v1/orig/ICC_825.png',
+        cost: 7,
+        rarity: 'epic',
+        type: 'minion',
+        attack: 6,
+        health: 7,
+        description: 'Deathrattle: Summon a random friendly Beast that died this game.',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ]);
   },

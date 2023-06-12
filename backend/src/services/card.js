@@ -1,4 +1,4 @@
-import { Card } from '../db/index.js';
+import { Card, connection } from '../db/index.js';
 
 export default {
   findAll: function (criteria, options = {}) {
@@ -10,6 +10,12 @@ export default {
   },
   findById: function (id) {
     return Card.findByPk(id);
+  },
+  findRandom: function (rarity) {
+    return Card.findOne({
+      order: connection.random(),
+      where: { rarity },
+    });
   },
   create: function (data) {
     return Card.create(data);
