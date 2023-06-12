@@ -195,10 +195,8 @@ describe('Getting Cards and a Card', () => {
         expect(cardFound.name).toBe(card.name);
         expect(cardFound.description).toBe(card.description);
         expect(cardFound.image).toBe(card.image);
-        expect(typeof new Date(cardFound.createdAt).toISOString()).toBe('string');
-        expect(cardFound.createdAt).toBeDefined();
-        expect(typeof new Date(cardFound.updatedAt).toISOString()).toBe('string');
-        expect(cardFound.updatedAt).toBeDefined();
+        expect(cardFound.createdAt).toBeUndefined();
+        expect(cardFound.updatedAt).toBeUndefined();
         done();
       })
       .catch(done);
@@ -219,10 +217,8 @@ describe('Getting Cards and a Card', () => {
         expect(response.body.cost).toBe(card.cost);
         expect(response.body.attack).toBe(card.attack);
         expect(response.body.health).toBe(card.health);
-        expect(typeof new Date(response.body.createdAt).toISOString()).toBe('string');
-        expect(response.body.createdAt).toBeDefined();
-        expect(typeof new Date(response.body.updatedAt).toISOString()).toBe('string');
-        expect(response.body.updatedAt).toBeDefined();
+        expect(response.body.createdAt).toBeUndefined();
+        expect(response.body.updatedAt).toBeUndefined();
         done();
       })
       .catch(done);
