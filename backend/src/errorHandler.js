@@ -55,6 +55,7 @@ export default (err, req, res, _next) => {
   }
 
   if (process.env.NODE_ENV !== 'production') {
+    console.log(err);
     return res.status(500).send(err);
   }
 
