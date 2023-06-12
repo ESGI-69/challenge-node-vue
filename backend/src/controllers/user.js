@@ -3,9 +3,9 @@ import userService from '../services/user.js';
 export default {
   /**
    * Express.js controller for GET /users
-   * @param {import('express').Request} req 
-   * @param {import('express').Response} res 
-   * @param {import('express').NextFunction} next 
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
    * @returns {Promise<void>}
    */
   cget: async (req, res, next) => {
@@ -168,4 +168,39 @@ export default {
       next(err);
     }
   },
+
+  /**
+   * Express.js controller for Get /collection/
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  getCards: async (req, res, next) => {
+    try {
+      const cards = await userService.getCards(req.user);
+      res.json(cards);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller for POST /users/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  addCard: async (req, res, next) => {
+    console.log('addCard');
+    try {
+      const addCard = await userService.addCard(req.user, req.params.cardId);
+      res.json(addCard);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 };

@@ -3,8 +3,8 @@ import { User } from './../db/index.js';
 export default {
   /**
    * Find a user by email and return it with its password
-   * @param {import('sequelize').WhereOptions} criteria 
-   * @returns 
+   * @param {import('sequelize').WhereOptions} criteria
+   * @returns
    */
   findLogin: function (criteria) {
     return User.scope('withPassword').findOne({
@@ -13,9 +13,9 @@ export default {
   },
   /**
    * Find all users matching the criteria
-   * @param {import('sequelize').WhereOptions} criteria 
-   * @param {import('sequelize').FindOptions} options 
-   * @returns 
+   * @param {import('sequelize').WhereOptions} criteria
+   * @param {import('sequelize').FindOptions} options
+   * @returns
    */
   findAll: function (criteria, options = {}) {
     return User.findAll({
@@ -49,4 +49,20 @@ export default {
       where: criteria,
     });
   },
+  /**
+   *
+   * @param {import('../db/index.js').User} userModel
+   */
+  getCards: function (userModel) {
+    return userModel.getCards();
+  },
+  /**
+   *
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} cardId
+   * @returns
+   */
+  addCard: function (userModel, cardId) {
+    return userModel.addCard(cardId);
+  }
 };

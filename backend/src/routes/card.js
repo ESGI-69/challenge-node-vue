@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import cardController from '../controllers/card.js';
-import { isLogged, isAdmin } from '../middleware.js';
+import { isAdmin, isLogged } from '../middleware.js';
 const router = Router();
 
 router.get('/', isLogged, cardController.cget);
