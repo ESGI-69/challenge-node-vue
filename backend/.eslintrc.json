@@ -44,6 +44,7 @@
         "keyword-spacing": [ "error", { "before": true, "after": true } ],
         "comma-spacing": [ "error", { "before": false, "after": true } ],
         "no-trailing-spaces": "error",
-        "sort-imports": [ "error", { "ignoreDeclarationSort": true } ]
+        "sort-imports": [ "error", { "ignoreDeclarationSort": true } ],
+        "object-curly-spacing": [ "error", "always" ]
     }
 }

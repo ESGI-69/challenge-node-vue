@@ -72,7 +72,7 @@ describe('Adding a Card as an Admin', () => {
   });
 
   it ('POST /cards/ should return 400 if name is not provided', (done) => {
-    const noTitleCard = {...card};
+    const noTitleCard = { ...card };
     delete noTitleCard.name;
     request(app)
       .post('/cards/')
@@ -103,7 +103,7 @@ describe('Adding a Card as an Admin', () => {
   });
 
   it ('POST /cards/ should return 400 if description is not provided', (done) => {
-    const noDescriptionCard = {...card};
+    const noDescriptionCard = { ...card };
     delete noDescriptionCard.description;
     request(app)
       .post('/cards/')
@@ -134,7 +134,7 @@ describe('Adding a Card as an Admin', () => {
   });
 
   it ('POST /cards/ should return 400 if image is not provided', (done) => {
-    const noImageCard = {...card};
+    const noImageCard = { ...card };
     delete noImageCard.image;
     request(app)
       .post('/cards/')
@@ -247,7 +247,7 @@ describe('Updating a Card PATCH', () => {
     request(app)
       .patch(`/cards/${cardId}`)
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({...updatedCard, name: 'New test'})
+      .send({ ...updatedCard, name: 'New test' })
       .expect(200)
       .expect('Content-Type', /json/)
       .then((response) => {
@@ -319,7 +319,7 @@ describe('Updating a Card PATCH', () => {
   });
 
   it('PATCH /cards/:id should return 200 if name is not provided', (done) => {
-    const noTitleCard = {...card};
+    const noTitleCard = { ...card };
     delete noTitleCard.name;
     request(app)
       .patch(`/cards/${cardId}`)
@@ -411,7 +411,7 @@ describe('Updating a Card PUT', () => {
   });
 
   it('PUT /cards/:id should return 400 if name is not provided', (done) => {
-    const noTitleCard = {...card};
+    const noTitleCard = { ...card };
     delete noTitleCard.name;
     request(app)
       .put(`/cards/${cardId}`)
@@ -442,7 +442,7 @@ describe('Updating a Card PUT', () => {
   });
 
   it('PUT /cards/:id should return 400 if description is not provided', (done) => {
-    const noDescriptionCard = {...card};
+    const noDescriptionCard = { ...card };
     delete noDescriptionCard.description;
     request(app)
       .put(`/cards/${cardId}`)
@@ -473,7 +473,7 @@ describe('Updating a Card PUT', () => {
   });
 
   it('PUT /cards/:id should return 400 if image is not provided', (done) => {
-    const noImageCard = {...card};
+    const noImageCard = { ...card };
     delete noImageCard.image;
     request(app)
       .put(`/cards/${cardId}`)
