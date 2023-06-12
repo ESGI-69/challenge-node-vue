@@ -35,7 +35,15 @@ export default {
    */
   post: async (req, res, next) => {
     try {
-      const user = await userService.create(req.body);
+      // Avoid injecting unwanted fields like role or balance on user creation
+      const userPayload = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        password: req.body.password,
+        avatar: req.body.avatar,
+      };
+      const user = await userService.create(userPayload);
       res.status(201).json(user);
     } catch (err) {
       next(err);
