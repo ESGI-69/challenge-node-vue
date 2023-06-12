@@ -18,16 +18,6 @@ module.exports = {
         createdAt: new Date(),
         openedAt: null,
       },
-      {
-        userId: 1,
-        createdAt: new Date(),
-        openedAt: null,
-      },
-      {
-        userId: 2,
-        createdAt: new Date(),
-        openedAt: null,
-      },
     ]);
 
     await queryInterface.bulkInsert('pack_cards', [
@@ -43,70 +33,17 @@ module.exports = {
       },
       {
         packId: 1,
-        CardId: 2,
+        CardId: 3,
         createdAt: new Date(),
       },
       {
         packId: 1,
-        CardId: 2,
+        CardId: 4,
         createdAt: new Date(),
       },
       {
         packId: 1,
-        CardId: 3,
-        createdAt: new Date(),
-      },
-
-
-      {
-        packId: 2,
-        CardId: 1,
-        createdAt: new Date(),
-      },
-      {
-        packId: 2,
-        CardId: 2,
-        createdAt: new Date(),
-      },
-      {
-        packId: 2,
-        CardId: 2,
-        createdAt: new Date(),
-      },
-      {
-        packId: 2,
-        CardId: 2,
-        createdAt: new Date(),
-      },
-      {
-        packId: 2,
-        CardId: 3,
-        createdAt: new Date(),
-      },
-
-      {
-        packId: 3,
-        CardId: 1,
-        createdAt: new Date(),
-      },
-      {
-        packId: 3,
-        CardId: 2,
-        createdAt: new Date(),
-      },
-      {
-        packId: 3,
-        CardId: 2,
-        createdAt: new Date(),
-      },
-      {
-        packId: 3,
-        CardId: 2,
-        createdAt: new Date(),
-      },
-      {
-        packId: 3,
-        CardId: 3,
+        CardId: 5,
         createdAt: new Date(),
       },
     ]);

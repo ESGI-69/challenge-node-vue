@@ -32,17 +32,5 @@ export default (connection) => {
     }
   );
 
-  Pack.addHook('beforeUpdate', (pack) => {
-    // Pack canot be updated if it has already been opened
-    if (pack.openedAt !== null) {
-      throw new Error('Pack already opened');
-    }
-
-    // Pack canot be updated for other thinks than openedAt
-    if (pack.changed().length !== 1 || !pack.changed().includes('openedAt')) {
-      throw new Error('Pack is not updatable');
-    }
-  });
-
   return Pack;
 };
