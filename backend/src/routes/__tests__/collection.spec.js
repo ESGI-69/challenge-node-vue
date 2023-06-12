@@ -18,7 +18,7 @@ describe('Collection routes (logged)', () => {
       .set('Authorization', `Bearer ${jwt}`)
       .expect(200);
     expect(cards).toBeInstanceOf(Array);
-    expect(cards).toHaveLength(2);
+    expect(cards).toHaveLength(5);
     cards.forEach((card) => {
       expect(card).toHaveProperty('id');
       expect(card).toHaveProperty('name');

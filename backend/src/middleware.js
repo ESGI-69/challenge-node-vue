@@ -50,8 +50,24 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
+/**
+ * Check if user has enough money to buy a pack
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
+const hasPackBalance = (req, res, next) => {
+  if (!req.user) return res.sendStatus(401);
+  if (!req.user.hasEnoughBalance(100)) return res.status(403).send({
+    code: 'balance_too_low',
+    message: 'Not enough money',
+  });
+  next();
+};
+
 export {
   populateUser,
   isLogged,
   isAdmin,
+  hasPackBalance,
 };

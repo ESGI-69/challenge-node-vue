@@ -57,6 +57,12 @@ export default {
     return userModel.getCards();
   },
   /**
+   * Check if the user has the card
+   */
+  hasCard: function (userModel, cardId) {
+    return userModel.hasCard(cardId);
+  },
+  /**
    *
    * @param {import('../db/index.js').User} userModel
    * @param {number} cardId
@@ -64,5 +70,21 @@ export default {
    */
   addCard: function (userModel, cardId) {
     return userModel.addCard(cardId);
-  }
+  },
+  /**
+   * Add money to the user
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} amount
+   */
+  addMoney: function (userModel, amount) {
+    return userModel.increment('balance', { by: amount });
+  },
+  /**
+   * Remove money from the user
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} amount
+   */
+  removeMoney: function (userModel, amount) {
+    return userModel.decrement('balance', { by: amount });
+  },
 };

@@ -68,6 +68,14 @@ export default (connection) => {
     {
       sequelize: connection,
       tableName: 'cards',
+      defaultScope: {
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+      },
+      scopes: {
+        withTimestamps: {
+          attributes: { include: ['createdAt', 'updatedAt'] },
+        },
+      },
     }
   );
   return Card;

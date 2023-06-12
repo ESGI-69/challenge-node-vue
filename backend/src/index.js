@@ -4,10 +4,11 @@ import cors from 'cors';
 import errorHandler from './errorHandler.js';
 import userService from './services/user.js';
 
-import userRouter from './routes/user.js';
 import cardRouter from './routes/card.js';
 import collectionRouter from './routes/collection.js';
+import packRouter from './routes/pack.js';
 import securityRouter from './routes/security.js';
+import userRouter from './routes/user.js';
 
 import { connection } from './db/index.js';
 import { populateUser } from './middleware.js';
@@ -34,6 +35,8 @@ app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
 app.use('/collection', collectionRouter);
+
+app.use('/packs', packRouter);
 
 app.get('/health', async (req, res) => {
   try {
