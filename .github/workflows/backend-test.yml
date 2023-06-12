@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Migrate database
-        run: NODE_ENV=test npm run migrate:force
+        run: NODE_ENV=test npm run migrate
       - name: Seed database
         run: NODE_ENV=test npm run seed
       - name: Launch unit tests
