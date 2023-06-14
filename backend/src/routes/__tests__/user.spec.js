@@ -26,6 +26,7 @@ let avatarJwt;
 
 let userId;
 let playerToken;
+let userEmailToken;
 const adminToken = await getJwt('admin@example.com', '123456');
 
 describe('Register flow', () => {
@@ -48,6 +49,7 @@ describe('Register flow', () => {
       .then((res) => {
         expect(typeof res.body.id).toBe('number');
         userId = res.body.id;
+        userEmailToken = res.body.mailToken;
         expect(res.body.email).toBe(user.email);
         expect(res.body.firstname).toBe(user.firstname);
         expect(res.body.lastname).toBe(user.lastname);
@@ -61,6 +63,7 @@ describe('Register flow', () => {
       })
       .catch(done);
   });
+
 
   it('POST /users/ should return 400 if email is invalid', (done) => {
     request(app)
@@ -87,6 +90,18 @@ describe('Register flow', () => {
       .then(async (res) => {
         expect(res.body.missingFields).toContain('email');
         expect(res.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('POST /users/confirm should confirm the user', (done) => {
+    console.log('userEmailToken', userEmailToken);
+    request(app)
+      .post('/users/confirm')
+      .send({ mailToken: userEmailToken })
+      .expect(200)
+      .then(async () => {
         playerToken = await getJwt(user.email, user.password);
         done();
       })
@@ -94,6 +109,7 @@ describe('Register flow', () => {
   });
 
   it('GET /users/me should return the user', (done) => {
+    console.log(playerToken);
     request(app)
       .get('/users/me')
       .set('Authorization', `Bearer ${playerToken}`)
@@ -118,6 +134,7 @@ describe('Register flow', () => {
 
 describe('User register with avatar', () => {
   let avatarUserId;
+  let avatarEmailToken;
 
   let mailerSendMailMock;
 
@@ -143,8 +160,20 @@ describe('User register with avatar', () => {
       .then(async (res) => {
         expect(typeof res.body.id).toBe('number');
         avatarUserId = res.body.id;
-        avatarJwt = await getJwt(userWithAvatar.email, userWithAvatar.password);
+        avatarEmailToken = res.body.mailToken;
         expect(res.body.avatar).toBeUndefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it ('POST /users/confirm should confirm the user', (done) => {
+    request(app)
+      .post('/users/confirm')
+      .send({ mailToken: avatarEmailToken })
+      .expect(200)
+      .then(async () => {
+        avatarJwt = await getJwt(userWithAvatar.email, userWithAvatar.password);
         done();
       })
       .catch(done);
