@@ -39,7 +39,7 @@
       v-if="error && email !== '' && password !== '' && isEmail"
       class="nes-text is-error"
     >
-      Invalid credentials
+      Invalid credentials or email not confirmed
     </span>
     <span
       v-if="!isEmail"

@@ -26,6 +26,16 @@ export default (connection) => {
     }
 
     /**
+     * Check if the mail is confirmed by checking if token is set to null
+     * @param {string} email User email
+     * @returns {Promise<boolean>}
+    */
+    async checkEmail(email) {
+      const user = await User.findOne({ where: { email } });
+      return user.mailToken === null;
+    }
+
+    /**
      * Generate a JWT token for the user
      * @returns {string} JWT token
      */

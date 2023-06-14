@@ -22,6 +22,10 @@ export default (userService) => {
       return res.sendStatus(401);
     }
 
+    if (!await user.checkEmail(email)) {
+      return res.sendStatus(401);
+    }
+
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: '1y',
       algorithm: 'HS256',
