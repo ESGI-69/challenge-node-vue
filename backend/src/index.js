@@ -45,6 +45,7 @@ app.get('/health', async (req, res) => {
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
+  // eslint-disable-next-line no-console
   app.listen(3000, () => console.log('Server started on port 3000'));
 }
 

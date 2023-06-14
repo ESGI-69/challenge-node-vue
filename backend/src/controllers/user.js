@@ -189,7 +189,7 @@ export default {
       const cards = await userService.getCards(req.user);
       res.json(cards);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       next(err);
     }
   },
@@ -202,12 +202,11 @@ export default {
    * @returns {Promise<void>}
    */
   addCard: async (req, res, next) => {
-    console.log('addCard');
     try {
       const addCard = await userService.addCard(req.user, req.params.cardId);
       res.json(addCard);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       next(err);
     }
   },
