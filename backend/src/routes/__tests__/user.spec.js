@@ -1,22 +1,16 @@
-import { afterAll, describe, expect, it, jest } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
 import removeUser from '../../../tests/removeUser.js';
 import fs from 'fs';
-import sendMail from '../../utils/mailer.js';
-
-//mock mailer
-jest.mock('../../utils/mailer.js', () => ({
-  sendMail: jest.fn(() => Promise.resolve()),
-}));
+import mailer from '../../utils/mailer.js';
 
 const user = {
-  email: 'tim89140@gmail.com',
+  email: 'usernewtest@test.test',
   password: 'Testtest1234!',
   firstname: 'Firstname',
   lastname: 'Lastname',
-
 };
 
 // create a new avatar file
@@ -35,6 +29,16 @@ let playerToken;
 const adminToken = await getJwt('admin@example.com', '123456');
 
 describe('Register flow', () => {
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
+
   it('POST /users/ should create a new user', (done) => {
     request(app)
       .post('/users/')
@@ -114,6 +118,16 @@ describe('Register flow', () => {
 
 describe('User register with avatar', () => {
   let avatarUserId;
+
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
 
   it('POST /users/ should create a new user with avatar', (done) => {
     const req = request(app)
@@ -226,6 +240,16 @@ describe('User info access (Player)', () => {
 });
 
 describe('User Update flow (Admin)', () => {
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
+
   it('PUT /users/:id should update a user', (done) => {
     const updatedUser = {
       email: 'test1@test.test',

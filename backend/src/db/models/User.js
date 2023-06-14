@@ -177,7 +177,7 @@ export default (connection) => {
     const url = `${process.env.FRONTEND_URL}/auth/confirm?token=${user.mailToken}`;
     const html = `<p>Please confirm your email by clicking <a href="${url}">here</a>.</p>`;
     try {
-      await mailer(user.email, 'Confirm your email', html);
+      await mailer.sendMail(user.email, 'Confirm your email', html);
     } catch (err) {
       console.error(err);
     }
