@@ -96,7 +96,6 @@ describe('Register flow', () => {
   });
 
   it('POST /users/confirm should confirm the user', (done) => {
-    console.log('userEmailToken', userEmailToken);
     request(app)
       .post('/users/confirm')
       .send({ mailToken: userEmailToken })
@@ -109,7 +108,6 @@ describe('Register flow', () => {
   });
 
   it('GET /users/me should return the user', (done) => {
-    console.log(playerToken);
     request(app)
       .get('/users/me')
       .set('Authorization', `Bearer ${playerToken}`)
