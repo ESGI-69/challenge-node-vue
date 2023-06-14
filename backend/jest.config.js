@@ -4,7 +4,9 @@ const config = {
   testEnvironment: 'node',
   testMatch: ['**/src/**/*.spec.js'],
   moduleFileExtensions: ['js', 'json', 'node'],
-  transform: {},
+  transform: {
+    '^.+\\.js$': 'babel-jest', // For ES6 support
+  },
   forceExit: true,
 };
 
