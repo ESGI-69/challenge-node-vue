@@ -162,6 +162,13 @@ export default (connection) => {
     }
   };
 
+
+  /**
+   * Generate a random token for the user
+   * @param {User} user User model
+   * @param {import('sequelize').UpdateOptions} options Update options
+   * @returns
+   */
   const mailToken = (user, options) => {
     if (!options?.fields.includes('mailToken')) {
       return;
@@ -170,6 +177,12 @@ export default (connection) => {
     user.mailToken = `${randomString}${Date.now()}`;
   };
 
+  /**
+   * Send a confirmation email to the user
+   * @param {User} user User model
+   * @param {import('sequelize').UpdateOptions} options Update options
+   * @returns
+   */
   const sendConfirmationEmail = async (user, options) => {
     if (!options?.fields.includes('mailToken')) {
       return;
@@ -181,9 +194,7 @@ export default (connection) => {
     } catch (err) {
       console.error(err);
     }
-
   };
-
 
   User.addHook('beforeCreate', encryptPassword);
 

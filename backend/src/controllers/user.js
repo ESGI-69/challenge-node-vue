@@ -211,6 +211,14 @@ export default {
     }
   },
 
+  /**
+   * Express.js controller for confirm /users/confirm
+   * @param {import ('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise <void>}
+   */
+
   confirm: async (req, res, next) => {
     try {
       await userService.confirm(req.body);
