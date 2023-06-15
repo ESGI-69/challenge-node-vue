@@ -39,7 +39,7 @@
       v-if="error && email !== '' && password !== '' && isEmail"
       class="nes-text is-error"
     >
-      Invalid credentials or email not confirmed
+      {{ errorMessage }}
     </span>
     <span
       v-if="!isEmail"
@@ -74,6 +74,7 @@ export default {
     const email = ref('');
     const password = ref('');
     const error = ref(false);
+    const errorMessage = ref('');
     const authStore = useAuthStore();
     const router = useRouter();
 
@@ -89,7 +90,9 @@ export default {
         error.value = false;
         // force reload
         router.go();
-      } catch {
+        //catch response
+      } catch (err) {
+        errorMessage.value = err.response.data.message;
         error.value = true;
       }
     };
@@ -99,6 +102,7 @@ export default {
       password,
       login,
       error,
+      errorMessage,
       isEmail,
     };
   },
