@@ -34,7 +34,14 @@ const populateUser = async (req, res, next) => {
  * @param {import('express').NextFunction} next Express next function
  */
 const isLogged = (req, res, next) => {
-  if (!req.user) return res.sendStatus(401);
+  if (!req.user) return res.status(401).send({
+    code: 'not_logged_in',
+    message: 'Not logged in',
+  });
+  if (req.user.mailToken) return res.status(401).send({
+    code: 'email_not_validated',
+    message: 'Email not validated'
+  });
   next();
 };
 
@@ -45,7 +52,14 @@ const isLogged = (req, res, next) => {
  * @param {import('express').NextFunction} next Express next function
  */
 const isAdmin = (req, res, next) => {
-  if (!req.user) return res.sendStatus(401);
+  if (!req.user) return res.status(401).send({
+    code: 'not_logged_in',
+    message: 'Not logged in',
+  });
+  if (req.user.mailToken) return res.status(401).send({
+    code: 'email_not_validated',
+    message: 'Email not validated'
+  });
   if (!req.user.isAdmin()) return res.sendStatus(403);
   next();
 };
