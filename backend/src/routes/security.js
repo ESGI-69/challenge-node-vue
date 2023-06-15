@@ -16,10 +16,23 @@ export default (userService) => {
     const { email, password } = req.body;
     const user = await userService.findLogin({ email });
     if (!user) {
-      return res.sendStatus(401);
+      return res.status(401).send({
+        code: 'invalid_credentials',
+        message: 'Invalid credentials',
+      });
     }
     if (!await user.checkPassword(password)) {
-      return res.sendStatus(401);
+      return res.status(401).send({
+        code: 'invalid_credentials',
+        message: 'Invalid credentials',
+      });
+    }
+
+    if (!await user.isEmailConfirmed(email)) {
+      return res.status(401).send({
+        code: 'email_not_validated',
+        message: 'Email not validated',
+      });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {

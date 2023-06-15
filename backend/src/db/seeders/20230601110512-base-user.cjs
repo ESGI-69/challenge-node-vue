@@ -42,6 +42,16 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        firstname: 'User',
+        lastname: 'Unverified',
+        email: 'unverified@mail.com',
+        mailToken: 'tokennnnnnnnnnn',
+        password: await bcrypt.hash('123456', 10),
+        role: 'PLAYER',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
     ]);
   },
 

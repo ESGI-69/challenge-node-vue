@@ -41,5 +41,6 @@ router.get('/:id/avatar', isLogged, userController.getAvatar);
 router.put('/:id', isAdmin, userController.put);
 router.patch('/:id', isAdmin, userController.patch);
 router.delete('/:id', isAdmin, userController.delete);
+router.post('/confirm', userController.confirm);
 
 export default router;

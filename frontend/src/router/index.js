@@ -70,6 +70,14 @@ const router = createRouter({
             displayName: 'Register',
           },
         },
+        {
+          path: 'confirm',
+          name: 'confirm',
+          component: () => import('@/views/auth/Confirm.vue'),
+          meta: {
+            displayName: 'Confirm',
+          },
+        },
       ],
     },
   ],

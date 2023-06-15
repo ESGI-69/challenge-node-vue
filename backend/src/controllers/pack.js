@@ -45,7 +45,7 @@ export default {
       // Send the pack to the user
       res.status(201).json({ pack, cost: 100 });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       next(err);
     }
   },

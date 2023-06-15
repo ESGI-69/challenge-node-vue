@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import mailer from '../../utils/mailer.js';
 
 import { Card, User_Card } from '../index.js';
 
@@ -22,6 +23,16 @@ export default (connection) => {
      */
     checkPassword(password) {
       return bcrypt.compare(password, this.password);
+    }
+
+    /**
+     * Check if the mail is confirmed by checking if token is set to null
+     * @param {string} email User email
+     * @returns {Promise<boolean>}
+    */
+    async isEmailConfirmed(email) {
+      const user = await User.findOne({ where: { email } });
+      return user.mailToken === null;
     }
 
     /**
@@ -106,6 +117,10 @@ export default (connection) => {
         allowNull: false,
         defaultValue: 50,
       },
+      mailToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize: connection,
@@ -157,6 +172,40 @@ export default (connection) => {
     }
   };
 
+
+  /**
+   * Generate a random token for the user
+   * @param {User} user User model
+   * @param {import('sequelize').UpdateOptions} options Update options
+   * @returns
+   */
+  const generateMailToken = (user, options) => {
+    if (!options?.fields.includes('mailToken')) {
+      return;
+    }
+    const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    user.mailToken = `${randomString}${Date.now()}`;
+  };
+
+  /**
+   * Send a confirmation email to the user
+   * @param {User} user User model
+   * @param {import('sequelize').UpdateOptions} options Update options
+   * @returns
+   */
+  const sendConfirmationEmail = async (user, options) => {
+    if (!options?.fields.includes('mailToken')) {
+      return;
+    }
+    const url = `${process.env.FRONTEND_URL}/auth/confirm?token=${user.mailToken}`;
+    const html = `<p>Please confirm your email by clicking <a href="${url}">here</a>.</p>`;
+    try {
+      await mailer.sendMail(user.email, 'Confirm your email', html);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   User.addHook('beforeCreate', encryptPassword);
 
   User.addHook('beforeUpdate', encryptPassword);
@@ -178,6 +227,12 @@ export default (connection) => {
 
   // Remove profile picture from the server when the user is deleted
   User.addHook('afterDestroy', deleteAvatar);
+
+  // Create a random token for the user when it is created
+  User.addHook('beforeCreate', generateMailToken);
+
+  // Send a confirmation email to the user with the token when it is created
+  User.addHook('afterCreate', sendConfirmationEmail);
 
   return User;
 };

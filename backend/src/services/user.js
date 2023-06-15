@@ -87,4 +87,20 @@ export default {
   removeMoney: function (userModel, amount) {
     return userModel.decrement('balance', { by: amount });
   },
+  /**
+   * Confirm the user email
+   * @param {import('../db/index.js').User} userModel
+   * @param {import('sequelize').WhereOptions} emailToken
+   */
+  confirm: async function (emailToken) {
+    const user = await User.findOne({
+      where: {
+        mailToken: emailToken,
+      },
+    });
+    if (!user) throw new Error('User not found', { cause: 'Not Found' });
+    await user.update({
+      mailToken: null,
+    });
+  },
 };

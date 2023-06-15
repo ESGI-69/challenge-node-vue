@@ -9,6 +9,8 @@ export default (err, req, res, _next) => {
    */
   const response = {};
 
+  let responseCode = 400;
+
   if (err.name === 'SequelizeValidationError') {
     /**
      * The errors from sequelize
@@ -48,14 +50,17 @@ export default (err, req, res, _next) => {
 
   if (err.name === 'Error') {
     response.reason = err.message;
+    if (err.cause === 'Not Found') {
+      responseCode = 404;
+    }
   }
 
   if (Object.keys(response).length > 0) {
-    return res.status(400).json(response);
+    return res.status(responseCode).json(response);
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    console.log(err);
+    console.error(err);
     return res.status(500).send(err);
   }
 

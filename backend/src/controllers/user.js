@@ -189,7 +189,7 @@ export default {
       const cards = await userService.getCards(req.user);
       res.json(cards);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       next(err);
     }
   },
@@ -202,13 +202,29 @@ export default {
    * @returns {Promise<void>}
    */
   addCard: async (req, res, next) => {
-    console.log('addCard');
     try {
       const addCard = await userService.addCard(req.user, req.params.cardId);
       res.json(addCard);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       next(err);
     }
-  }
+  },
+
+  /**
+   * Express.js controller for confirm /users/confirm
+   * @param {import ('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise <void>}
+   */
+
+  confirm: async (req, res, next) => {
+    try {
+      await userService.confirm(req.body.mailToken);
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  },
 };

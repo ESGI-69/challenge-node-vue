@@ -1,16 +1,16 @@
-import { afterAll, describe, expect, it } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
 import removeUser from '../../../tests/removeUser.js';
 import fs from 'fs';
+import mailer from '../../utils/mailer.js';
 
 const user = {
-  email: 'test@test.test',
+  email: 'usernewtest@test.test',
   password: 'Testtest1234!',
   firstname: 'Firstname',
   lastname: 'Lastname',
-
 };
 
 // create a new avatar file
@@ -26,9 +26,20 @@ let avatarJwt;
 
 let userId;
 let playerToken;
+let userEmailToken;
 const adminToken = await getJwt('admin@example.com', '123456');
 
 describe('Register flow', () => {
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
+
   it('POST /users/ should create a new user', (done) => {
     request(app)
       .post('/users/')
@@ -38,6 +49,7 @@ describe('Register flow', () => {
       .then((res) => {
         expect(typeof res.body.id).toBe('number');
         userId = res.body.id;
+        userEmailToken = res.body.mailToken;
         expect(res.body.email).toBe(user.email);
         expect(res.body.firstname).toBe(user.firstname);
         expect(res.body.lastname).toBe(user.lastname);
@@ -51,6 +63,7 @@ describe('Register flow', () => {
       })
       .catch(done);
   });
+
 
   it('POST /users/ should return 400 if email is invalid', (done) => {
     request(app)
@@ -77,6 +90,17 @@ describe('Register flow', () => {
       .then(async (res) => {
         expect(res.body.missingFields).toContain('email');
         expect(res.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('POST /users/confirm should confirm the user', (done) => {
+    request(app)
+      .post('/users/confirm')
+      .send({ mailToken: userEmailToken })
+      .expect(200)
+      .then(async () => {
         playerToken = await getJwt(user.email, user.password);
         done();
       })
@@ -108,6 +132,17 @@ describe('Register flow', () => {
 
 describe('User register with avatar', () => {
   let avatarUserId;
+  let avatarEmailToken;
+
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
 
   it('POST /users/ should create a new user with avatar', (done) => {
     const req = request(app)
@@ -123,8 +158,20 @@ describe('User register with avatar', () => {
       .then(async (res) => {
         expect(typeof res.body.id).toBe('number');
         avatarUserId = res.body.id;
-        avatarJwt = await getJwt(userWithAvatar.email, userWithAvatar.password);
+        avatarEmailToken = res.body.mailToken;
         expect(res.body.avatar).toBeUndefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it ('POST /users/confirm should confirm the user', (done) => {
+    request(app)
+      .post('/users/confirm')
+      .send({ mailToken: avatarEmailToken })
+      .expect(200)
+      .then(async () => {
+        avatarJwt = await getJwt(userWithAvatar.email, userWithAvatar.password);
         done();
       })
       .catch(done);
@@ -220,6 +267,16 @@ describe('User info access (Player)', () => {
 });
 
 describe('User Update flow (Admin)', () => {
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
+
   it('PUT /users/:id should update a user', (done) => {
     const updatedUser = {
       email: 'test1@test.test',
