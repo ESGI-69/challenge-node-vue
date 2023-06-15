@@ -22,7 +22,7 @@ export default (userService) => {
       return res.sendStatus(401);
     }
 
-    if (!await user.checkEmail(email)) {
+    if (!await user.isEmailConfirmed(email)) {
       return res.sendStatus(401);
     }
 

@@ -30,7 +30,7 @@ export default (connection) => {
      * @param {string} email User email
      * @returns {Promise<boolean>}
     */
-    async checkEmail(email) {
+    async isEmailConfirmed(email) {
       const user = await User.findOne({ where: { email } });
       return user.mailToken === null;
     }
@@ -179,7 +179,7 @@ export default (connection) => {
    * @param {import('sequelize').UpdateOptions} options Update options
    * @returns
    */
-  const mailToken = (user, options) => {
+  const generateMailToken = (user, options) => {
     if (!options?.fields.includes('mailToken')) {
       return;
     }
@@ -229,7 +229,7 @@ export default (connection) => {
   User.addHook('afterDestroy', deleteAvatar);
 
   // Create a random token for the user when it is created
-  User.addHook('beforeCreate', mailToken);
+  User.addHook('beforeCreate', generateMailToken);
 
   // Send a confirmation email to the user with the token when it is created
   User.addHook('afterCreate', sendConfirmationEmail);
