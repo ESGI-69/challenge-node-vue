@@ -90,12 +90,12 @@ export default {
   /**
    * Confirm the user email
    * @param {import('../db/index.js').User} userModel
-   * @param {import('sequelize').WhereOptions} criteria
+   * @param {import('sequelize').WhereOptions} emailToken
    */
-  confirm: async function (criteria) {
+  confirm: async function (emailToken) {
     const user = await User.findOne({
       where: {
-        mailToken: criteria.mailToken,
+        mailToken: emailToken,
       },
     });
     if (!user) throw new Error('User not found', { cause: 'Not Found' });

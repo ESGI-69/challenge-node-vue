@@ -221,7 +221,7 @@ export default {
 
   confirm: async (req, res, next) => {
     try {
-      await userService.confirm(req.body);
+      await userService.confirm(req.body.mailToken);
       res.sendStatus(200);
     } catch (err) {
       next(err);
