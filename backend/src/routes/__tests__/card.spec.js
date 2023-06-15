@@ -147,7 +147,10 @@ describe('Adding a card as Unlogged ', () => {
     .send(card)
     .expect(401)
     .then((response) => {
-      expect(response.body).toStrictEqual({});
+      expect(response.body).toStrictEqual({
+        code: 'not_logged_in',
+        message: 'Not logged in'
+      });
     }));
 });
 
@@ -191,7 +194,10 @@ describe('Getting Cards as Unlogged', () => {
     .get('/cards/')
     .expect(401)
     .then((response) => {
-      expect(response.body).toStrictEqual({});
+      expect(response.body).toStrictEqual({
+        code: 'not_logged_in',
+        message: 'Not logged in'
+      });
     }));
 });
 
@@ -245,7 +251,10 @@ describe('Updating a Card PATCH', () => {
       .send(updatedCard)
       .expect(401)
       .then((response) => {
-        expect(response.body).toStrictEqual({});
+        expect(response.body).toStrictEqual({
+          code: 'not_logged_in',
+          message: 'Not logged in'
+        });
       });
   });
 
@@ -317,7 +326,10 @@ describe('Updating a Card PUT', () => {
     .send(updatedCard)
     .expect(401)
     .then((response) => {
-      expect(response.body).toStrictEqual({});
+      expect(response.body).toStrictEqual({
+        code: 'not_logged_in',
+        message: 'Not logged in'
+      });
     }));
 
   it('PUT /cards/:id should return 400 if name is empty', async () => {
@@ -408,7 +420,10 @@ describe('Deleting a Card', () => {
     .delete(`/cards/${cardId}`)
     .expect(401)
     .then((response) => {
-      expect(response.body).toStrictEqual({});
+      expect(response.body).toStrictEqual({
+        code: 'not_logged_in',
+        message: 'Not logged in'
+      });
     }));
 
   it('DELETE /cards/:id as a Player should return 403', () => request(app)
