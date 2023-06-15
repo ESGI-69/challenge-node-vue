@@ -38,7 +38,7 @@ export default (axios, router) => {
           if (router.currentRoute.value.meta.authRequired) {
             query.next = encodeURIComponent(router.currentRoute.value.path);
           }
-          await router.push({ name: 'login', query }).catch((failure) => {
+          router.push({ name: 'login', query }).catch((failure) => {
             if (!router.isNavigationFailure(failure, router.NavigationFailureType.redirected)) {
               throw failure;
             }

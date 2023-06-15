@@ -17,10 +17,10 @@ const populateUser = async (req, res, next) => {
     try {
       const { id } = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await userService.findById(id);
-      if (!req.user) throw new Error('User not found');
+      if (!req.user) return res.sendStatus(401);
       next();
     } catch (err) {
-      return next(err);
+      return res.sendStatus(401);
     }
   } else {
     next();
