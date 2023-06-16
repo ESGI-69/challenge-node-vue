@@ -22,6 +22,12 @@
         >
           My Cards
         </router-link>
+        <router-link
+          to="/packs"
+          class="nes-btn"
+        >
+          My Packs
+        </router-link>
         <div class="nes-separator" />
         <router-link
           v-if="isAdmin"
