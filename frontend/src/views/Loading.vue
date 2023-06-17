@@ -32,10 +32,10 @@ export default {
   setup() {
     const cardStore = useCardStore();
     const appStore = useAppStore();
-    const profileSotre = useProfileStore();
+    const profileStore = useProfileStore();
     const cardCount = computed(() => cardStore.cards.length);
     const progress = computed(() => appStore.preloadedCardImages);
-    const isProfileLoading = computed(() => profileSotre.isProfileLoading);
+    const isProfileLoading = computed(() => profileStore.isProfileLoading);
     const status = computed(() => {
       if (!state.connected) return 'Connecting to the game server...';
       if (isProfileLoading.value) return 'Retrieving profile...';
