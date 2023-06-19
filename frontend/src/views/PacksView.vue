@@ -12,7 +12,10 @@
       <draggable
         v-model="packsToDrag"
         class="packs__left__list"
-        group="packs"
+        :group="{
+          name: 'packs',
+          pull: !isDropZoneFull,
+        }"
         item-key="id"
       >
         <template #item="{element}">
@@ -34,7 +37,10 @@
       <h2>Packs</h2>
       <span>Loading</span>
     </container>
-    <openning class="packs__right" />
+    <openning
+      v-model:isDropZoneFull="isDropZoneFull"
+      class="packs__right"
+    />
     <modal
       v-model:isOpen="isBuyModalOpen"
       @confirm="purchasePack"
@@ -78,6 +84,7 @@ export default {
     const packStore = usePackStore();
     const profileStore = useProfileStore();
     const isBuyModalOpen = ref(false);
+    const isDropZoneFull = ref(false);
 
     const packsToDrag = ref([]);
 
@@ -106,6 +113,7 @@ export default {
       purchasePack,
       profileBalance,
       packsToDrag,
+      isDropZoneFull,
     };
   },
 };

@@ -54,6 +54,8 @@ export default {
     background-color: white;
     z-index: 11;
     transform: translateX(-50%);
+    min-width: 70%;
+    text-align: center;
   }
 }
 </style>

@@ -24,6 +24,19 @@ export const usePackStore = defineStore('packStore', {
     isPurchasePackLoading: false,
     purchasedPack: {},
     pack: {},
+
+    // Open pack
+    isOpenPackLoading: false,
+    openningPack: false,
+    cardObtained: [],
+    /**
+     * @type {number[]}
+     */
+    duplicatedCardIds: [],
+    /**
+     * @type {number}
+     */
+    refundedAmount: 0,
   }),
 
   getters: {
@@ -64,6 +77,34 @@ export const usePackStore = defineStore('packStore', {
       } finally {
         this.isPurchasePackLoading = false;
       }
+    },
+
+    /**
+     * Open a pack
+     * @param {number} packId
+     */
+    async openPack(packId) {
+      this.isOpenPackLoading = true;
+      try {
+        const { data } = await $API.post(`/packs/${packId}/open`);
+        this.packs.splice(this.packs.findIndex((pack) => pack.id === packId), 1);
+        this.cardObtained = data.cards;
+        this.duplicatedCardIds = data.duplicateCardIds;
+        this.refundedAmount = data.refunded;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isOpenPackLoading = false;
+      }
+    },
+
+    /**
+     * Reset the openning pack state
+     */
+    resetOpenning() {
+      this.cardObtained = [];
+      this.duplicatedCardIds = [];
+      this.refundedAmount = 0;
     },
   },
 });
