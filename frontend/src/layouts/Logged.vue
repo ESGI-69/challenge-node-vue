@@ -22,6 +22,7 @@ import background from '@/assets/carpet.jpg';
 import { useCardStore } from '@/stores/cardStore';
 import { useAppStore } from '@/stores/appStore';
 import { useProfileStore } from '@/stores/profileStore';
+import { connect } from '@/socket';
 
 export default {
   name: 'LoggedLayout',
@@ -30,6 +31,8 @@ export default {
       console.error('Error captured in LoggedLayout');
       console.error(error);
     });
+
+    await connect();
 
     const cardStore = useCardStore();
     const appStore = useAppStore();
