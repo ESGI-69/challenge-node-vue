@@ -137,3 +137,8 @@ Environment variables are used to configure the application. You can find the li
 | `VITE_API` | The url that match the proxy in the frontend. For avoiding CORS issues | `/api` |
 | `VITE_API_TIMEOUT` | The timeout of the api calls, in milliseconds | `30000` |
 | `VITE_COOKIE_TOKEN_NAME` | The name of the cookie that contains the JWT token | `challenge-token` |
+| `FRONTEND_URL` | The url of the frontend | `http://localhost:8080` |
+| `SENDINBLUE_KEY` | The API key of the sendinblue (brevo) account for the mailer | |
+| `SENDINBLUE_EMAIL` | The email of the sender for the mailer | |
+| `SENDINBLUE_NAME` | The name of the sender for the mailer |  |
+
