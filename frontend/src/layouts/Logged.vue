@@ -1,22 +1,23 @@
 <template>
   <div
     class="logged"
-    :style="{ backgroundImage: `url(${grass})` }"
+    :style="{ backgroundImage: `url(${background})` }"
   >
-    <transition-group
-      name="fade"
-      tag="main"
-      class="logged__main"
-    >
-      <slot />
-    </transition-group>
+    <main class="logged__main">
+      <transition
+        name="view"
+        mode="out-in"
+      >
+        <slot />
+      </transition>
+    </main>
   </div>
 </template>
 
 <script>
 import { computed, onErrorCaptured } from 'vue';
 
-import grass from '@/assets/totally-not-stolen-grass.png';
+import background from '@/assets/carpet.jpg';
 
 import { useCardStore } from '@/stores/cardStore';
 import { useAppStore } from '@/stores/appStore';
@@ -44,7 +45,7 @@ export default {
     await appStore.preloadCardImages(cardImages);
 
     return {
-      grass,
+      background,
     };
   },
 };
@@ -70,19 +71,26 @@ export default {
     overflow-y: auto;
   }
 }
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
+.view-enter-from {
   opacity: 0;
+  transform: scale(0.9);
 }
 
-.fade-enter-to,
-.fade-leave {
+.view-enter-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.view-enter-to {
   opacity: 1;
+  transform: scale(1);
+}
+
+.view-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.view-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
 }
 </style>

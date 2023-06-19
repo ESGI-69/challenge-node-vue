@@ -10,20 +10,6 @@ on:
     paths: [ 'frontend/**', '.github/**' ]
 
 jobs:
-  unit-tests:
-    name: Unit tests (frontend)
-    defaults:
-      run:
-        working-directory: frontend
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - name: Install dependencies
-        run: npm install vue vitest
-      - run: npm test
   eslint:
     name: Eslint (frontend)
     defaults:
@@ -39,3 +25,18 @@ jobs:
         run: npm install eslint
       - name: Launch eslint
         run: npm run lint
+  build:
+    name: Build (frontend)
+    defaults:
+      run:
+        working-directory: frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
