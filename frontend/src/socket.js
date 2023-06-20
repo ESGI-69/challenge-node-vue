@@ -9,7 +9,7 @@ export const state = reactive({
 
 // TODO use env variable
 // export const socket = io(import.meta.env.VITE_API);
-export const socket = io('http://localhost:3000/');
+export const socket = io('http://localhost:3000/', { autoConnect: false });
 
 export const connect = () => new Promise((resolve) => {
   socket.connect();
