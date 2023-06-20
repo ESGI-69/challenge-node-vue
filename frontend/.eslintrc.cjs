@@ -26,7 +26,7 @@ module.exports = {
     quotes: [ 'error', 'single' ],
     'vue/multi-word-component-names': 'off',
     'comma-dangle': [ 'error', 'always-multiline' ],
-    'no-console': 'warn',
+    'no-console': [ 'error', { allow: [ 'warn', 'error' ] } ],
     'quote-props': [ 'error', 'as-needed' ],
     'vue/html-indent': [
       'error',
