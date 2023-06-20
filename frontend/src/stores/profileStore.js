@@ -7,7 +7,17 @@ export const useProfileStore = defineStore('profileStore', {
   state: () => ({
     isProfileLoading: false,
     /**
-     * @type {{ id: number, email: string, firstname: string, lastname: string, avatar: string, role: string, createdAt: string, updatedAt: string }
+     * @type {{
+     *  id: number;
+     *  email: string;
+     *  firstname: string;
+     *  lastname: string;
+     *  avatar: string;
+     *  role: string;
+     *  balance: number;
+     *  createdAt: string;
+     *  updatedAt: string;
+     * }
      */
     profile: {},
     /**
