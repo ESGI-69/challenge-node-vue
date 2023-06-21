@@ -3,6 +3,7 @@
     class="logged"
     :style="{ backgroundImage: `url(${background})` }"
   >
+    <topbar class="logged__topbar" />
     <main class="logged__main">
       <transition
         name="view"
@@ -17,6 +18,8 @@
 <script>
 import { computed, onErrorCaptured } from 'vue';
 
+import Topbar from '@/components/Topbar.vue';
+
 import background from '@/assets/carpet.jpg';
 
 import { useCardStore } from '@/stores/cardStore';
@@ -26,6 +29,9 @@ import { connect } from '@/socket';
 
 export default {
   name: 'LoggedLayout',
+  components: {
+    Topbar,
+  },
   async setup() {
     onErrorCaptured((error) => {
       console.error('Error captured in LoggedLayout');
@@ -59,7 +65,6 @@ export default {
   display: grid;
   grid-template-areas: "topbar" "main";
   grid-template-rows: auto 1fr;
-  grid-template-columns: 1fr;
   min-height: 100%;
   background-size: 192px;
   image-rendering: pixelated;
