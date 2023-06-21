@@ -5,9 +5,9 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 ## Notable features
 
 - Dockerized project with healthchecks:
-  - The postgres database, with docker healthcheck that will check if the database is up and ready to accept connections.
+  - The postgres database, with **docker healthcheck** that will check if the database is up and ready to accept connections.
 
-  - The backend is a node.js application, with a healthcheck endpoint that is used by the docker healthcheck.
+  - The backend is a node.js application, with a **healthcheck endpoint** that is used by the docker healthcheck.
   
     The healthcheck endpoint is available at `/healthcheck`. It will return a 200 status code if the application is connected to the database, and a 500 status code otherwise.
 
@@ -17,13 +17,15 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 
     The container will wait for the backend to be ready (based on the backend container healthcheck) before launching the application.
 
-- Backend unit tests, running in github action with `jest` test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
+- **Backend unit tests**, running in github action with `jest` test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a **code sanity** check with eslint.
 
   You can find the backend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/backend-test.yml).
 
-- Frontend unit tests, running in github action with the vitest test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a code sanity check with eslint.
+- **Frontend tests** include a **code sanity** check with eslint and a **build** runner for ensuring that the build is working.
 
   You can find the frontend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/frontend-test.yml)
+
+- The project use **web socket** for the realtime communication between the frontend and the backend.
 
 ## Launch the project locally **for development**
 
@@ -63,16 +65,17 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   npm run migrate
   ```
 
-  You can also use the `npm run migrate:force` to force the migration. This command is useful if you want to reset the database. **⚠️ Be careful, this command will drop all the tables of the database. ⚠️**
+  You can also use the `npm run migrate:force` to force the migration. This command is useful if you want to reset the database. **⚠️ Be careful, this command will drop all the tables of the database. ⚠️**. This command will not migrate using the migration files that us have written, so don't use it to test if your migrations are correct.
 
 - Seed the database
   ```bash
   npm run seed
   ```
 
-  This command will create a 2 users with the following credentials:
+  This command will create a 3 users with the following credentials:
   - email: `johndoe@example.com`, password: `123456`
   - email: `janedoe@example.com`, password: `123456`
+  - email: `admin@example.com`, password: `123456` (this user has the `ADMIN` role)
 
 - Launch the backend
   ```bash
@@ -97,13 +100,18 @@ Before launching the tests, you need to install the dependencies of the project 
 
 - You can launch the tests with
   ```bash
-  cd backend # or cd frontend
+  cd backend
   npm test
   ```
 - You can verify the code sanity (for frontend & backend) with
   ```bash
   cd backend # or cd frontend
   npm run lint
+  ```
+- You can build the frontend with
+  ```bash
+  cd frontend
+  npm run build
   ```
 
 ## Launch the project localy **as in production** (not recommended for development)

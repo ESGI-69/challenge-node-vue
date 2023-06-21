@@ -1,5 +1,7 @@
 import express from 'express';
+import { createServer } from 'http';
 import cors from 'cors';
+import { Server as SocketIoServer } from 'socket.io';
 
 import errorHandler from './errorHandler.js';
 import userService from './services/user.js';
@@ -14,6 +16,24 @@ import { connection } from './db/index.js';
 import { populateUser } from './middleware.js';
 
 const app = express();
+
+const server = createServer(app);
+
+const io = new SocketIoServer(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+  },
+});
+
+io.on('connection', (client) => {
+  // eslint-disable-next-line no-console
+  console.log('Client connected');
+
+  client.on('disconnect', () => {
+    // eslint-disable-next-line no-console
+    console.log('Client disconnected');
+  });
+});
 
 process.env.PWD = process.cwd();
 
@@ -46,7 +66,7 @@ app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
   // eslint-disable-next-line no-console
-  app.listen(3000, () => console.log('Server started on port 3000'));
+  server.listen(3000, () => console.log('Server started on port 3000'));
 }
 
 export { app };

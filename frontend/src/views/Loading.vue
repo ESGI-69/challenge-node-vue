@@ -23,6 +23,7 @@ import { computed } from 'vue';
 import { useCardStore } from '@/stores/cardStore';
 import { useAppStore } from '@/stores/appStore';
 import { useProfileStore } from '@/stores/profileStore';
+import { state } from '@/socket';
 
 import wall from '@/assets/tiling_wall.png';
 
@@ -36,6 +37,7 @@ export default {
     const progress = computed(() => appStore.preloadedCardImages);
     const isProfileLoading = computed(() => profileSotre.isProfileLoading);
     const status = computed(() => {
+      if (!state.connected) return 'Connecting to the game server...';
       if (isProfileLoading.value) return 'Retrieving profile...';
       if (cardCount.value === 0) return 'Retrieving cards...';
       if (progress.value !== cardCount.value) return `Loading card images ${progress.value}/${cardCount.value} ...`;
