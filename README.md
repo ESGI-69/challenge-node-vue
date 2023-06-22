@@ -153,6 +153,7 @@ Environment variables are used to configure the application. You can find the li
 | `POSTGRES_DB` | The name of the postgres database | `app` |
 | `MONGO_ROOT_USER` | The username of the mongodb database | `root` |
 | `MONGO_ROOT_PASSWORD` | The password of the mongodb database | `password` |
+| `MONGO_DB` | The name of the mongodb database | `app` |
 | `JWT_SECRET` | The secret use for the JWT generation (please genereate a random >32 letter string) | |
 | `VITE_API` | The url that match the proxy in the frontend. For avoiding CORS issues | `/api` |
 | `VITE_API_TIMEOUT` | The timeout of the api calls, in milliseconds | `30000` |
