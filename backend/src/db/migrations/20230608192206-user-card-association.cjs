@@ -17,6 +17,8 @@ module.exports = {
           key: 'id',
         },
         primaryKey: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       cardId: {
         type: Sequelize.INTEGER,
@@ -25,6 +27,8 @@ module.exports = {
           key: 'id',
         },
         primaryKey: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
   },
