@@ -5,7 +5,7 @@ services:
     container_name: challenge-2023-backend
     networks:
       - swag
-      - database
+      - databases
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -40,6 +40,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+      mongo:
+        condition: service_started
     environment:
       NODE_ENV: production
       VITE_API_TIMEOUT: ${VITE_API_TIMEOUT}
