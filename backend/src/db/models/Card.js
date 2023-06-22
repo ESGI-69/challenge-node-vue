@@ -4,10 +4,48 @@ import { Pack, Pack_Card, User, User_Card } from '../index.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
+ * @param {import('mongoose').Mongoose} mongoose
  */
 
-export default (connection) => {
+export default (connection, mongoose) => {
   class Card extends Model {
+    static mongoSchema = new mongoose.Schema({
+      id: {
+        type: Number,
+        required: true,
+        unique: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      cost: {
+        type: Number,
+        required: true,
+      },
+      rarity: {
+        type: String,
+        enum: ['common', 'rare', 'epic', 'legendary'],
+        default: 'common',
+      },
+      type: String,
+      attack: Number,
+      health: Number,
+      description: {
+        type: String,
+        required: true,
+      },
+      image: {
+        type: String,
+        required: true,
+      },
+      createdAt: Date,
+      updatedAt: Date,
+      // TODO: Add relations to mongo schema
+      // packIds: [Number],
+      // userIds: [Number],
+    });
+
     static associate() {
       this.belongsToMany(User, { through: User_Card, foreignKey: 'cardId' });
       this.belongsToMany(Pack, { through: Pack_Card, foreignKey: 'cardId' });

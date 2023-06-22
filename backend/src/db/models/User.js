@@ -9,9 +9,50 @@ import { Card, User_Card } from '../index.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
+ * @param {import('mongoose').Mongoose} mongoose
  */
-export default (connection) => {
+export default (connection, mongoose) => {
   class User extends Model {
+    static mongoSchema = new mongoose.Schema({
+      id: {
+        type: Number,
+        required: true,
+        unique: true,
+      },
+      avatar: {
+        type: String,
+        required: true,
+      },
+      lastname: {
+        type: String,
+        required: true,
+      },
+      firstname: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
+      role: {
+        type: String,
+        enum: ['USER', 'ADMIN'],
+        default: 'USER',
+      },
+      balance: {
+        type: Number,
+        default: 50,
+        required: true
+      },
+      mailToken: {
+        type: String,
+        default: null,
+      },
+      createdAt: Date,
+      updatedAt: Date,
+    });
+
     static associate() {
       this.belongsToMany(Card, { through: User_Card, foreignKey: 'userId' });
     }
