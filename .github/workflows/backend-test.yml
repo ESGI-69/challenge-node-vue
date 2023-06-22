@@ -13,9 +13,12 @@ env:
   POSTGRES_USER: root
   POSTGRES_PASSWORD: password
   POSTGRES_DB: app
+  MONGO_ROOT_USER: root
+  MONGO_ROOT_PASSWORD: password
   NODE_ENV: test
   # TODO: use github secrets
   JWT_SECRET: QHUP0R3vieku9oG0zvpJ96WCCv2RI1g0B1S4e9i1tIxZGfLfrOIiWdGf5vyA98aw
+  FRONTEND_URL: http://localhost:8080
 
 jobs:
   unit-tests:
@@ -34,6 +37,13 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 1s --health-timeout 5s --health-retries 5
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: password
 
     steps:
       - uses: actions/checkout@v3
