@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 
-import { User, User_Card } from '../index.js';
+import { Pack, Pack_Card, User, User_Card } from '../index.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
@@ -10,6 +10,7 @@ export default (connection) => {
   class Card extends Model {
     static associate() {
       this.belongsToMany(User, { through: User_Card, foreignKey: 'cardId' });
+      this.belongsToMany(Pack, { through: Pack_Card, foreignKey: 'cardId' });
     }
   }
 

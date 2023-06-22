@@ -23,27 +23,27 @@ module.exports = {
     await queryInterface.bulkInsert('pack_cards', [
       {
         packId: 1,
-        CardId: 1,
+        cardId: 1,
         createdAt: new Date(),
       },
       {
         packId: 1,
-        CardId: 2,
+        cardId: 2,
         createdAt: new Date(),
       },
       {
         packId: 1,
-        CardId: 3,
+        cardId: 3,
         createdAt: new Date(),
       },
       {
         packId: 1,
-        CardId: 4,
+        cardId: 4,
         createdAt: new Date(),
       },
       {
         packId: 1,
-        CardId: 5,
+        cardId: 5,
         createdAt: new Date(),
       },
     ]);
