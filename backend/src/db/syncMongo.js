@@ -48,22 +48,22 @@ export default async(models, sequelize) => {
     await this.mongoModel.findOneAndDelete({ id });
   };
 
-  sequelize.addHook('afterCreate', async function (item) {
+  sequelize.addHook('afterCreate', function (item) {
     // If it's a join table, don't add it to MongoDB
     if (this.tableName.includes('_')) return;
-    await this.addToMongo(item);
+    this.addToMongo(item);
   });
 
-  sequelize.addHook('afterBulkUpdate', async function (options) {
+  sequelize.addHook('afterBulkUpdate', function (options) {
     // If it's a join table, don't add it to MongoDB
     if (this.tableName.includes('_')) return;
-    await this.updateToMongo(options.where.id, options.attributes);
+    this.updateToMongo(options.where.id, options.attributes);
   });
 
-  sequelize.addHook('afterBulkDestroy', async function (options) {
+  sequelize.addHook('afterBulkDestroy', function (options) {
     // If it's a join table, don't add it to MongoDB
     if (this.tableName.includes('_')) return;
-    await this.removeFromMongo(options.where.id);
+    this.removeFromMongo(options.where.id);
   });
 
   // Loop through all models
