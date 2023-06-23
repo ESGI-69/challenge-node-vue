@@ -49,7 +49,6 @@ describe('Register flow', () => {
       .then((res) => {
         expect(typeof res.body.id).toBe('number');
         userId = res.body.id;
-        userEmailToken = res.body.mailToken;
         expect(res.body.email).toBe(user.email);
         expect(res.body.firstname).toBe(user.firstname);
         expect(res.body.lastname).toBe(user.lastname);
@@ -59,6 +58,20 @@ describe('Register flow', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         user.createdAt = res.body.createdAt;
         expect(res.body.password).toBeUndefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('GET /users/token/:id should return 200 and the user token', (done) => {
+    request(app)
+      .get(`/users/token/${userId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.token).toBeDefined();
+        userEmailToken = res.body.token;
         done();
       })
       .catch(done);
@@ -96,12 +109,14 @@ describe('Register flow', () => {
   });
 
   it('POST /users/confirm should confirm the user', (done) => {
+
     request(app)
       .post('/users/confirm')
       .send({ mailToken: userEmailToken })
       .expect(200)
       .then(async () => {
         playerToken = await getJwt(user.email, user.password);
+        console.log(userEmailToken);
         done();
       })
       .catch(done);
@@ -160,6 +175,20 @@ describe('User register with avatar', () => {
         avatarUserId = res.body.id;
         avatarEmailToken = res.body.mailToken;
         expect(res.body.avatar).toBeUndefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('GET /users/token/:id should return 200 and the user token', (done) => {
+    request(app)
+      .get(`/users/token/${avatarUserId}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.token).toBeDefined();
+        avatarEmailToken = res.body.token;
         done();
       })
       .catch(done);

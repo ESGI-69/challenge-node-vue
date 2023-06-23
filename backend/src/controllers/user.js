@@ -227,4 +227,13 @@ export default {
       next(err);
     }
   },
+
+  getToken: async (req, res, next) => {
+    try {
+      const token = await userService.getToken(req.params.id);
+      res.json(token);
+    } catch (err) {
+      next(err);
+    }
+  },
 };

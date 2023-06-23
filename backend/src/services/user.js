@@ -40,7 +40,8 @@ export default {
       returning: true,
       individualHooks: true, // to trigger the encryption hook on update (see user model)
     });
-    return this.findById(users[0].id);
+    if (!users.length) throw new Error('User not found', { cause: 'Not Found' });
+    return this.findById(users[0].id) ;
   },
   validate: function (data) {
     return User.build(data).validate();
@@ -103,5 +104,14 @@ export default {
     await user.update({
       mailToken: null,
     });
+  },
+  getToken: async function (userId) {
+    const user = await User.scope('withEmailToken').findOne({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) throw new Error('User not found', { cause: 'Not Found' });
+    return { token: user.mailToken };
   },
 };
