@@ -1,4 +1,4 @@
 node_modules
-db-data
+mg-data
 pg-data
 .env

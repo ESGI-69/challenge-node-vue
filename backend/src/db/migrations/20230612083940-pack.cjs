@@ -48,7 +48,7 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
-      CardId: {
+      cardId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

@@ -92,6 +92,16 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   ```
 - You can now access the frontend on http://localhost:8080 and the backend on http://localhost:3000 🎉
 
+### View the mongodb database content
+
+You can access the mongodb database with the credential defined in the `.env` file. (see the [environment variables](#environment-variables) section for more details
+
+For viewing the database content, you have 2 options:
+
+- Using mongo-express. This is a web interface for viewing the database content. It is available at http://localhost:8085. It is already included in the `docker-compose.dev.yaml` file, so you don't need to do anything to use it.
+
+- Using a GUI like [MongoDB Compass](https://www.mongodb.com/products/compass)
+
 ## Launch the tests
 
 Theses tests are launched in the CI/CD pipeline, but you can launch them locally for ensuring that your code is clean.
@@ -141,6 +151,9 @@ Environment variables are used to configure the application. You can find the li
 | `POSTGRES_USER` | The username of the postgres database | `root` |
 | `POSTGRES_PASSWORD` | The password of the postgres database | `password` |
 | `POSTGRES_DB` | The name of the postgres database | `app` |
+| `MONGO_ROOT_USER` | The username of the mongodb database | `root` |
+| `MONGO_ROOT_PASSWORD` | The password of the mongodb database | `password` |
+| `MONGO_DB` | The name of the mongodb database | `app` |
 | `JWT_SECRET` | The secret use for the JWT generation (please genereate a random >32 letter string) | |
 | `VITE_API` | The url that match the proxy in the frontend. For avoiding CORS issues | `/api` |
 | `VITE_API_TIMEOUT` | The timeout of the api calls, in milliseconds | `30000` |

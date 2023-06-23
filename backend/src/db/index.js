@@ -1,5 +1,8 @@
 import Sequelize from 'sequelize';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+
+import syncMongo from './syncMongo.js';
 
 import card from './models/Card.js';
 import pack from './models/Pack.js';
@@ -9,14 +12,20 @@ import user_Card from './models/UserCard.js';
 
 /**
  * The domain name of the postgres database
- * @type {'localhost' | 'postgres'}
+ * @type {'127.0.0.1' | 'postgres'}
  */
-let postgresDomainName  = 'localhost';
+let postgresDomainName  = '127.0.0.1';
+/**
+ * The domain name of the mongodb database
+ * @type {'127.0.0.1' | 'mongo'}
+ */
+let mongoDomainName = '127.0.0.1';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: './../.env' });
 } else {
   postgresDomainName = 'postgres';
+  mongoDomainName = 'mongo';
 }
 
 /**
@@ -27,17 +36,26 @@ const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${proc
   logging: false,
 });
 
+const mongoConnection = await mongoose.connect(`mongodb://${process.env.MONGO_ROOT_USER}:${process.env.MONGO_ROOT_PASSWORD}@${mongoDomainName}:27017/${process.env.MONGO_DB}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  authSource: 'admin',
+});
+
 // Load models
-const Card = card(connection);
-const Pack = pack(connection);
+const Card = card(connection, mongoConnection);
+const Pack = pack(connection, mongoConnection);
 const Pack_Card = pack_Card(connection);
-const User = user(connection);
+const User = user(connection, mongoConnection);
 const User_Card = user_Card(connection);
 
 // Launch associations methods for relations between tables
 User.associate();
 Card.associate();
 Pack.associate();
+
+// Syncronize MongoDB with MySQL database, create documents in MongoDB for each row in MySQL. Do not pass junction tables to syncMongo
+await syncMongo([ Card, Pack, User ], connection);
 
 export {
   Card,
