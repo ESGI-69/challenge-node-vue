@@ -31,7 +31,7 @@ export default (connection) => {
      * @returns {Promise<boolean>}
     */
     async isEmailConfirmed(email) {
-      const user = await User.findOne({ where: { email } });
+      const user = await User.scope('withEmailToken').findOne({ where: { email } });
       return user.mailToken === null;
     }
 
@@ -126,7 +126,7 @@ export default (connection) => {
       sequelize: connection,
       tableName: 'users',
       defaultScope: {
-        attributes: { exclude: ['password', 'avatar'] },
+        attributes: { exclude: ['password', 'avatar', 'mailToken'] },
       },
       scopes: {
         withPassword: {
@@ -134,6 +134,9 @@ export default (connection) => {
         },
         withAvatar: {
           attributes: { include: ['avatar'] },
+        },
+        withEmailToken: {
+          attributes: { include: ['mailToken'] },
         },
       },
     }

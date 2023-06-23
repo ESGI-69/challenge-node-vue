@@ -93,7 +93,7 @@ export default {
    * @param {import('sequelize').WhereOptions} emailToken
    */
   confirm: async function (emailToken) {
-    const user = await User.findOne({
+    const user = await User.scope('withEmailToken').findOne({
       where: {
         mailToken: emailToken,
       },
