@@ -138,6 +138,9 @@ export default (connection) => {
         withEmailToken: {
           attributes: { include: ['mailToken'] },
         },
+        withoutEmailToken: {
+          attributes: { exclude: ['mailToken'] },
+        },
       },
     }
   );
@@ -212,18 +215,6 @@ export default (connection) => {
   User.addHook('beforeCreate', encryptPassword);
 
   User.addHook('beforeUpdate', encryptPassword);
-
-  // Remove password & avatar from the return value after the user is created
-  User.addHook('afterCreate', (user) => {
-    delete user.dataValues.password;
-    delete user.dataValues.avatar;
-  });
-
-  // Remove password & avatar from the return value after the user is updated
-  User.addHook('afterUpdate', (user) => {
-    delete user.dataValues.password;
-    delete user.dataValues.avatar;
-  });
 
   // Remove profile picture from the server when the user is updated
   User.addHook('beforeUpdate', deleteAvatar);

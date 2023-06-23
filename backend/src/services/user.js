@@ -7,7 +7,7 @@ export default {
    * @returns
    */
   findLogin: function (criteria) {
-    return User.scope('withPassword').findOne({
+    return User.scope('withPassword', 'withoutEmailToken').findOne({
       where: criteria,
     });
   },
@@ -25,13 +25,14 @@ export default {
     });
   },
   findByIdAvatar: function (id) {
-    return User.scope('withAvatar').findByPk(id);
+    return User.scope('withAvatar', 'withoutEmailToken').findByPk(id);
   },
   findById: function (id) {
     return User.findByPk(id);
   },
-  create: function (data) {
-    return User.create(data);
+  create: async function (data) {
+    const user = await User.create(data);
+    return this.findById(user.id);
   },
   update: async function (criteria, data) {
     const [, users = []] = await User.update(data, {
@@ -39,7 +40,7 @@ export default {
       returning: true,
       individualHooks: true, // to trigger the encryption hook on update (see user model)
     });
-    return users;
+    return this.findById(users[0].id);
   },
   validate: function (data) {
     return User.build(data).validate();

@@ -149,7 +149,7 @@ export default {
    */
   patch: async (req, res, next) => {
     try {
-      const [user] = await userService.update(
+      const user = await userService.update(
         { id: parseInt(req.params.id) },
         req.body
       );
