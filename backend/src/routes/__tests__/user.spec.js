@@ -27,9 +27,11 @@ let avatarJwt;
 let userId;
 let playerToken;
 let userEmailToken;
+let avatarUserId;
+let avatarEmailToken;
 const adminToken = await getJwt('admin@example.com', '123456');
 
-describe('Register flow', () => {
+describe('Begin Register flow', () => {
   let mailerSendMailMock;
 
   beforeAll(() => {
@@ -62,8 +64,10 @@ describe('Register flow', () => {
       })
       .catch(done);
   });
+}),
 
-  it('GET /users/email-token/:id should return 200 and the user token', (done) => {
+describe('Get email token of user', () => {
+  it('GET /users/email-token/:id as ADMIN should return 200 and the user token', (done) => {
     request(app)
       .get(`/users/email-token/${userId}`)
       .set('Authorization', `Bearer ${adminToken}`)
@@ -77,7 +81,19 @@ describe('Register flow', () => {
       .catch(done);
   });
 
+  it('GET /users/email-token/:id as Anonymous should return 401', (done) => {
+    request(app)
+      .get(`/users/email-token/${userId}`)
+      .expect(401)
+      .then((res) => {
+        expect(res.body.message).toBe('Not logged in');
+        done();
+      })
+      .catch(done);
+  });
+}),
 
+describe('Continue Register flow', () => {
   it('POST /users/ should return 400 if email is invalid', (done) => {
     request(app)
       .post('/users/')
@@ -100,7 +116,7 @@ describe('Register flow', () => {
       .send(noEmailUser)
       .expect(400)
       .expect('Content-Type', /json/)
-      .then(async (res) => {
+      .then((res) => {
         expect(res.body.missingFields).toContain('email');
         expect(res.body.invalidFields).not.toBeDefined();
         done();
@@ -109,7 +125,6 @@ describe('Register flow', () => {
   });
 
   it('POST /users/confirm-email should confirm the user', (done) => {
-
     request(app)
       .post('/users/confirm-email ')
       .send({ mailToken: userEmailToken })
@@ -145,9 +160,6 @@ describe('Register flow', () => {
 });
 
 describe('User register with avatar', () => {
-  let avatarUserId;
-  let avatarEmailToken;
-
   let mailerSendMailMock;
 
   beforeAll(() => {
@@ -169,7 +181,7 @@ describe('User register with avatar', () => {
     req
       .expect(201)
       .expect('Content-Type', /json/)
-      .then(async (res) => {
+      .then((res) => {
         expect(typeof res.body.id).toBe('number');
         avatarUserId = res.body.id;
         avatarEmailToken = res.body.mailToken;
@@ -178,7 +190,9 @@ describe('User register with avatar', () => {
       })
       .catch(done);
   });
+}),
 
+describe('Get email token of User with avatar', () => {
   it('GET /users/email-token/:id should return 200 and the user token', (done) => {
     request(app)
       .get(`/users/email-token/${avatarUserId}`)
@@ -192,7 +206,15 @@ describe('User register with avatar', () => {
       })
       .catch(done);
   });
+  it('GET /users/email-token/:id as User should return 403', () => {
+    request(app)
+      .get(`/users/email-token/${avatarUserId}`)
+      .set('Authorization', `Bearer ${playerToken}`)
+      .expect(403);
+  });
+}),
 
+describe('Continue Register flow of User with avatar', () => {
   it ('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
       .post('/users/confirm-email')
