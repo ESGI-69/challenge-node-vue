@@ -5,6 +5,7 @@ import $API from '@/plugins/axios';
 export const useGameStore = defineStore('gameStore', {
     state: () => ({
         isGameLoading: false,
+        isGameLeft: false,
         games: {},
     }),
 
@@ -25,7 +26,25 @@ export const useGameStore = defineStore('gameStore', {
             } finally {
                 this.isGameLoading = false;
             }
+        },
+
+        async leave(payload) {
+            this.isGameLoading = true;
+            let gameId = payload.id;
+            try {
+                // await $API.post('/game/', payload);
+                const { data } = await $API.delete('/game/leave/'+gameId, payload);
+            }
+            catch (err) {
+                throw err.response.data;
+            }
+            finally {
+                this.games =  {};
+                this.isGameLoading = false;
+                this.isGameLeft = true;
+            }
         }
+
 
     },
     

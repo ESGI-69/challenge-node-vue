@@ -142,6 +142,29 @@ export default {
         } catch (err) {
             next(err)
         }
-    } 
+    },
+
+    leaveGame: async (req, res, next) => {
+        try {
+            // check if the game id is in the database with the req.user.id in the first_player or second_player
+            const currentGame = await gameService.findByUserId(req.user.id);
+            if(currentGame.length === 0) {
+                res.status(400).json({ error: 'You are not in a game' });
+                return;
+            }
+            // return res.status(200).json(req);
+            // if the game has the user id
+            if(currentGame[0].first_player === req.user.id || currentGame[0].second_player === req.user.id) {
+                const nbRemoved = await gameService.remove({
+                    id: parseInt(req.params.id)
+                })
+                res.sendStatus(nbRemoved ? 204 : 404)
+            }else{
+                res.status(400).json({ error: 'You are not in a game' });
+            }
+        } catch (err) {
+            next(err)
+        }
+    }
 };
 

@@ -6,9 +6,9 @@
       </div>
       <div v-else>
           <h2>{{ status }}</h2>
-          <p>  Game token : {{ actualGame.value.token }} </p>
-          <button type="button" class="nes-btn is-error">Quitter la partie</button>
-        </div>
+          <p v-if="actualGame.value.token">  Game token : {{ actualGame.value.token }} </p>
+          <button @click="leaveGame" type="button" class="nes-btn is-error">Quitter la partie</button>
+      </div>
  
  </div> 
 </template>
@@ -16,8 +16,9 @@
 
 
 <script>
-import { reactive, computed, ref } from 'vue';
+import { reactive, computed, watch} from 'vue';
 import { useGameStore } from '@/stores/gameStore';
+import router from '@/router';
 // import Game from '@/components/Game.vue';
 
 export default {
@@ -36,10 +37,14 @@ export default {
     const actualGame = reactive({
       value: null,
     });
+    const isGameLeft = reactive({
+      value: false,
+    });
 
     createGame.value = computed(() => gameStore.create({}));
     actualGame.value = computed(() => gameStore.games);
     isGameLoading.value = computed(() => gameStore.isGameLoading);
+    isGameLeft.value = computed(() => gameStore.isGameLeft);
 
     const status = computed(() => {
       if (isGameLoading.value) return 'Loading...';
@@ -48,12 +53,23 @@ export default {
       return 'Crushing the Bridge of Khazad-dûm ...';
     });
 
+    function leaveGame() {
+      gameStore.leave({ id: actualGame.value.id }).then((data) => {
+        if(isGameLeft.value){
+          router.push({ path: '/' });
+        }else{
+          // do nothing
+        }
+      });
+    }
 
     return {
       createGame,
       isGameLoading,
       actualGame,
       status,
+      leaveGame,
+      isGameLeft,
     };
   },
 };
@@ -61,7 +77,6 @@ export default {
 
 <style lang="scss" scoped>
 .the-game {
- 
   background-color: #fff;
 }
 </style>
