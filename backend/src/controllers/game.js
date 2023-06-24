@@ -44,7 +44,9 @@ export default {
             const currentGame = await gameService.findByUserId(req.user.id);
 
             if (currentGame.length > 0) {
-                res.status(400).json({ message: 'You are already in a game' });
+                // res.status(400).json({ message: 'You are already in a game' });
+                // return the current Game 
+                res.status(200).json(currentGame[0]);
                 return;
             }
 

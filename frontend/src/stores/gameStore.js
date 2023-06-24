@@ -5,6 +5,7 @@ import $API from '@/plugins/axios';
 export const useGameStore = defineStore('gameStore', {
     state: () => ({
         isGameLoading: false,
+        games: {},
     }),
 
     actions: {
@@ -16,7 +17,9 @@ export const useGameStore = defineStore('gameStore', {
         async create(payload) {
             this.isGameLoading = true;
             try {
-                await $API.post('/game/', payload);
+                // await $API.post('/game/', payload);
+                const { data } = await $API.post('/game/', payload);
+                this.games = data;
             } catch (err) {
                 throw err.response.data;
             } finally {
