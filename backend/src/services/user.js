@@ -94,7 +94,7 @@ export default {
    * @param {import('../db/index.js').User} userModel
    * @param {import('sequelize').WhereOptions} emailToken
    */
-  confirm: async function (emailToken) {
+  confirmEmail: async function (emailToken) {
     const user = await User.scope('withEmailToken').findOne({
       where: {
         mailToken: emailToken,
@@ -105,13 +105,13 @@ export default {
       mailToken: null,
     });
   },
-  getToken: async function (userId) {
+  getEmailToken: async function (userId) {
     const user = await User.scope('withEmailToken').findOne({
       where: {
         id: userId,
       },
     });
     if (!user) throw new Error('User not found', { cause: 'Not Found' });
-    return { token: user.mailToken };
+    return { emailToken: user.mailToken };
   },
 };

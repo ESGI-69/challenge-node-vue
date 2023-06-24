@@ -63,15 +63,15 @@ describe('Register flow', () => {
       .catch(done);
   });
 
-  it('GET /users/token/:id should return 200 and the user token', (done) => {
+  it('GET /users/email-token/:id should return 200 and the user token', (done) => {
     request(app)
-      .get(`/users/token/${userId}`)
+      .get(`/users/email-token/${userId}`)
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        expect(res.body.token).toBeDefined();
-        userEmailToken = res.body.token;
+        expect(res.body.emailToken).toBeDefined();
+        userEmailToken = res.body.emailToken;
         done();
       })
       .catch(done);
@@ -108,15 +108,14 @@ describe('Register flow', () => {
       .catch(done);
   });
 
-  it('POST /users/confirm should confirm the user', (done) => {
+  it('POST /users/confirm-email should confirm the user', (done) => {
 
     request(app)
-      .post('/users/confirm')
+      .post('/users/confirm-email ')
       .send({ mailToken: userEmailToken })
       .expect(200)
       .then(async () => {
         playerToken = await getJwt(user.email, user.password);
-        console.log(userEmailToken);
         done();
       })
       .catch(done);
@@ -180,23 +179,23 @@ describe('User register with avatar', () => {
       .catch(done);
   });
 
-  it('GET /users/token/:id should return 200 and the user token', (done) => {
+  it('GET /users/email-token/:id should return 200 and the user token', (done) => {
     request(app)
-      .get(`/users/token/${avatarUserId}`)
+      .get(`/users/email-token/${avatarUserId}`)
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
-        expect(res.body.token).toBeDefined();
-        avatarEmailToken = res.body.token;
+        expect(res.body.emailToken).toBeDefined();
+        avatarEmailToken = res.body.emailToken;
         done();
       })
       .catch(done);
   });
 
-  it ('POST /users/confirm should confirm the user', (done) => {
+  it ('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
-      .post('/users/confirm')
+      .post('/users/confirm-email')
       .send({ mailToken: avatarEmailToken })
       .expect(200)
       .then(async () => {

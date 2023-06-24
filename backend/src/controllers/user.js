@@ -212,25 +212,32 @@ export default {
   },
 
   /**
-   * Express.js controller for confirm /users/confirm
+   * Express.js controller for confirm /users/confirm-email
    * @param {import ('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    * @returns {Promise <void>}
    */
 
-  confirm: async (req, res, next) => {
+  confirmEmail: async (req, res, next) => {
     try {
-      await userService.confirm(req.body.mailToken);
+      await userService.confirmEmail(req.body.mailToken);
       res.sendStatus(200);
     } catch (err) {
       next(err);
     }
   },
 
-  getToken: async (req, res, next) => {
+  /**
+   * Express.js controller for GET /users/email-token/:id
+   * @param {import ('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise <void>}
+   */
+  getEmailToken: async (req, res, next) => {
     try {
-      const token = await userService.getToken(req.params.id);
+      const token = await userService.getEmailToken(req.params.id);
       res.json(token);
     } catch (err) {
       next(err);
