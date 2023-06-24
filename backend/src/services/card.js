@@ -12,6 +12,9 @@ export default {
   findById: function (id) {
     return Card.findByPk(id);
   },
+  findByIdImage: function (id) {
+    return Card.scope('onlyImage').findByPk(id);
+  },
   /**
    * Find a random card with the given rarity and excluding the given IDs
    * @param {'common' | 'rare' | 'epic' | 'legendary'} rarity The rarity of the card to find

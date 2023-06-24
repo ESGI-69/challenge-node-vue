@@ -22,7 +22,7 @@
         <div class="card__container__front__header">
           <div
             class="card__container__front__header__image"
-            :style="{ backgroundImage: `url(${image})` }"
+            :style="{ backgroundImage: `url(${imageUrl})` }"
           />
           <span class="card__container__front__header__name">
             {{ name }}
@@ -86,13 +86,6 @@ export default {
      */
     cost: {
       type: Number,
-      required: true,
-    },
-    /**
-     * The image of the card.
-     */
-    image: {
-      type: String,
       required: true,
     },
     /**
@@ -179,6 +172,7 @@ export default {
     const { isFlippable, id } = toRefs(props);
 
     const clickEvent = computed(() => isFlippable.value ? 'click' : null);
+    const imageUrl = computed(() => `${import.meta.env.VITE_API}/cards/${id.value}/image`);
     const isFaceDown = ref(props.isStartFaceDown);
 
     const flipCard = () => {
@@ -191,6 +185,7 @@ export default {
       flipCard,
       isFaceDown,
       backOfCard,
+      imageUrl,
     };
   },
 };

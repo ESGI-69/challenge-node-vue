@@ -33,7 +33,7 @@ export default {
     const cardStore = useCardStore();
     const appStore = useAppStore();
     const profileStore = useProfileStore();
-    const cardCount = computed(() => cardStore.cards.length);
+    const cardCount = computed(() => cardStore.userCardsCount);
     const progress = computed(() => appStore.preloadedCardImages);
     const isProfileLoading = computed(() => profileStore.isProfileLoading);
     const status = computed(() => {

@@ -81,7 +81,7 @@ export default (connection) => {
   );
 
   // Adding scope after class declaration for accesing attributes
-  Card.addScope('withImage', {
+  Card.addScope('onlyImage', {
     attributes: { include: ['image'], exclude: Object.keys(Card.getAttributes()) },
   });
 

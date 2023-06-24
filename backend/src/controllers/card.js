@@ -58,6 +58,24 @@ export default {
     }
   },
   /**
+   * Express.js controller for GET /cards/:id/image
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   * */
+  getImage: async (req, res, next) => {
+    try {
+      const card = await cardService.findByIdImage(parseInt(req.params.id));
+      if (!card) return res.sendStatus(404);
+      res.sendFile(card.image, {
+        root: 'public/card-images',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  /**
    * Express.js controller for PUT /cards/:id
    * @param {import('express').Request} req
    * @param {import('express').Response} res

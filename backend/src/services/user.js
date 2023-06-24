@@ -58,8 +58,14 @@ export default {
    *
    * @param {import('../db/index.js').User} userModel
    */
-  getCards: function (userModel) {
-    return userModel.getCards();
+  getCards: async function (userModel) {
+    const cards = (await userModel.getCards()).map((card) => {
+      const cleanCard = card.toJSON();
+      // Remove the pivot table data
+      delete cleanCard.User_Card;
+      return cleanCard;
+    });
+    return cards;
   },
   /**
    * Check if the user has the card

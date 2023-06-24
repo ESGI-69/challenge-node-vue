@@ -22,7 +22,7 @@ export default {
   setup() {
     const cardStore = useCardStore();
 
-    const cards = computed(() => cardStore.cards);
+    const cards = computed(() => cardStore.userCards);
 
     return {
       cards,
