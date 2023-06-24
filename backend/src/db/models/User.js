@@ -27,12 +27,10 @@ export default (connection) => {
 
     /**
      * Check if the mail is confirmed by checking if token is set to null
-     * @param {string} email User email
      * @returns {Promise<boolean>}
     */
-    async isEmailConfirmed(email) {
-      const user = await User.scope('withEmailToken').findOne({ where: { email } });
-      return user.mailToken === null;
+    isEmailConfirmed() {
+      return this.mailToken === null;
     }
 
     /**

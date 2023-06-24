@@ -7,7 +7,7 @@ export default {
    * @returns
    */
   findLogin: function (criteria) {
-    return User.scope('withPassword', 'withoutEmailToken').findOne({
+    return User.scope('withPassword', 'withEmailToken').findOne({
       where: criteria,
     });
   },
