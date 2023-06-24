@@ -1,11 +1,13 @@
 <template>
-  <h1>Settings</h1>
   <div class="settings">
     <div class="settings__card nes-container">
       <h2 class="title">
         User Settings
       </h2>
-      <form class="settings__card__user">
+      <form
+        class="settings__card__user"
+        @submit.prevent="updateUser"
+      >
         <image-upload
           v-model="avatar"
           :no-file-selected-text="'Upload your avatar'"
@@ -82,7 +84,7 @@
             }"
             :disabled="!isPasswordMatch"
           >
-            Register
+            Update
           </button>
         </div>
         <span
@@ -100,6 +102,7 @@
 <script>
 import { computed, ref } from 'vue';
 import { useProfileStore } from '@/stores/profileStore';
+import { useUserStore } from '@/stores/userStore';
 import ImageUpload from './ImageUpload.vue';
 
 export default {
@@ -109,6 +112,7 @@ export default {
   },
   setup() {
     const  profileStore = useProfileStore();
+    const userStore = useUserStore();
 
     const profile = computed(() => profileStore.profile);
     const profileAvatar = computed(() => profileStore.avatarUrl);
@@ -145,6 +149,8 @@ export default {
         const fieldElement = document.getElementById(field);
         fieldElement.classList.add('is-error');
       });
+
+      console.log('inErrorFileds', inErrorFileds);
 
       if (inErrorFileds.includes('update_password_confirmation') && inErrorFileds.includes('update_password')) {
         if (!errorMessages.value.includes('Passwords do not match')) {
@@ -185,6 +191,25 @@ export default {
       errorMessages.value = [];
     };
 
+    const updateUser = async () => {
+      try {
+        if (!isPasswordMatch.value) return;
+        console.log('updateUser');
+        removeFieldsInError();
+        await userStore.register({
+          avatar: avatar.value,
+          firstname: firstname.value,
+          lastname: lastname.value,
+          password: email.value,
+          current_password: current_password.value,
+        });
+      } catch (err) {
+        console.error('err', err);
+        const fieldsInError = Object.keys(err).map(type => err[type].flat());
+        console.log('fieldsInError', fieldsInError);
+        handleErrors(fieldsInError);
+      }
+    };
 
     return {
       firstname,
@@ -197,6 +222,7 @@ export default {
       profileAvatar,
       errorMessages,
       isPasswordMatch,
+      updateUser,
     };
   },
 };
