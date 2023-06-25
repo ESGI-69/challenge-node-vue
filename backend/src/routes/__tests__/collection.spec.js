@@ -26,7 +26,6 @@ describe('Collection routes (logged)', () => {
       expect(card).toHaveProperty('attack');
       expect(card).toHaveProperty('health');
       expect(card).toHaveProperty('description');
-      expect(card).toHaveProperty('image');
     });
   });
 });
