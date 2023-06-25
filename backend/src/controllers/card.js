@@ -36,7 +36,8 @@ export default {
   post: async (req, res, next) => {
     try {
       const card = await cardService.create(req.body);
-      res.status(201).json(card);
+      const createdCard = await cardService.findByIdAdmin(card.id);
+      res.status(201).json(createdCard);
     } catch (err) {
       next(err);
     }
@@ -112,7 +113,8 @@ export default {
         req.body,
       );
       if (!card) return res.sendStatus(404);
-      res.json(card);
+      const updatedCard = await cardService.findByIdAdmin(card.id);
+      res.json(updatedCard);
     } catch (err) {
       next(err);
     }

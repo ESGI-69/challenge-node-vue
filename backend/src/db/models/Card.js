@@ -74,7 +74,7 @@ export default (connection) => {
       },
       scopes: {
         withTimestamps: {
-          attributes: { include: ['createdAt', 'updatedAt'] },
+          attributes: { include: ['createdAt', 'updatedAt'], exclude: ['image'] },
         },
       },
     },

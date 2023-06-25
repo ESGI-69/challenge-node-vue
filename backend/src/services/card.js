@@ -12,6 +12,12 @@ export default {
   findById: function (id) {
     return Card.findByPk(id);
   },
+  /**
+   * Find a card by its ID, including timestamps
+   */
+  findByIdAdmin: function (id) {
+    return Card.scope('withTimestamps').findByPk(id);
+  },
   findByIdImage: function (id) {
     return Card.scope('onlyImage').findByPk(id);
   },
