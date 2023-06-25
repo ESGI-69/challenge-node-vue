@@ -32,7 +32,7 @@ let avatarUserId;
 let avatarEmailToken;
 const adminToken = await getJwt('admin@example.com', '123456');
 
-describe('Begin Register flow', () => {
+describe('Register flow', () => {
   let mailerSendMailMock;
 
   beforeAll(() => {
@@ -65,18 +65,14 @@ describe('Begin Register flow', () => {
       })
       .catch(done);
   });
-}),
 
-describe('Get email token of user', () => {
-  it('User service should return the email token of the user with an avatar', async () => {
+  it('User service should return the email token of the user', async () => {
     const emailToken = await userService.getEmailToken(userId);
     expect(emailToken).toBeDefined();
     userEmailToken = emailToken.emailToken;
     expect(typeof userEmailToken).toBe('string');
   });
-}),
 
-describe('Continue Register flow', () => {
   it('POST /users/ should return 400 if email is invalid', (done) => {
     request(app)
       .post('/users/')
@@ -173,18 +169,14 @@ describe('User register with avatar', () => {
       })
       .catch(done);
   });
-}),
 
-describe('Get email token of User with avatar', () => {
   it('User service should return the email token of the user with an avatar', async () => {
     const emailToken = await userService.getEmailToken(avatarUserId);
     expect(emailToken).toBeDefined();
     avatarEmailToken = emailToken.emailToken;
     expect(typeof avatarEmailToken).toBe('string');
   });
-}),
 
-describe('Continue Register flow of User with avatar', () => {
   it ('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
       .post('/users/confirm-email')
