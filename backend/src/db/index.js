@@ -36,17 +36,17 @@ const connection = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${proc
   logging: false,
 });
 
-const mongoConnection = await mongoose.connect(`mongodb://${process.env.MONGO_ROOT_USER}:${process.env.MONGO_ROOT_PASSWORD}@${mongoDomainName}:27017/${process.env.MONGO_DB}`, {
+await mongoose.connect(`mongodb://${process.env.MONGO_ROOT_USER}:${process.env.MONGO_ROOT_PASSWORD}@${mongoDomainName}:27017/${process.env.MONGO_DB}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   authSource: 'admin',
 });
 
 // Load models
-const Card = card(connection, mongoConnection);
-const Pack = pack(connection, mongoConnection);
+const Card = card(connection);
+const Pack = pack(connection);
 const Pack_Card = pack_Card(connection);
-const User = user(connection, mongoConnection);
+const User = user(connection);
 const User_Card = user_Card(connection);
 
 // Launch associations methods for relations between tables
