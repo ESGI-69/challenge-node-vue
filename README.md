@@ -17,6 +17,10 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 
     The container will wait for the backend to be ready (based on the backend container healthcheck) before launching the application.
 
+- Automatic data replication to mongodb database without any code duplication. The project use a postgres database for the main data, and a mongodb database for the search & statistics features.
+
+  The sequelize models automatically create the mongodb schema from the his sequelize schema. The data is replicated in realtime to the mongodb database using a hooks. You can find the replication code in the `backend/src/db/syncMongo.js` file.
+
 - **Backend unit tests**, running in github action with `jest` test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a **code sanity** check with eslint.
 
   You can find the backend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/backend-test.yml).

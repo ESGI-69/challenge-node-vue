@@ -12,13 +12,65 @@ export default async(models, sequelize) => {
   /**
    * Initialize mongo model
    */
-  Model.initMongo = function () {
-    if (!this.mongoSchema) {
-      console.warn('🚨🚨🚨 mongoSchema is not defined. You should define it in his model file for automactic initialization');
-      throw new Error('mongoSchema is not defined');
-    }
-    if (this.mongoModel) return;
+  Model.initMongoModel = function () {
     this.mongoModel = mongoose.model(this.name, this.mongoSchema, this.tableName);
+  };
+
+  Model.mongoSchema = null;
+  /**
+   * Initialize mongo schema
+   */
+  Model.initMongoSchema = function () {
+    const attributes = Object.keys(this.getAttributes());
+    let schema = {};
+    attributes.forEach((attribute) => {
+      const attributeObject = this.getAttributes()[attribute];
+      const attributeType = attributeObject.type.toString();
+      // Get attribute type
+      schema[attribute] = {};
+      if (attributeType === 'INTEGER') {
+        schema[attribute].type = Number;
+      } else if (attributeType.startsWith('VARCHAR')) {
+        schema[attribute].type = String;
+      } else if (attributeType === 'BOOLEAN') {
+        schema[attribute].type = Boolean;
+      } else if (attributeType === 'ENUM') {
+        schema[attribute].type = String;
+        schema[attribute].enum = attributeObject.values;
+      } else if (attributeType.startsWith('TIMESTAMP')) {
+        schema[attribute].type = Date;
+      }
+
+      // Add default values
+      if (attributeObject.defaultValue) {
+        schema[attribute].default = attributeObject.defaultValue;
+      }
+
+      // Add required
+      if (attributeObject.allowNull === false) {
+        schema[attribute].required = true;
+      }
+
+      // Add unique
+      if (attributeObject.primaryKey) {
+        schema[attribute].unique = true;
+      }
+
+    });
+
+    this.mongoSchema = new mongoose.Schema(schema);
+  };
+  /**
+   * Initialize mongo model and schema. Except for join tables.
+   */
+  Model.initMongo = function () {
+    if (this.tableName.includes('_')) return;
+    if (!this.mongoSchema) {
+      this.initMongoSchema();
+    }
+    if (!this.mongoModel) {
+      this.initMongoModel();
+    }
   };
   /**
    * Add a row to MongoDB
