@@ -15,7 +15,7 @@ export default (connection) => {
       timestamps: false,
       sequelize: connection,
       tableName: 'user_cards',
-    }
+    },
   );
   return User_Card;
 };

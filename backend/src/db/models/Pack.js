@@ -29,7 +29,7 @@ export default (connection) => {
       updatedAt: false,
       sequelize: connection,
       tableName: 'packs',
-    }
+    },
   );
 
   return Pack;

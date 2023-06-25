@@ -20,15 +20,15 @@ export default (connection) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: true
-        }
+          notEmpty: true,
+        },
       },
       cost: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-          notEmpty: true
-        }
+          notEmpty: true,
+        },
       },
       /**
        * The rarity of the card. Can be one of the following:
@@ -55,16 +55,16 @@ export default (connection) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: true
-        }
+          notEmpty: true,
+        },
       },
       image: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: true
-        }
-      }
+          notEmpty: true,
+        },
+      },
     },
     {
       sequelize: connection,
@@ -77,7 +77,7 @@ export default (connection) => {
           attributes: { include: ['createdAt', 'updatedAt'] },
         },
       },
-    }
+    },
   );
   return Card;
 };

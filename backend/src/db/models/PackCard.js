@@ -15,7 +15,7 @@ export default (connection) => {
       timestamps: false,
       sequelize: connection,
       tableName: 'pack_cards',
-    }
+    },
   );
   return Pack_Card;
 };

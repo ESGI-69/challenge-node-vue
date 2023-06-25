@@ -11,7 +11,7 @@ const card =  {
   rarity: 'common',
   type: 'minion',
   attack: 2,
-  health: 2
+  health: 2,
 };
 
 const updatedCard = {
@@ -22,7 +22,7 @@ const updatedCard = {
   rarity: 'rare',
   cost: 6,
   attack: 2,
-  health: 2
+  health: 2,
 };
 
 let cardId;
@@ -149,7 +149,7 @@ describe('Adding a card as Unlogged ', () => {
     .then((response) => {
       expect(response.body).toStrictEqual({
         code: 'not_logged_in',
-        message: 'Not logged in'
+        message: 'Not logged in',
       });
     }));
 });
@@ -196,7 +196,7 @@ describe('Getting Cards as Unlogged', () => {
     .then((response) => {
       expect(response.body).toStrictEqual({
         code: 'not_logged_in',
-        message: 'Not logged in'
+        message: 'Not logged in',
       });
     }));
 });
@@ -228,7 +228,7 @@ describe('Updating a Card PATCH', () => {
     const updatedCard = {
       name: 'New name',
       description: 'New description',
-      image: 'https://via.placeholder.com/150'
+      image: 'https://via.placeholder.com/150',
     };
     await request(app)
       .patch(`/cards/${cardId}`)
@@ -244,7 +244,7 @@ describe('Updating a Card PATCH', () => {
     const updatedCard = {
       name: 'New name',
       description: 'New description',
-      image: 'https://via.placeholder.com/150'
+      image: 'https://via.placeholder.com/150',
     };
     await request(app)
       .patch(`/cards/${cardId}`)
@@ -253,7 +253,7 @@ describe('Updating a Card PATCH', () => {
       .then((response) => {
         expect(response.body).toStrictEqual({
           code: 'not_logged_in',
-          message: 'Not logged in'
+          message: 'Not logged in',
         });
       });
   });
@@ -328,7 +328,7 @@ describe('Updating a Card PUT', () => {
     .then((response) => {
       expect(response.body).toStrictEqual({
         code: 'not_logged_in',
-        message: 'Not logged in'
+        message: 'Not logged in',
       });
     }));
 
@@ -336,7 +336,7 @@ describe('Updating a Card PUT', () => {
     const newCard = {
       ...updatedCard,
       id: cardId,
-      name: ''
+      name: '',
     };
     await request(app)
       .put(`/cards/${cardId}`)
@@ -422,7 +422,7 @@ describe('Deleting a Card', () => {
     .then((response) => {
       expect(response.body).toStrictEqual({
         code: 'not_logged_in',
-        message: 'Not logged in'
+        message: 'Not logged in',
       });
     }));
 

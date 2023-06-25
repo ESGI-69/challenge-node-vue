@@ -25,7 +25,7 @@ const mailer = {
       // eslint-disable-next-line no-console
       console.log(`Email to ${to} not sent in development mode, set mailToken to NULL in database OR go to this link http://localhost:8080/auth/confirm?token= with the mailToken`);
     }
-  }
+  },
 };
 
 export default mailer;

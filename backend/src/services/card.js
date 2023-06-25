@@ -46,5 +46,5 @@ export default {
     return Card.destroy({
       where: criteria,
     });
-  }
+  },
 };
