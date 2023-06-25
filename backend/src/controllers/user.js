@@ -151,7 +151,7 @@ export default {
     try {
       const user = await userService.update(
         { id: parseInt(req.params.id) },
-        req.body
+        req.body,
       );
       if (!user) return res.sendStatus(404);
       res.json(user);

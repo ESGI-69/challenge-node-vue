@@ -28,5 +28,5 @@ export default {
     host: 'postgres',
     port: 5432,
     dialect: 'postgres',
-  }
+  },
 };

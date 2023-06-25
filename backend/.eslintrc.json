@@ -46,6 +46,8 @@
         "no-trailing-spaces": "error",
         "sort-imports": [ "error", { "ignoreDeclarationSort": true } ],
         "object-curly-spacing": [ "error", "always" ],
-        "no-console": ["error", { "allow": ["warn", "error"]}]
+        "no-console": ["error", { "allow": ["warn", "error"]}],
+        "prefer-spread": "error",
+        "comma-dangle": ["error", "always-multiline"]
     }
 }

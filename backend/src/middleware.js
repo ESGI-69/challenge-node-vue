@@ -40,7 +40,7 @@ const isLogged = (req, res, next) => {
   });
   if (req.user.mailToken) return res.status(401).send({
     code: 'email_not_validated',
-    message: 'Email not validated'
+    message: 'Email not validated',
   });
   next();
 };
@@ -58,7 +58,7 @@ const isAdmin = (req, res, next) => {
   });
   if (req.user.mailToken) return res.status(401).send({
     code: 'email_not_validated',
-    message: 'Email not validated'
+    message: 'Email not validated',
   });
   if (!req.user.isAdmin()) return res.sendStatus(403);
   next();

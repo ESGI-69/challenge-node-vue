@@ -67,7 +67,7 @@ export default (connection) => {
         defaultValue: 'default.png',
         validate: {
           notEmpty: true,
-        }
+        },
       },
       lastname: {
         type: DataTypes.STRING,
@@ -140,7 +140,7 @@ export default (connection) => {
           attributes: { exclude: ['mailToken'] },
         },
       },
-    }
+    },
   );
 
   /**

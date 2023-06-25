@@ -91,7 +91,7 @@ export default {
     try {
       const [card] = await cardService.update(
         { id: parseInt(req.params.id) },
-        req.body
+        req.body,
       );
       if (!card) return res.sendStatus(404);
       res.json(card);
