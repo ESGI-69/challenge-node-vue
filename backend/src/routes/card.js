@@ -29,7 +29,6 @@ router.get('/', isAdmin, cardController.cget);
 router.post('/', isAdmin, cardImageUpload.single('image'), addCardImage, cardController.post);
 router.get('/:id', isLogged, cardController.get);
 router.get('/:id/image', cardController.getImage);
-router.put('/:id', isAdmin, cardController.put);
 router.patch('/:id', isAdmin, cardController.patch);
 router.delete('/:id', isAdmin, cardController.delete);
 

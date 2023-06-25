@@ -77,29 +77,6 @@ export default {
     }
   },
   /**
-   * Express.js controller for PUT /cards/:id
-   * @param {import('express').Request} req
-   * @param {import('express').Response} res
-   * @param {import('express').NextFunction} next
-   * @returns {Promise<void>}
-   */
-  put: async (req, res, next) => {
-    try {
-      await cardService.validate(req.body);
-
-      const nbRemoved = await cardService.remove({
-        id: parseInt(req.params.id),
-      });
-      const card = await cardService.create({
-        id: parseInt(req.params.id),
-        ...req.body,
-      });
-      res.status(nbRemoved ? 200 : 201).json(card);
-    } catch (err) {
-      next(err);
-    }
-  },
-  /**
    * Express.js controller for DELETE /cards/:id
    * @param {import('express').Request} req
    * @param {import('express').Response} res
