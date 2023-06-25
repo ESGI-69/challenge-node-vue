@@ -17,6 +17,7 @@ export const useGameStore = defineStore('gameStore', {
          */
         async create(payload) {
             this.isGameLoading = true;
+            // payload contains the socket id of the player
             try {
                 // await $API.post('/game/', payload);
                 const { data } = await $API.post('/game/', payload);
@@ -33,7 +34,7 @@ export const useGameStore = defineStore('gameStore', {
             let gameId = payload.id;
             try {
                 // await $API.post('/game/', payload);
-                const { data } = await $API.delete('/game/leave/'+gameId, payload);
+                const { data } = await $API.post('/game/leave/'+gameId, payload);
             }
             catch (err) {
                 throw err.response.data;

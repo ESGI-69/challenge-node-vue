@@ -16,9 +16,10 @@
 
 
 <script>
-import { reactive, computed, watch} from 'vue';
+import { reactive, computed, watchEffect} from 'vue';
 import { useGameStore } from '@/stores/gameStore';
 import router from '@/router';
+import { socket } from "@/socket";
 // import Game from '@/components/Game.vue';
 
 export default {
@@ -41,7 +42,15 @@ export default {
       value: false,
     });
 
-    createGame.value = computed(() => gameStore.create({}));
+    // watchEffect(() => {
+    //   if(actualGame.value != null){
+    //     if(actualGame.value.token != null){
+    //       //
+    //     }
+    //   }
+    // });
+
+    createGame.value = computed(() => gameStore.create({socketId : socket.id}));
     actualGame.value = computed(() => gameStore.games);
     isGameLoading.value = computed(() => gameStore.isGameLoading);
     isGameLeft.value = computed(() => gameStore.isGameLeft);
@@ -54,7 +63,7 @@ export default {
     });
 
     function leaveGame() {
-      gameStore.leave({ id: actualGame.value.id }).then((data) => {
+      gameStore.leave({ id: actualGame.value.id, socketId : socket.id }).then(() => {
         if(isGameLeft.value){
           router.push({ path: '/' });
         }else{

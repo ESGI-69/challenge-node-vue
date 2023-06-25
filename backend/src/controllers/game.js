@@ -1,5 +1,8 @@
 import gameService from '../services/game.js';
+import { Server as SocketIoServer } from 'socket.io';
 // import userService from '../services/user';
+import { io } from '../index.js';
+
 
 export default {
     /**
@@ -41,11 +44,19 @@ export default {
         // Donc on vérifie qu'il n'est pas déjà dans une game
         try {
 
+            let socketId = null;
+            socketId = req.body.socketId;
             const currentGame = await gameService.findByUserId(req.user.id);
 
             if (currentGame.length > 0) {
                 // res.status(400).json({ message: 'You are already in a game' });
                 // return the current Game 
+
+                // join the room or create it if it doesn't exist
+                // game already exists so it should create a room and join it
+                let playerSocket = io.sockets.sockets.get(socketId);
+                playerSocket.join(currentGame[0].token);
+
                 res.status(200).json(currentGame[0]);
                 return;
             }
@@ -60,6 +71,14 @@ export default {
                 winner: null,
             };
             const game = await gameService.create(gamePayload);
+
+            // create a room and make the socketId join it
+            let playerSocket = io.sockets.sockets.get(socketId);
+            playerSocket.join(generatedToken);
+
+            // console logs all the rooms
+                // console.log(io.sockets.adapter.rooms);
+
             res.status(201).json(game);
         }
         catch (err) {
@@ -148,6 +167,9 @@ export default {
         try {
             // check if the game id is in the database with the req.user.id in the first_player or second_player
             const currentGame = await gameService.findByUserId(req.user.id);
+            let socketId = null;
+            socketId = req.body.socketId;
+            let roomId = null;
             if(currentGame.length === 0) {
                 res.status(400).json({ error: 'You are not in a game' });
                 return;
@@ -159,6 +181,12 @@ export default {
                     id: parseInt(req.params.id)
                 })
                 res.sendStatus(nbRemoved ? 204 : 404)
+
+                // leave the room
+                let playerSocket = io.sockets.sockets.get(socketId);
+                roomId = currentGame[0].token;
+                playerSocket.leave(roomId);
+
             }else{
                 res.status(400).json({ error: 'You are not in a game' });
             }
