@@ -5,6 +5,7 @@ import getJwt from '../../../tests/getJwt.js';
 import removeUser from '../../../tests/removeUser.js';
 import fs from 'fs';
 import mailer from '../../utils/mailer.js';
+import userService from '../../services/user.js';
 
 const user = {
   email: 'usernewtest@test.test',
@@ -67,29 +68,11 @@ describe('Begin Register flow', () => {
 }),
 
 describe('Get email token of user', () => {
-  it('GET /users/email-token/:id as ADMIN should return 200 and the user token', (done) => {
-    request(app)
-      .get(`/users/email-token/${userId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((res) => {
-        expect(res.body.emailToken).toBeDefined();
-        userEmailToken = res.body.emailToken;
-        done();
-      })
-      .catch(done);
-  });
-
-  it('GET /users/email-token/:id as Anonymous should return 401', (done) => {
-    request(app)
-      .get(`/users/email-token/${userId}`)
-      .expect(401)
-      .then((res) => {
-        expect(res.body.message).toBe('Not logged in');
-        done();
-      })
-      .catch(done);
+  it('User service should return the email token of the user with an avatar', async () => {
+    const emailToken = await userService.getEmailToken(userId);
+    expect(emailToken).toBeDefined();
+    userEmailToken = emailToken.emailToken;
+    expect(typeof userEmailToken).toBe('string');
   });
 }),
 
@@ -193,24 +176,11 @@ describe('User register with avatar', () => {
 }),
 
 describe('Get email token of User with avatar', () => {
-  it('GET /users/email-token/:id should return 200 and the user token', (done) => {
-    request(app)
-      .get(`/users/email-token/${avatarUserId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((res) => {
-        expect(res.body.emailToken).toBeDefined();
-        avatarEmailToken = res.body.emailToken;
-        done();
-      })
-      .catch(done);
-  });
-  it('GET /users/email-token/:id as User should return 403', () => {
-    request(app)
-      .get(`/users/email-token/${avatarUserId}`)
-      .set('Authorization', `Bearer ${playerToken}`)
-      .expect(403);
+  it('User service should return the email token of the user with an avatar', async () => {
+    const emailToken = await userService.getEmailToken(avatarUserId);
+    expect(emailToken).toBeDefined();
+    avatarEmailToken = emailToken.emailToken;
+    expect(typeof avatarEmailToken).toBe('string');
   });
 }),
 

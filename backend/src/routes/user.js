@@ -42,6 +42,5 @@ router.put('/:id', isAdmin, userController.put);
 router.patch('/:id', isAdmin, userController.patch);
 router.delete('/:id', isAdmin, userController.delete);
 router.post('/confirm-email', userController.confirmEmail);
-router.get('/email-token/:id', isAdmin, userController.getEmailToken);
 
 export default router;

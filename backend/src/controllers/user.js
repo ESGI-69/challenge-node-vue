@@ -227,20 +227,4 @@ export default {
       next(err);
     }
   },
-
-  /**
-   * Express.js controller for GET /users/email-token/:id
-   * @param {import ('express').Request} req
-   * @param {import('express').Response} res
-   * @param {import('express').NextFunction} next
-   * @returns {Promise <void>}
-   */
-  getEmailToken: async (req, res, next) => {
-    try {
-      const token = await userService.getEmailToken(req.params.id);
-      res.json(token);
-    } catch (err) {
-      next(err);
-    }
-  },
 };
