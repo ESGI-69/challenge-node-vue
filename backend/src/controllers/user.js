@@ -149,7 +149,7 @@ export default {
    */
   patch: async (req, res, next) => {
     try {
-      const [user] = await userService.update(
+      const user = await userService.update(
         { id: parseInt(req.params.id) },
         req.body
       );
@@ -212,16 +212,16 @@ export default {
   },
 
   /**
-   * Express.js controller for confirm /users/confirm
+   * Express.js controller for confirm /users/confirm-email
    * @param {import ('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    * @returns {Promise <void>}
    */
 
-  confirm: async (req, res, next) => {
+  confirmEmail: async (req, res, next) => {
     try {
-      await userService.confirm(req.body.mailToken);
+      await userService.confirmEmail(req.body.mailToken);
       res.sendStatus(200);
     } catch (err) {
       next(err);

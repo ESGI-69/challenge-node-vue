@@ -27,12 +27,10 @@ export default (connection) => {
 
     /**
      * Check if the mail is confirmed by checking if token is set to null
-     * @param {string} email User email
      * @returns {Promise<boolean>}
     */
-    async isEmailConfirmed(email) {
-      const user = await User.findOne({ where: { email } });
-      return user.mailToken === null;
+    isEmailConfirmed() {
+      return this.mailToken === null;
     }
 
     /**
@@ -126,7 +124,7 @@ export default (connection) => {
       sequelize: connection,
       tableName: 'users',
       defaultScope: {
-        attributes: { exclude: ['password', 'avatar'] },
+        attributes: { exclude: ['password', 'avatar', 'mailToken'] },
       },
       scopes: {
         withPassword: {
@@ -134,6 +132,12 @@ export default (connection) => {
         },
         withAvatar: {
           attributes: { include: ['avatar'] },
+        },
+        withEmailToken: {
+          attributes: { include: ['mailToken'] },
+        },
+        withoutEmailToken: {
+          attributes: { exclude: ['mailToken'] },
         },
       },
     }
@@ -209,18 +213,6 @@ export default (connection) => {
   User.addHook('beforeCreate', encryptPassword);
 
   User.addHook('beforeUpdate', encryptPassword);
-
-  // Remove password & avatar from the return value after the user is created
-  User.addHook('afterCreate', (user) => {
-    delete user.dataValues.password;
-    delete user.dataValues.avatar;
-  });
-
-  // Remove password & avatar from the return value after the user is updated
-  User.addHook('afterUpdate', (user) => {
-    delete user.dataValues.password;
-    delete user.dataValues.avatar;
-  });
 
   // Remove profile picture from the server when the user is updated
   User.addHook('beforeUpdate', deleteAvatar);

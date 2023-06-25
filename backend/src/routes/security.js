@@ -28,7 +28,7 @@ export default (userService) => {
       });
     }
 
-    if (!await user.isEmailConfirmed(email)) {
+    if (!await user.isEmailConfirmed()) {
       return res.status(401).send({
         code: 'email_not_validated',
         message: 'Email not validated',

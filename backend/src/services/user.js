@@ -7,7 +7,7 @@ export default {
    * @returns
    */
   findLogin: function (criteria) {
-    return User.scope('withPassword').findOne({
+    return User.scope('withPassword', 'withEmailToken').findOne({
       where: criteria,
     });
   },
@@ -25,13 +25,14 @@ export default {
     });
   },
   findByIdAvatar: function (id) {
-    return User.scope('withAvatar').findByPk(id);
+    return User.scope('withAvatar', 'withoutEmailToken').findByPk(id);
   },
   findById: function (id) {
     return User.findByPk(id);
   },
-  create: function (data) {
-    return User.create(data);
+  create: async function (data) {
+    const user = await User.create(data);
+    return this.findById(user.id);
   },
   update: async function (criteria, data) {
     const [, users = []] = await User.update(data, {
@@ -39,7 +40,8 @@ export default {
       returning: true,
       individualHooks: true, // to trigger the encryption hook on update (see user model)
     });
-    return users;
+    if (!users.length) throw new Error('User not found', { cause: 'Not Found' });
+    return this.findById(users[0].id) ;
   },
   validate: function (data) {
     return User.build(data).validate();
@@ -92,8 +94,8 @@ export default {
    * @param {import('../db/index.js').User} userModel
    * @param {import('sequelize').WhereOptions} emailToken
    */
-  confirm: async function (emailToken) {
-    const user = await User.findOne({
+  confirmEmail: async function (emailToken) {
+    const user = await User.scope('withEmailToken').findOne({
       where: {
         mailToken: emailToken,
       },
@@ -102,5 +104,14 @@ export default {
     await user.update({
       mailToken: null,
     });
+  },
+  getEmailToken: async function (userId) {
+    const user = await User.scope('withEmailToken').findOne({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) throw new Error('User not found', { cause: 'Not Found' });
+    return { emailToken: user.mailToken };
   },
 };

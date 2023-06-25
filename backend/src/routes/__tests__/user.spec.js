@@ -5,6 +5,7 @@ import getJwt from '../../../tests/getJwt.js';
 import removeUser from '../../../tests/removeUser.js';
 import fs from 'fs';
 import mailer from '../../utils/mailer.js';
+import userService from '../../services/user.js';
 
 const user = {
   email: 'usernewtest@test.test',
@@ -27,6 +28,8 @@ let avatarJwt;
 let userId;
 let playerToken;
 let userEmailToken;
+let avatarUserId;
+let avatarEmailToken;
 const adminToken = await getJwt('admin@example.com', '123456');
 
 describe('Register flow', () => {
@@ -49,7 +52,6 @@ describe('Register flow', () => {
       .then((res) => {
         expect(typeof res.body.id).toBe('number');
         userId = res.body.id;
-        userEmailToken = res.body.mailToken;
         expect(res.body.email).toBe(user.email);
         expect(res.body.firstname).toBe(user.firstname);
         expect(res.body.lastname).toBe(user.lastname);
@@ -64,6 +66,12 @@ describe('Register flow', () => {
       .catch(done);
   });
 
+  it('User service should return the email token of the user', async () => {
+    const emailToken = await userService.getEmailToken(userId);
+    expect(emailToken).toBeDefined();
+    userEmailToken = emailToken.emailToken;
+    expect(typeof userEmailToken).toBe('string');
+  });
 
   it('POST /users/ should return 400 if email is invalid', (done) => {
     request(app)
@@ -87,7 +95,7 @@ describe('Register flow', () => {
       .send(noEmailUser)
       .expect(400)
       .expect('Content-Type', /json/)
-      .then(async (res) => {
+      .then((res) => {
         expect(res.body.missingFields).toContain('email');
         expect(res.body.invalidFields).not.toBeDefined();
         done();
@@ -95,9 +103,9 @@ describe('Register flow', () => {
       .catch(done);
   });
 
-  it('POST /users/confirm should confirm the user', (done) => {
+  it('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
-      .post('/users/confirm')
+      .post('/users/confirm-email ')
       .send({ mailToken: userEmailToken })
       .expect(200)
       .then(async () => {
@@ -131,9 +139,6 @@ describe('Register flow', () => {
 });
 
 describe('User register with avatar', () => {
-  let avatarUserId;
-  let avatarEmailToken;
-
   let mailerSendMailMock;
 
   beforeAll(() => {
@@ -155,7 +160,7 @@ describe('User register with avatar', () => {
     req
       .expect(201)
       .expect('Content-Type', /json/)
-      .then(async (res) => {
+      .then((res) => {
         expect(typeof res.body.id).toBe('number');
         avatarUserId = res.body.id;
         avatarEmailToken = res.body.mailToken;
@@ -165,9 +170,16 @@ describe('User register with avatar', () => {
       .catch(done);
   });
 
-  it ('POST /users/confirm should confirm the user', (done) => {
+  it('User service should return the email token of the user with an avatar', async () => {
+    const emailToken = await userService.getEmailToken(avatarUserId);
+    expect(emailToken).toBeDefined();
+    avatarEmailToken = emailToken.emailToken;
+    expect(typeof avatarEmailToken).toBe('string');
+  });
+
+  it ('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
-      .post('/users/confirm')
+      .post('/users/confirm-email')
       .send({ mailToken: avatarEmailToken })
       .expect(200)
       .then(async () => {

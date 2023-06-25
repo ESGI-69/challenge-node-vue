@@ -15,10 +15,15 @@ const mailer = {
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
     const defaultClient = SibApiV3Sdk.ApiClient.instance;
     defaultClient.authentications['api-key'].apiKey = apiKey;
-    try {
-      await apiInstance.sendTransacEmail(message);
-    } catch (error) {
-      console.error(`Failed to send email to ${to}: ${error}`);
+    if (process.env.NODE_ENV !== 'development') {
+      try {
+        await apiInstance.sendTransacEmail(message);
+      } catch (error) {
+        console.error(`Failed to send email to ${to}: ${error}`);
+      }
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`Email to ${to} not sent in development mode, set mailToken to NULL in database OR go to this link http://localhost:8080/auth/confirm?token= with the mailToken`);
     }
   }
 };

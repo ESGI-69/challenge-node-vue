@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('authStore', {
     async confirmEmail(mailToken) {
       this.isConfirmEmailLoading = true;
       try {
-        await $API.post('/users/confirm/', {
+        await $API.post('/users/confirm-email/', {
           mailToken,
         });
       } finally {
