@@ -7,13 +7,10 @@ export const useCardStore = defineStore('cardStore', {
     isCardLoading: false,
     isUserCardsLoading: false,
     userCards: [],
+    userCardsCount: 0,
     cards: [],
     card: {},
   }),
-
-  getters: {
-    userCardsCount: (state) => state.userCards.length,
-  },
 
   actions: {
     async getCards() {
@@ -31,8 +28,9 @@ export const useCardStore = defineStore('cardStore', {
     async getUserCards() {
       this.isUserCardsLoading = true;
       try {
-        const { data } = await $API.get('/collection');
+        const { data: { data, count } } = await $API.get('/collection');
         this.userCards = data;
+        this.userCardsCount = count;
       } catch (err) {
         throw err.response.data;
       } finally {

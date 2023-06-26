@@ -22,6 +22,8 @@ export default {
   setup() {
     const cardStore = useCardStore();
 
+    cardStore.getUserCards();
+
     const cards = computed(() => cardStore.userCards);
 
     return {
