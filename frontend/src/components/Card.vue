@@ -19,9 +19,10 @@
             Refunded
           </span>
         </div>
-        <span class="card__container__front__cost">
-          {{ cost }}
-        </span>
+        <card-cost
+          class="card__container__front__cost"
+          :cost="cost"
+        />
         <div class="card__container__front__header">
           <div
             class="card__container__front__header__image"
@@ -72,10 +73,15 @@
 <script>
 import { toRefs, ref, computed } from 'vue';
 
+import CardCost from '@/components/card/CardCost.vue';
+
 import backOfCard from '@/assets/backOfCardResized.webp';
 
 export default {
   name: 'Card',
+  components: {
+    CardCost,
+  },
   props: {
     /**
      * The id of the card.
@@ -196,14 +202,13 @@ export default {
 
 <style lang="scss" scoped>
 .card {
-  width: 15rem;
-  height: 21rem;
+  width: 17rem;
+  height: 23rem;
   perspective: 27rem;
 
   &__container {
     position: relative;
-    width: 100%;
-    height: 100%;
+    height: calc(100% - 2rem);
     transition: transform 1s;
     transform-style: preserve-3d;
     margin: 1rem;
@@ -256,7 +261,7 @@ export default {
         }
       }
 
-      &__cost, &__attack, &__health {
+      &__attack, &__health {
         z-index: 1;
         position: absolute;
         height: 2rem;
@@ -269,9 +274,10 @@ export default {
       }
 
       &__cost {
-        background-color: blue;
         top: -1rem;
         left: -1rem;
+        z-index: 1;
+        position: absolute;
       }
 
       &__attack {
