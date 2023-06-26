@@ -55,9 +55,14 @@ export default {
                 // join the room or create it if it doesn't exist
                 // game already exists so it should create a room and join it
                 let playerSocket = io.sockets.sockets.get(socketId);
-                playerSocket.join(currentGame[0].token);
+                if (!playerSocket) {
+                    // res.status(400).json({ socketList: io.sockets.sockets });
+                    // return;
+                }else{
+                    playerSocket.join(currentGame[0].token);
+                }
 
-                res.status(200).json(currentGame[0]);
+                res.status(201).json(currentGame[0]);
                 return;
             }
 
@@ -74,10 +79,12 @@ export default {
 
             // create a room and make the socketId join it
             let playerSocket = io.sockets.sockets.get(socketId);
-            playerSocket.join(generatedToken);
-
-            // console logs all the rooms
-                // console.log(io.sockets.adapter.rooms);
+            if(!playerSocket){
+                // res.status(400).json({ socketList: io.sockets.sockets });
+                // return;
+            }else{
+                playerSocket.join(generatedToken);
+            }
 
             res.status(201).json(game);
         }
@@ -171,7 +178,7 @@ export default {
             socketId = req.body.socketId;
             let roomId = null;
             if(currentGame.length === 0) {
-                res.status(400).json({ error: 'You are not in a game' });
+                res.status(404).json({ error: 'You are not in a game' });
                 return;
             }
             // return res.status(200).json(req);
@@ -188,7 +195,7 @@ export default {
                 playerSocket.leave(roomId);
 
             }else{
-                res.status(400).json({ error: 'You are not in a game' });
+                res.status(404).json({ error: 'You are not in a game' });
             }
         } catch (err) {
             next(err)

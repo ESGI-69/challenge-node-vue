@@ -34,7 +34,7 @@ export const useGameStore = defineStore('gameStore', {
             let gameId = payload.id;
             try {
                 // await $API.post('/game/', payload);
-                const { data } = await $API.post('/game/leave/'+gameId, payload);
+                await $API.post('/game/leave/'+gameId, payload);
             }
             catch (err) {
                 throw err.response.data;

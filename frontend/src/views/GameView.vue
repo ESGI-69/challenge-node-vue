@@ -16,7 +16,7 @@
 
 
 <script>
-import { reactive, computed, watchEffect} from 'vue';
+import { reactive, computed } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
 import router from '@/router';
 import { socket } from "@/socket";
