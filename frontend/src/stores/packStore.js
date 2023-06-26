@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useProfileStore } from './profileStore';
 
 import $API from '@/plugins/axios';
 
@@ -86,11 +87,14 @@ export const usePackStore = defineStore('packStore', {
     async openPack(packId) {
       this.isOpenPackLoading = true;
       try {
-        const { data } = await $API.post(`/packs/${packId}/open`);
+        const { data: { cards, duplicateCardIds, refunded } } = await $API.post(`/packs/${packId}/open`);
         this.packs.splice(this.packs.findIndex((pack) => pack.id === packId), 1);
-        this.cardObtained = data.cards;
-        this.duplicatedCardIds = data.duplicateCardIds;
-        this.refundedAmount = data.refunded;
+        this.cardObtained = cards;
+        this.duplicatedCardIds = duplicateCardIds;
+        this.refundedAmount = refunded;
+
+        const profileStore = useProfileStore();
+        profileStore.addToBalance(refunded);
       } catch (err) {
         throw err.response.data;
       } finally {
