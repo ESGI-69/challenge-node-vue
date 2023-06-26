@@ -1,5 +1,8 @@
-import userService from '../services/user.js';
 import jwt from 'jsonwebtoken';
+
+import userService from '../services/user.js';
+import cardService from '../services/card.js';
+import { Card, User } from '../db/index.js';
 
 export default {
   /**
@@ -251,10 +254,31 @@ export default {
    */
   getCards: async (req, res, next) => {
     try {
-      const cards = await userService.getCards(req.user);
-      res.json(cards);
+      const orderDirection = req.query.order ? req.query.order.startsWith('-') ? 'DESC' : 'ASC' : null;
+      const orderField = req.query.order ? req.query.order.replace('-', '') : null;
+      const order = orderField ? [[orderField, orderDirection]] : null;
+
+      if (req.query.order && !Object.keys(Card.getAttributes()).includes(orderField)) {
+        throw new Error(`Invalid order field, ${req.query.order.replace('-', '')} is not a valid field`);
+      }
+
+      res.json(await cardService.findAll(
+        {
+          include: {
+            model: User,
+            where: {
+              id: req.user.id,
+            },
+            // Remove the column from the result
+            attributes: [],
+          },
+          limit: req.query.limit || null,
+          offset: req.query.offset || null,
+          order,
+        },
+        true,
+      ));
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },

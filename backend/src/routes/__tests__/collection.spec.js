@@ -12,20 +12,20 @@ describe('Collection routes (no logged)', () => {
 });
 
 describe('Collection routes (logged)', () => {
-  it('GET /collection/ should return an array of cards', async () => {
-    const { body: cards } = await request(app)
-      .get('/collection/')
-      .set('Authorization', `Bearer ${jwt}`)
-      .expect(200);
-    expect(cards).toBeInstanceOf(Array);
-    expect(cards).toHaveLength(5);
-    cards.forEach((card) => {
-      expect(card).toHaveProperty('id');
-      expect(card).toHaveProperty('name');
-      expect(card).toHaveProperty('rarity');
-      expect(card).toHaveProperty('attack');
-      expect(card).toHaveProperty('health');
-      expect(card).toHaveProperty('description');
-    });
-  });
+  it('GET /collection/ should return an array of cards', () => request(app)
+    .get('/collection/')
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(200)
+    .then(({ body: { data: cards, count } }) => {
+      expect(typeof count).toBe('number');
+      expect(cards).toBeInstanceOf(Array);
+      cards.forEach((card) => {
+        expect(card).toHaveProperty('id');
+        expect(card).toHaveProperty('name');
+        expect(card).toHaveProperty('rarity');
+        expect(card).toHaveProperty('attack');
+        expect(card).toHaveProperty('health');
+        expect(card).toHaveProperty('description');
+      });
+    }));
 });
