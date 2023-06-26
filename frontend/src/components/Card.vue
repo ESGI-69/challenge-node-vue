@@ -5,7 +5,10 @@
   >
     <div
       class="card__container"
-      :class="{ 'card__container--face-down': isFaceDown }"
+      :class="{
+        'card__container--face-down': isFaceDown,
+        'nes-pointer': isFlippable,
+      }"
     >
       <div class="card__container__front">
         <div
@@ -208,6 +211,10 @@ export default {
     &--face-down {
       transition: transform 0.5s;
       transform: rotateY(180deg);
+    }
+
+    &--is-flippable {
+      cursor: pointer;
     }
 
     &__front, &__back {
