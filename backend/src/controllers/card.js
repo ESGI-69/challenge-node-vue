@@ -9,18 +9,8 @@ export default {
  * @returns {Promise<void>}
  */
   cget: async (req, res, next) => {
-    const {
-      _page = 1,
-      _itemsPerPage = 40,
-      _sort = {},
-      ...criteria
-    } = req.query;
     try {
-      const cards = await cardService.findAll(criteria, {
-        offset: (_page - 1) * _itemsPerPage,
-        limit: _itemsPerPage,
-        order: _sort,
-      });
+      const cards = await cardService.findAll();
       res.json(cards);
     } catch (err) {
       next(err);
