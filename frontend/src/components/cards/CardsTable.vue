@@ -98,6 +98,9 @@ export default {
   setup() {
     const cardStore = useCardStore();
 
+    const cardPerPage = 8;
+    const cardPerRow = cardPerPage / 2;
+
     const isLoading = computed(() => cardStore.isUserCardsLoading);
     const cards = computed(() => cardStore.userCards);
     const totalCards = computed(() => cardStore.userCardsCount);
@@ -108,7 +111,7 @@ export default {
     const getCards = () => {
       const options = {
         offset: (currentPage.value - 1) * 6,
-        limit: 6,
+        limit: cardPerPage,
         order: order.value,
       };
       cardStore.getUserCards(options);
@@ -146,6 +149,7 @@ export default {
       currentPage,
       order,
       getCards,
+      cardPerRow,
     };
   },
 };
@@ -177,7 +181,7 @@ export default {
 
   &__cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(v-bind(cardPerRow), 1fr);
     gap: 1rem;
   }
 
