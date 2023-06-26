@@ -25,10 +25,14 @@ export const useCardStore = defineStore('cardStore', {
       }
     },
 
-    async getUserCards() {
+    /**
+     * Get user's cards
+     * @param {{ offset: number; limit: number; order: string }} options
+     */
+    async getUserCards(options) {
       this.isUserCardsLoading = true;
       try {
-        const { data: { data, count } } = await $API.get('/collection');
+        const { data: { data, count } } = await $API.get('/collection', { params: options });
         this.userCards = data;
         this.userCardsCount = count;
       } catch (err) {
