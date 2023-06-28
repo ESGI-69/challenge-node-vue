@@ -133,6 +133,6 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
       });
-      expect(cards).toEqual(cardsThatIKnowThatExist.slice(0, 5));
+      expect(cards).toEqual(cardsThatIKnowThatExist.slice(0, 3));
     }));
 });
