@@ -5,6 +5,7 @@ import $API from '@/plugins/axios';
 export const useUserStore = defineStore('userStore', {
   state: () => ({
     isRegisterLoading: false,
+    isUpdateLoading: false,
   }),
 
   actions: {
@@ -20,6 +21,21 @@ export const useUserStore = defineStore('userStore', {
         throw err.response.data;
       } finally {
         this.isRegisterLoading = false;
+      }
+    },
+
+    /**
+     * Update current user
+     * @param {{ email: string, password: string, firstname: string, lastname: string, avatar: File }} payload The payload sent to the API
+     */
+    async update(payload) {
+      this.isUpdateLoading = true;
+      try {
+        await $API.patch('/users/me/', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUpdateLoading = false;
       }
     },
   },

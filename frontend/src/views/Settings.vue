@@ -45,7 +45,7 @@
           >
         </div>
         <div class="settings__input">
-          <label for="current_password">Current Password</label>
+          <label for="password">Current Password</label>
           <input
             id="current_password"
             v-model="current_password"
@@ -147,10 +147,17 @@ export default {
     const handleErrors = (inErrorFileds) => {
       inErrorFileds.forEach((field) => {
         const fieldElement = document.getElementById(field);
+        console.log('fieldElement', fieldElement);
         fieldElement.classList.add('is-error');
       });
 
       console.log('inErrorFileds', inErrorFileds);
+
+      if (inErrorFileds.includes('current_password')) {
+        if (!errorMessages.value.includes('Password should match your current password')) {
+          errorMessages.value.push('Password should match your current password');
+        }
+      }
 
       if (inErrorFileds.includes('update_password_confirmation') && inErrorFileds.includes('update_password')) {
         if (!errorMessages.value.includes('Passwords do not match')) {
@@ -196,16 +203,15 @@ export default {
         if (!isPasswordMatch.value) return;
         console.log('updateUser');
         removeFieldsInError();
-        await userStore.register({
+        await userStore.update({
           avatar: avatar.value,
           firstname: firstname.value,
           lastname: lastname.value,
-          password: email.value,
-          current_password: current_password.value,
+          email: email.value,
+          password: current_password.value,
         });
       } catch (err) {
-        console.error('err', err);
-        const fieldsInError = Object.keys(err).map(type => err[type].flat());
+        const fieldsInError = Object.keys(err).map(type => err[type]).flat();
         console.log('fieldsInError', fieldsInError);
         handleErrors(fieldsInError);
       }

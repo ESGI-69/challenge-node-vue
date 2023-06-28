@@ -1,4 +1,5 @@
 import userService from '../services/user.js';
+import jwt from 'jsonwebtoken';
 
 export default {
   /**
@@ -43,6 +44,7 @@ export default {
         password: req.body.password,
         avatar: req.body.avatar,
       };
+      console.log(userPayload);
       const user = await userService.create(userPayload);
       res.status(201).json(user);
     } catch (err) {
@@ -79,6 +81,46 @@ export default {
       res.sendFile(user.avatar, {
         root: 'public/profile-pictures',
       });
+    } catch (err) {
+      next(err);
+    }
+  },
+  // post: async (req, res, next) => {
+  meUpdate: async (req, res, next) => {
+    try {
+      console.log('----------------------------------------------------------------------');
+      const userPayload = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        password: req.body.password,
+        avatar: req.body.avatar,
+      };
+
+      if (userPayload.avatar === 'default.png') {
+        delete userPayload.avatar;
+      }
+
+      console.log('userPayload', userPayload);
+
+      const token = req.headers.authorization?.split(' ')[1];
+      const { id } = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await userService.findByIdWithPassword(id);
+      if (!user) return res.sendStatus(401);
+
+      if (!await user.checkPassword(userPayload.password)) {
+        return res.status(400).send({
+          message: 'current_password',
+        });
+      }
+
+      const userUpdate = await userService.update(
+        { id: parseInt(id) },
+        userPayload,
+      );
+      if (!userUpdate) return res.sendStatus(404);
+
+      res.json(userUpdate);
     } catch (err) {
       next(err);
     }

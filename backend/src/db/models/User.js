@@ -162,7 +162,7 @@ export default (connection) => {
    * @param {import('sequelize').UpdateOptions} [options] Update options
    * @returns
    */
-  const deleteAvatar = ({ avatar }, options) => {
+  const deleteAvatar = ({ _previousDataValues: { avatar } }, options) => {
     if (options && !options.fields.includes('avatar')) {
       return;
     }
@@ -175,7 +175,6 @@ export default (connection) => {
       });
     }
   };
-
 
   /**
    * Generate a random token for the user
@@ -222,6 +221,9 @@ export default (connection) => {
 
   // Create a random token for the user when it is created
   User.addHook('beforeCreate', generateMailToken);
+
+  // Create a random token for the user when it is updated
+  User.addHook('beforeUpdate', generateMailToken);
 
   // Send a confirmation email to the user with the token when it is created
   User.addHook('afterCreate', sendConfirmationEmail);
