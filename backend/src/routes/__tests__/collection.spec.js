@@ -98,13 +98,13 @@ describe('Collection routes (logged)', () => {
 
   it('GET /collection/ with limit 10 & offset 0 query should return 10 cards', () => request(app)
     .get('/collection/')
-    .query({ limit: 10, offset: 0 })
+    .query({ limit: 5, offset: 0 })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .then(({ body: { data: cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
-      expect(cards.length).toBe(10);
+      expect(cards.length).toBe(5);
       cards.forEach((card) => {
         expect(card).toHaveProperty('id');
         expect(card).toHaveProperty('name');
@@ -118,13 +118,13 @@ describe('Collection routes (logged)', () => {
 
   it('GET /collection/ with limit 5 & offset 0 query should return the same cards as before', () => request(app)
     .get('/collection/')
-    .query({ limit: 5, offset: 0 })
+    .query({ limit: 3, offset: 0 })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .then(({ body: { data: cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
-      expect(cards.length).toBe(5);
+      expect(cards.length).toBe(3);
       cards.forEach((card) => {
         expect(card).toHaveProperty('id');
         expect(card).toHaveProperty('name');

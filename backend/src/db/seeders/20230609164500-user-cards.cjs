@@ -23,6 +23,18 @@ module.exports = {
         cardId: 2,
       },
       {
+        userId: 1,
+        cardId: 7,
+      },
+      {
+        userId: 1,
+        cardId: 8,
+      },
+      {
+        userId: 1,
+        cardId: 9,
+      },
+      {
         userId: 2,
         cardId: 2,
       },
@@ -46,5 +58,5 @@ module.exports = {
      */
     // remove user cards
     await queryInterface.bulkDelete('user_cards', null, {});
-  }
+  },
 };
