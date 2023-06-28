@@ -1,7 +1,19 @@
 <template>
   <container class="cards-table">
     <div class="cards-table__header">
-      <span class="cards-table__header__filters" />
+      <div class="cards-table__header__filters">
+        <span>
+          Cost:
+        </span>
+        <card-cost
+          v-for="cost in 10"
+          :key="cost"
+          :cost="cost"
+          :is-clickable="true"
+          :is-selected="costFilter === cost"
+          @click="setCostFilter"
+        />
+      </div>
       <div class="cards-table__header__order">
         <label
           for="order"
@@ -45,7 +57,35 @@
       </div>
     </div>
     <div
-      v-if="!isLoading"
+      v-if="!isLoading && cards.length === 0 && costFilter === null"
+      class="cards-table__empty"
+    >
+      <p>
+        You don't have any cards yet.
+      </p>
+      <router-link
+        to="/cards"
+        class="nes-btn is-primary"
+      >
+        Buy cards
+      </router-link>
+    </div>
+    <div
+      v-else-if="!isLoading && cards.length === 0 && costFilter !== null"
+      class="cards-table__empty"
+    >
+      <p>
+        You don't have any cards with this cost ({{ costFilter }}).
+      </p>
+      <button
+        class="nes-btn is-primary"
+        @click="resetCostFilter"
+      >
+        Reset filter
+      </button>
+    </div>
+    <div
+      v-else-if="!isLoading"
       class="cards-table__cards"
     >
       <card
@@ -58,7 +98,7 @@
       v-else
       class="cards-table__loading"
     >
-      <p>Loading</p>
+      <p>Loading...</p>
     </div>
     <div class="cards-table__footer">
       <table-pagination
@@ -85,6 +125,7 @@ import { computed, ref } from 'vue';
 import Card from '@/components/Card.vue';
 import TablePagination from './TablePagination.vue';
 import Container from '../Container.vue';
+import CardCost from '../card/CardCost.vue';
 
 import { useCardStore } from '@/stores/cardStore';
 
@@ -92,6 +133,7 @@ export default {
   name: 'CardsTable',
   components: {
     Card,
+    CardCost,
     Container,
     TablePagination,
   },
@@ -107,17 +149,20 @@ export default {
     const totalPages = computed(() => Math.ceil(totalCards.value / 6));
     const currentPage = ref(1);
     const order = ref('cost');
+    const costFilter = ref(null);
 
     const getCards = () => {
       const options = {
         offset: (currentPage.value - 1) * 6,
         limit: cardPerPage,
         order: order.value,
+        cost: costFilter.value,
       };
       cardStore.getUserCards(options);
     };
 
     const changePage = (page) => {
+      if (page === currentPage.value) return;
       currentPage.value = page;
       getCards();
     };
@@ -136,6 +181,20 @@ export default {
       }
     };
 
+    const setCostFilter = (cost) => {
+      if (costFilter.value === cost) {
+        costFilter.value = null;
+      } else {
+        costFilter.value = cost;
+      }
+      getCards();
+    };
+
+    const resetCostFilter = () => {
+      costFilter.value = null;
+      getCards();
+    };
+
     getCards();
 
     return {
@@ -150,6 +209,9 @@ export default {
       order,
       getCards,
       cardPerRow,
+      costFilter,
+      setCostFilter,
+      resetCostFilter,
     };
   },
 };
@@ -162,6 +224,17 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    gap: 2rem;
+
+    &__filters {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      span {
+        margin-right: 0.5rem;
+      }
+    }
 
     &__order {
       display: flex;
@@ -185,12 +258,14 @@ export default {
     gap: 1rem;
   }
 
-  &__loading {
+  &__loading, &__empty {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 2rem;
     height: 752px;
-    width: 848px;
+    width: 1136px;
   }
 
   &__footer {

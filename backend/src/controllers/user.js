@@ -254,16 +254,31 @@ export default {
    */
   getCards: async (req, res, next) => {
     try {
-      const orderDirection = req.query.order ? req.query.order.startsWith('-') ? 'DESC' : 'ASC' : null;
-      const orderField = req.query.order ? req.query.order.replace('-', '') : null;
-      const order = orderField ? [[orderField, orderDirection]] : null;
+      const { order, limit, offset, cost } = req.query;
 
-      if (req.query.order && !Object.keys(Card.getAttributes()).includes(orderField)) {
-        throw new Error(`Invalid order field, ${req.query.order.replace('-', '')} is not a valid field`);
+      const orderDirection = order ? order.startsWith('-') ? 'DESC' : 'ASC' : null;
+      const orderField = order ? order.replace('-', '') : null;
+      const formatedOrder = orderField ? [[orderField, orderDirection]] : null;
+
+      if (order && !Object.keys(Card.getAttributes()).includes(orderField)) {
+        throw new Error(`Invalid order field, ${order.replace('-', '')} is not a valid field`);
+      }
+
+      if (cost && (parseInt(cost) < 0 || parseInt(cost) > 10)) {
+        throw new Error(`Invalid cost, ${cost} is not a valid cost`);
+      }
+
+      let where = {};
+
+      if (cost) {
+        where.cost = cost;
       }
 
       res.json(await cardService.findAll(
         {
+          where: {
+            ...where,
+          },
           include: {
             model: User,
             where: {
@@ -272,9 +287,9 @@ export default {
             // Remove the column from the result
             attributes: [],
           },
-          limit: req.query.limit || null,
-          offset: req.query.offset || null,
-          order,
+          limit: limit || null,
+          offset: offset || null,
+          order: formatedOrder,
         },
         true,
       ));
