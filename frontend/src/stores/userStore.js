@@ -6,6 +6,8 @@ export const useUserStore = defineStore('userStore', {
   state: () => ({
     isRegisterLoading: false,
     isUpdateLoading: false,
+    isEmailUpdated: false,
+    isPasswordUpdated: false,
   }),
 
   actions: {
@@ -26,12 +28,14 @@ export const useUserStore = defineStore('userStore', {
 
     /**
      * Update current user
-     * @param {{ email: string, password: string, firstname: string, lastname: string, avatar: File }} payload The payload sent to the API
+     * @param {{ email: string, password: string, firstname: string, lastname: string, avatar: File, update_password: string, update_password_confirmation: string }} payload The payload sent to the API
      */
     async update(payload) {
       this.isUpdateLoading = true;
       try {
-        await $API.patch('/users/me/', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const caca = await $API.patch('/users/me/', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+        this.isEmailUpdated = caca.data.isEmailUpdated;
+        this.isPasswordUpdated = caca.data.isPasswordUpdated;
       } catch (err) {
         throw err.response.data;
       } finally {

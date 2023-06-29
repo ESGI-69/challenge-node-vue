@@ -125,7 +125,6 @@ export default {
     const handleErrors = (inErrorFileds) => {
       inErrorFileds.forEach((field) => {
         const fieldElement = document.getElementById(field);
-        console.log('fieldElement', fieldElement);
         fieldElement.classList.add('is-error');
       });
 
@@ -182,7 +181,6 @@ export default {
         router.push({ name: 'login' });
       } catch (err) {
         const fieldsInError = Object.keys(err).map(type => err[type]).flat();
-        console.log(fieldsInError);
         handleErrors(fieldsInError);
       }
     };

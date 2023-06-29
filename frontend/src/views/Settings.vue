@@ -55,20 +55,20 @@
           >
         </div>
         <div class="settings__input">
-          <label for="update_password">Update Password</label>
+          <label for="password">Update Password</label>
           <input
-            id="update_password"
-            v-model="update_password"
+            id="password"
+            v-model="password"
             class="nes-input"
             type="password"
             placeholder="Update Password"
           >
         </div>
         <div class="settings__input">
-          <label for="update_password_confirmation">Update Password Confirmation</label>
+          <label for="password_confirmation">Update Password Confirmation</label>
           <input
-            id="update_password_confirmation"
-            v-model="update_password_confirmation"
+            id="password_confirmation"
+            v-model="password_confirmation"
             class="nes-input"
             type="password"
             placeholder="Update Password Confirmation"
@@ -94,6 +94,24 @@
         >
           {{ errorMessage }}
         </span>
+        <span
+          v-if="isUpdated"
+          class="nes-text is-success"
+        >
+          User updated successfully!
+        </span>
+        <span
+          v-if="isPasswordUpdated"
+          class="nes-text is-success"
+        >
+          Password updated you will need to login again!
+        </span>
+        <span
+          v-if="isEmailUpdated"
+          class="nes-text is-success"
+        >
+          Email updated you will need confirm it before login again!
+        </span>
       </form>
     </div>
   </div>
@@ -102,8 +120,10 @@
 <script>
 import { computed, ref } from 'vue';
 import { useProfileStore } from '@/stores/profileStore';
+import { useAuthStore } from '@/stores/authStore';
 import { useUserStore } from '@/stores/userStore';
 import ImageUpload from './ImageUpload.vue';
+import router from '@/router';
 
 export default {
   name: 'Settings',
@@ -113,16 +133,20 @@ export default {
   setup() {
     const  profileStore = useProfileStore();
     const userStore = useUserStore();
+    const authStore = useAuthStore();
 
     const profile = computed(() => profileStore.profile);
     const profileAvatar = computed(() => profileStore.avatarUrl);
+    const isPasswordUpdated = computed(() => userStore.isPasswordUpdated);
+    const isEmailUpdated = computed(() => userStore.isEmailUpdated);
 
     const firstname = ref(profile.value.firstname);
     const lastname = ref(profile.value.lastname);
     const email = ref(profile.value.email);
     const current_password = ref('');
-    const update_password = ref('');
-    const update_password_confirmation = ref('');
+    const password = ref('');
+    const password_confirmation = ref('');
+    const isUpdated = ref(false);
     /**
      * @type {File | null}
      */
@@ -131,9 +155,9 @@ export default {
     const errorMessages = ref([]);
 
     const isPasswordMatch = computed(() => {
-      const isMatch = update_password.value === update_password_confirmation.value;
+      const isMatch = password.value === password_confirmation.value;
       if (!isMatch) {
-        handleErrors([ 'update_password', 'update_password_confirmation' ]);
+        handleErrors([ 'password', 'password_confirmation' ]);
       } else {
         removeFieldsInError();
       }
@@ -147,11 +171,8 @@ export default {
     const handleErrors = (inErrorFileds) => {
       inErrorFileds.forEach((field) => {
         const fieldElement = document.getElementById(field);
-        console.log('fieldElement', fieldElement);
         fieldElement.classList.add('is-error');
       });
-
-      console.log('inErrorFileds', inErrorFileds);
 
       if (inErrorFileds.includes('current_password')) {
         if (!errorMessages.value.includes('Password should match your current password')) {
@@ -159,13 +180,13 @@ export default {
         }
       }
 
-      if (inErrorFileds.includes('update_password_confirmation') && inErrorFileds.includes('update_password')) {
+      if (inErrorFileds.includes('password_confirmation') && inErrorFileds.includes('password')) {
         if (!errorMessages.value.includes('Passwords do not match')) {
           errorMessages.value.push('Passwords do not match');
         }
       }
 
-      if (inErrorFileds.includes('update_password') && !inErrorFileds.includes('update_password_confirmation')) {
+      if (inErrorFileds.includes('password') && !inErrorFileds.includes('password_confirmation')) {
         if (!errorMessages.value.includes('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character')) {
           errorMessages.value.push('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character');
         }
@@ -198,10 +219,9 @@ export default {
       errorMessages.value = [];
     };
 
-    const updateUser = async () => {
+    const updateUser = async () =>{
       try {
         if (!isPasswordMatch.value) return;
-        console.log('updateUser');
         removeFieldsInError();
         await userStore.update({
           avatar: avatar.value,
@@ -209,10 +229,21 @@ export default {
           lastname: lastname.value,
           email: email.value,
           password: current_password.value,
+          update_password: password.value,
         });
+        isUpdated.value = true;
+        if (isEmailUpdated.value || isPasswordUpdated.value) {
+          authStore.logout();
+          setTimeout(() => {
+            router.go();
+          }, 5000);
+        } else {
+          setTimeout(() => {
+            router.go();
+          }, 2000);
+        }
       } catch (err) {
         const fieldsInError = Object.keys(err).map(type => err[type]).flat();
-        console.log('fieldsInError', fieldsInError);
         handleErrors(fieldsInError);
       }
     };
@@ -222,13 +253,16 @@ export default {
       lastname,
       email,
       current_password,
-      update_password,
-      update_password_confirmation,
+      password,
+      password_confirmation,
       avatar,
       profileAvatar,
       errorMessages,
       isPasswordMatch,
       updateUser,
+      isUpdated,
+      isPasswordUpdated,
+      isEmailUpdated,
     };
   },
 };

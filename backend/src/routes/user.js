@@ -24,7 +24,6 @@ const router = Router();
  * @param {import('express').NextFunction} next Express next function
  */
 const addProfilePicture = (req, res, next) => {
-  console.log(req.file);
   if (req.file) {
     req.body.avatar = req.file.filename;
   } else {

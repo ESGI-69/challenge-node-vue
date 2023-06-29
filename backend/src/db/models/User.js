@@ -178,12 +178,16 @@ export default (connection) => {
 
   /**
    * Generate a random token for the user
+   * @param {boolean} update Update or create
    * @param {User} user User model
    * @param {import('sequelize').UpdateOptions} options Update options
    * @returns
    */
-  const generateMailToken = (user, options) => {
+  const generateMailToken = (user, options, isUpdate) => {
     if (!options?.fields.includes('mailToken')) {
+      return;
+    }
+    if (isUpdate && user.dataValues.mailToken !== user._previousDataValues.mailToken) {
       return;
     }
     const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -192,12 +196,16 @@ export default (connection) => {
 
   /**
    * Send a confirmation email to the user
+   * @param {boolean} update Update or create
    * @param {User} user User model
    * @param {import('sequelize').UpdateOptions} options Update options
    * @returns
    */
-  const sendConfirmationEmail = async (user, options) => {
+  const sendConfirmationEmail = async (user, options, isUpdate) => {
     if (!options?.fields.includes('mailToken')) {
+      return;
+    }
+    if (isUpdate && user.dataValues.mailToken !== user._previousDataValues.mailToken) {
       return;
     }
     const url = `${process.env.FRONTEND_URL}/auth/confirm?token=${user.mailToken}`;
@@ -220,13 +228,16 @@ export default (connection) => {
   User.addHook('afterDestroy', deleteAvatar);
 
   // Create a random token for the user when it is created
-  User.addHook('beforeCreate', generateMailToken);
+  User.addHook('beforeCreate', (user, options) => generateMailToken(user, options, false));
 
   // Create a random token for the user when it is updated
-  User.addHook('beforeUpdate', generateMailToken);
+  User.addHook('beforeUpdate', (user, options) => generateMailToken(user, options, true));
 
   // Send a confirmation email to the user with the token when it is created
-  User.addHook('afterCreate', sendConfirmationEmail);
+  User.addHook('afterCreate', (user, options) => sendConfirmationEmail(user, options, false));
+
+  // Send a confirmation email to the user with the token when it is updated
+  User.addHook('afterUpdate', (user, options) => sendConfirmationEmail(user, options, true));
 
   return User;
 };
