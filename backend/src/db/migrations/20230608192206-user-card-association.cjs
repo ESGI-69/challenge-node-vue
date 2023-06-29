@@ -41,5 +41,5 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await queryInterface.dropTable('user_cards');
-  }
+  },
 };
