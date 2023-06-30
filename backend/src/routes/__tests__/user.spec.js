@@ -339,13 +339,16 @@ describe('User updating his profile', () => {
       .patch('/users/me')
       .set('Authorization', `Bearer ${playerToken}`)
       .send({
-        firstname: 'NewFirstname',
+        firstname: 'ChangedAgain Firstame',
         password: 'Testtest1234@@',
       })
       .expect(200)
       .expect('Content-Type', /json/)
       .then((res) => {
         expect(res.body.invalidFields).not.toBeDefined();
+        expect(res.body.firstname).toBe('ChangedAgain Firstame');
+        expect(res.body.lastname).toBe('NewLastname');
+        expect(res.body.email).toBe('updateusernewtest@test.test');
         done();
       })
       .catch(done);
