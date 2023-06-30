@@ -178,7 +178,7 @@ export default (connection) => {
 
   /**
    * Generate a random token for the user
-   * @param {boolean} update Update or create
+   * @param {boolean} isUpdate Update or create
    * @param {User} user User model
    * @param {import('sequelize').UpdateOptions} options Update options
    * @returns
@@ -196,7 +196,7 @@ export default (connection) => {
 
   /**
    * Send a confirmation email to the user
-   * @param {boolean} update Update or create
+   * @param {boolean} isUpdate Update or create
    * @param {User} user User model
    * @param {import('sequelize').UpdateOptions} options Update options
    * @returns
