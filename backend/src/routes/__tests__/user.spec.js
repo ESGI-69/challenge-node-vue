@@ -333,7 +333,25 @@ describe('User updating his profile', () => {
       })
       .catch(done);
   });
+
+  it('PATCH /users/me with not all fields should return a 200', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        password: 'Testtest1234@@',
+      })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.invalidFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
 });
+
 
 describe('User not authenticated access', () => {
   it('GET /users/ should return ', () => request(app)
