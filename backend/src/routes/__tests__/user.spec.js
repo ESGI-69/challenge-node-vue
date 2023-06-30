@@ -350,6 +350,23 @@ describe('User updating his profile', () => {
       })
       .catch(done);
   });
+
+  it ('PATCH /users/me with no password should return a 400', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        lastname: 'NewLastname',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.reason).toBe('Illegal arguments: undefined, string');
+        done();
+      })
+      .catch(done);
+  });
 });
 
 
