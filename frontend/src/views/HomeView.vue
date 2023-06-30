@@ -37,6 +37,12 @@
         >
           Settings
         </router-link>
+        <router-link
+          to="/profile"
+          class="nes-btn"
+        >
+          Edit Profile
+        </router-link>
         <button
           class="nes-btn is-error"
           @click="logout"

@@ -1,11 +1,11 @@
 <template>
-  <div class="settings">
-    <div class="settings__card nes-container">
+  <div class="edit-profile">
+    <div class="edit-profile__card nes-container">
       <h2 class="title">
         User Settings
       </h2>
       <form
-        class="settings__card__user"
+        class="edit-profile__card__user"
         @submit.prevent="updateUser"
       >
         <image-upload
@@ -14,8 +14,8 @@
           :change-file-selected-text="'Change your avatar'"
           :default-image-url="profileAvatar"
         />
-        <div class="settings__double-col">
-          <div class="settings__input nes-field">
+        <div class="edit-profile__double-col">
+          <div class="edit-profile__input nes-field">
             <label for="firstname">First name</label>
             <input
               id="firstname"
@@ -24,7 +24,7 @@
               type="text"
             >
           </div>
-          <div class="settings__input nes-field">
+          <div class="edit-profile__input nes-field">
             <label for="lastname">Last name</label>
             <input
               id="lastname"
@@ -34,7 +34,7 @@
             >
           </div>
         </div>
-        <div class="settings__input nes-field">
+        <div class="edit-profile__input nes-field">
           <label for="email">Email</label>
           <input
             id="email"
@@ -44,7 +44,7 @@
             placeholder="Email"
           >
         </div>
-        <div class="settings__input">
+        <div class="edit-profile__input">
           <label for="password">Current Password</label>
           <input
             id="current_password"
@@ -54,7 +54,7 @@
             placeholder="Current Password"
           >
         </div>
-        <div class="settings__input">
+        <div class="edit-profile__input">
           <label for="password">Update Password</label>
           <input
             id="password"
@@ -64,7 +64,7 @@
             placeholder="Update Password"
           >
         </div>
-        <div class="settings__input">
+        <div class="edit-profile__input">
           <label for="password_confirmation">Update Password Confirmation</label>
           <input
             id="password_confirmation"
@@ -126,7 +126,7 @@ import ImageUpload from './ImageUpload.vue';
 import router from '@/router';
 
 export default {
-  name: 'Settings',
+  name: 'EditProfile',
   components: {
     ImageUpload,
   },
@@ -269,7 +269,7 @@ export default {
 </script>
 
 <style lang="scss">
-.settings {
+.edit-profile {
   display: flex;
   justify-content: center;
   align-items: center;
