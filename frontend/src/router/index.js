@@ -48,6 +48,15 @@ const router = createRouter({
       },
     },
     {
+      path:'/profile',
+      name:'EditProfile',
+      component: () => import('@/views/EditProfile.vue'),
+      meta: {
+        displayName: 'Edit Profile',
+        authRequired: true,
+      },
+    },
+    {
       path: '/auth',
       name: 'auth',
       component: () => import('@/views/Auth.vue'),

@@ -30,12 +30,15 @@ export default {
   findById: function (id) {
     return User.findByPk(id);
   },
+  findByIdWithPassword: function (id) {
+    return User.scope('withPassword').findByPk(id);
+  },
   create: async function (data) {
     const user = await User.create(data);
     return this.findById(user.id);
   },
   update: async function (criteria, data) {
-    const [, users = []] = await User.update(data, {
+    const [, users = []] = await User.scope('withAvatar').update(data, {
       where: criteria,
       returning: true,
       individualHooks: true, // to trigger the encryption hook on update (see user model)

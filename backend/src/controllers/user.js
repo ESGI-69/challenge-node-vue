@@ -1,4 +1,5 @@
 import userService from '../services/user.js';
+import jwt from 'jsonwebtoken';
 
 export default {
   /**
@@ -78,6 +79,70 @@ export default {
       if (!user) return res.sendStatus(404);
       res.sendFile(user.avatar, {
         root: 'public/profile-pictures',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+  // post: async (req, res, next) => {
+  meUpdate: async (req, res, next) => {
+    try {
+      let isEmailUpdated = false;
+      let isPasswordUpdated = false;
+      // Avoid injecting unwanted fields like role or balance on user creation
+      const userPayload = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        password: req.body.password,
+        avatar: req.body.avatar,
+        update_password: req.body.update_password,
+      };
+
+      // delete avatar field if it's the default one (that means the user didn't change it)
+      if (userPayload.avatar === 'default.png') {
+        delete userPayload.avatar;
+      }
+
+      // Get the current user id with the JWT token
+      const token = req.headers.authorization?.split(' ')[1];
+      const { id } = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await userService.findByIdWithPassword(id);
+      if (userPayload.email !== user.email) {
+        userPayload.mailToken = null;
+      }
+      if (!user) return res.sendStatus(401);
+
+      // check if the current password is correct
+      if (!await user.checkPassword(userPayload.password)) {
+        return res.status(400).send({
+          invalidFields: ['current_password'],
+        });
+      }
+
+      // if the user want to change is password add it to the payload as password
+      if (userPayload.update_password) {
+        userPayload.password = userPayload.update_password;
+        delete userPayload.update_password;
+        isPasswordUpdated = true;
+      }
+
+      // update the user
+      const userUpdate = await userService.update(
+        { id: parseInt(id) },
+        userPayload,
+      );
+      if (!userUpdate) return res.sendStatus(404);
+
+      // check if the email has been updated
+      if (userUpdate.email !== user.email) {
+        isEmailUpdated = true;
+      }
+
+      res.json({
+        ...userUpdate.dataValues,
+        isEmailUpdated,
+        isPasswordUpdated,
       });
     } catch (err) {
       next(err);

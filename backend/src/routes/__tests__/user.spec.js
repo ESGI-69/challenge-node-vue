@@ -226,6 +226,153 @@ describe('User info access (Admin)', () => {
   });
 });
 
+describe('User updating his profile', () => {
+  it('PATCH /users/me should update the user', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        lastname: 'NewLastname',
+        email: 'usernewtest@test.test',
+        password: 'Testtest1234!',
+      })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(typeof res.body.id).toBe('number');
+        expect(res.body.email).toBe(user.email);
+        expect(res.body.firstname).toBe('NewFirstname');
+        expect(res.body.lastname).toBe('NewLastname');
+        expect(res.body.updatedAt).toBeDefined();
+        expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBeDefined();
+        expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBe(user.createdAt);
+        expect(res.body.password).toBeUndefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('PATCH /users/me without current password should return a 400', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        lastname: 'NewLastname',
+        email: 'usernewtest@test.test',
+        password: '',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.invalidFields[0]).toContain('current_password');
+        expect(res.body.missingFields).not.toBeDefined();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('PATCH /users/me with email change should generate a token', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        lastname: 'NewLastname',
+        email: 'updateusernewtest@test.test',
+        password: 'Testtest1234!',
+      })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(typeof res.body.id).toBe('number');
+        expect(res.body.email).toBe('updateusernewtest@test.test');
+        expect(res.body.firstname).toBe('NewFirstname');
+        expect(res.body.lastname).toBe('NewLastname');
+        expect(res.body.updatedAt).toBeDefined();
+        expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBeDefined();
+        expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBe(user.createdAt);
+        expect(res.body.password).toBeUndefined();
+        expect(res.body.isEmailUpdated).toBeTruthy();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('PATCH /users/me with password change should return a 200', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        lastname: 'NewLastname',
+        email: 'updateusernewtest@test.test',
+        password: 'Testtest1234!',
+        update_password: 'Testtest1234@@',
+      })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(typeof res.body.id).toBe('number');
+        expect(res.body.email).toBe('updateusernewtest@test.test');
+        expect(res.body.firstname).toBe('NewFirstname');
+        expect(res.body.lastname).toBe('NewLastname');
+        expect(res.body.updatedAt).toBeDefined();
+        expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBeDefined();
+        expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+        expect(res.body.createdAt).toBe(user.createdAt);
+        expect(res.body.password).toBeUndefined();
+        expect(res.body.isPasswordUpdated).toBeTruthy();
+        done();
+      })
+      .catch(done);
+  });
+
+  it('PATCH /users/me with not all fields should return a 200', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'ChangedAgain Firstame',
+        password: 'Testtest1234@@',
+      })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.invalidFields).not.toBeDefined();
+        expect(res.body.firstname).toBe('ChangedAgain Firstame');
+        expect(res.body.lastname).toBe('NewLastname');
+        expect(res.body.email).toBe('updateusernewtest@test.test');
+        done();
+      })
+      .catch(done);
+  });
+
+  it ('PATCH /users/me with no password should return a 400', (done) => {
+    request(app)
+      .patch('/users/me')
+      .set('Authorization', `Bearer ${playerToken}`)
+      .send({
+        firstname: 'NewFirstname',
+        lastname: 'NewLastname',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        expect(res.body.reason).toBe('Illegal arguments: undefined, string');
+        done();
+      })
+      .catch(done);
+  });
+});
+
+
 describe('User not authenticated access', () => {
   it('GET /users/ should return ', () => request(app)
     .get('/users/')
@@ -241,6 +388,10 @@ describe('User not authenticated access', () => {
 
   it('GET /users/me should return ', () => request(app)
     .get('/users/me')
+    .expect(401));
+
+  it('PATCH /users/me should return 401 ', () => request(app)
+    .patch('/users/me')
     .expect(401));
 
   it('GET /users/me/avatar should return ', () => request(app)
