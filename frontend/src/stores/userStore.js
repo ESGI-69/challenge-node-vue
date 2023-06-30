@@ -33,9 +33,9 @@ export const useUserStore = defineStore('userStore', {
     async update(payload) {
       this.isUpdateLoading = true;
       try {
-        const caca = await $API.patch('/users/me/', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
-        this.isEmailUpdated = caca.data.isEmailUpdated;
-        this.isPasswordUpdated = caca.data.isPasswordUpdated;
+        const user = await $API.patch('/users/me/', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+        this.isEmailUpdated = user.data.isEmailUpdated;
+        this.isPasswordUpdated = user.data.isPasswordUpdated;
       } catch (err) {
         throw err.response.data;
       } finally {
