@@ -4,6 +4,7 @@ import { isLogged } from '../middleware.js';
 const router = Router();
 
 router.get('/', isLogged, userControler.getCards);
-// router.post('/:cardId', isAdmin, userControler.addCard);
+router.get('/all-ids', isLogged, userControler.getAllCardIds);
+// router.get('/:id', isLogged, userControler.getCard);
 
 export default router;

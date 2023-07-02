@@ -2,26 +2,20 @@ import { Op } from 'sequelize';
 import { Card, connection } from '../db/index.js';
 
 export default {
+  count: function (options = {}) {
+    return Card.count(options);
+  },
   /**
    * Find all cards matching the given criteria
    * @param {import('sequelize').FindOptions} options
    * @param {boolean} formated If true, return an object with count, nextOffset and data properties instead of just the data
    * @returns {Promise<{count: number, nextOffset: number, data: Card[]}>}
    */
-  findAll: async function (options = {}, formated = false) {
-    const count = await Card.count(options);
-    const data = await Card.findAll(options);
-    const nextOffset = parseInt(options.offset) + parseInt(options.limit);
-
-    if (!formated) return data;
-    return {
-      count,
-      nextOffset,
-      data,
-    };
+  findAll: function (options = {}) {
+    return Card.findAll(options);
   },
-  findById: function (id) {
-    return Card.findByPk(id);
+  findById: function (id, options = {}) {
+    return Card.findByPk(id, options);
   },
   /**
    * Find a card by its ID, including timestamps

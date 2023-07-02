@@ -250,7 +250,6 @@ export default {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
-   * @returns {Promise<void>}
    */
   getCards: async (req, res, next) => {
     try {
@@ -274,25 +273,67 @@ export default {
         where.cost = cost;
       }
 
-      res.json(await cardService.findAll(
-        {
-          where: {
-            ...where,
-          },
-          include: {
-            model: User,
-            where: {
-              id: req.user.id,
-            },
-            // Remove the column from the result
-            attributes: [],
-          },
-          limit: limit || null,
-          offset: offset || null,
-          order: formatedOrder,
+      const options = {
+        where: {
+          ...where,
         },
-        true,
-      ));
+        include: {
+          model: User,
+          where: {
+            id: req.user.id,
+          },
+        },
+        limit: limit || null,
+        offset: offset || null,
+        order: formatedOrder,
+      };
+
+      const count = await cardService.count(options);
+
+      const cards = await cardService.findAll(options);
+
+      const nextOffset = parseInt(options.offset) + parseInt(options.limit);
+
+      const cleanedCards = cards.map((card) => {
+        let cleanCard = card.toJSON();
+        cleanCard.obtainedAt = cleanCard.Users[0].User_Card.obtainedAt;
+        delete cleanCard.Users;
+        return cleanCard;
+      });
+
+      res.json({
+        count,
+        nextOffset,
+        cards: cleanedCards,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller for Get /collection/all-ids
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  getAllCardIds: async (req, res, next) => {
+    try {
+      const options = {
+        include: {
+          model: User,
+          where: {
+            id: req.user.id,
+          },
+        },
+        attributes: ['id'],
+      };
+
+      let cards = await cardService.findAll(options);
+      cards = cards.map((card) => {
+        return card.id;
+      });
+      res.json(cards);
     } catch (err) {
       next(err);
     }
