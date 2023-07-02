@@ -9,14 +9,18 @@ describe('Collection routes (no logged)', () => {
   it('GET /collection/ should return 401', () => request(app)
     .get('/collection/')
     .expect(401));
+
+  it('GET /collection/all-ids should return 401', () => request(app)
+    .get('/collection/all-ids')
+    .expect(401));
 });
 
-describe('Collection routes (logged)', () => {
+describe('Table collection route (logged)', () => {
   it('GET /collection/ should return an array of cards', () => request(app)
     .get('/collection/')
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
-    .then(({ body: { data: cards, count } }) => {
+    .then(({ body: { cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
       cards.forEach((card) => {
@@ -26,6 +30,7 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('attack');
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
+        expect(card).toHaveProperty('obtainedAt');
       });
     }));
 
@@ -34,7 +39,7 @@ describe('Collection routes (logged)', () => {
     .query({ cost: 4 })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
-    .then(({ body: { data: cards, count } }) => {
+    .then(({ body: { cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
       cards.forEach((card) => {
@@ -44,6 +49,7 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('attack');
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
+        expect(card).toHaveProperty('obtainedAt');
         expect(card.cost).toBe(4);
       });
     }));
@@ -53,7 +59,7 @@ describe('Collection routes (logged)', () => {
     .query({ order: 'cost' })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
-    .then(({ body: { data: cards, count } }) => {
+    .then(({ body: { cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
       cards.forEach((card) => {
@@ -63,6 +69,7 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('attack');
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
+        expect(card).toHaveProperty('obtainedAt');
       });
       let prevCost = 0;
       cards.forEach((card) => {
@@ -76,7 +83,7 @@ describe('Collection routes (logged)', () => {
     .query({ order: '-cost' })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
-    .then(({ body: { data: cards, count } }) => {
+    .then(({ body: { cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
       cards.forEach((card) => {
@@ -86,6 +93,7 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('attack');
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
+        expect(card).toHaveProperty('obtainedAt');
       });
       let prevCost = 100;
       cards.forEach((card) => {
@@ -101,7 +109,7 @@ describe('Collection routes (logged)', () => {
     .query({ limit: 5, offset: 0 })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
-    .then(({ body: { data: cards, count } }) => {
+    .then(({ body: { cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
       expect(cards.length).toBe(5);
@@ -112,6 +120,7 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('attack');
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
+        expect(card).toHaveProperty('obtainedAt');
       });
       cardsThatIKnowThatExist = cards;
     }));
@@ -121,7 +130,7 @@ describe('Collection routes (logged)', () => {
     .query({ limit: 3, offset: 0 })
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
-    .then(({ body: { data: cards, count } }) => {
+    .then(({ body: { cards, count } }) => {
       expect(typeof count).toBe('number');
       expect(cards).toBeInstanceOf(Array);
       expect(cards.length).toBe(3);
@@ -132,7 +141,21 @@ describe('Collection routes (logged)', () => {
         expect(card).toHaveProperty('attack');
         expect(card).toHaveProperty('health');
         expect(card).toHaveProperty('description');
+        expect(card).toHaveProperty('obtainedAt');
       });
       expect(cards).toEqual(cardsThatIKnowThatExist.slice(0, 3));
+    }));
+});
+
+describe('List collection cards IDs route (logged)', () => {
+  it('GET /collection/all-ids should return an array of cards IDs', () => request(app)
+    .get('/collection/all-ids')
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(200)
+    .then(({ body: cardsIds }) => {
+      expect(cardsIds).toBeInstanceOf(Array);
+      cardsIds.forEach((cardId) => {
+        expect(cardId).toBeGreaterThan(0);
+      });
     }));
 });
