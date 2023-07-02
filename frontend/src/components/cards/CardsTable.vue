@@ -92,6 +92,7 @@
         v-for="card in cards"
         :key="card.id"
         v-bind="card"
+        @click="selectedCard = card"
       />
     </div>
     <div
@@ -116,6 +117,13 @@
         Cards
       </span>
     </div>
+    <transition name="fade">
+      <card-detail
+        v-if="!!selectedCard"
+        :card="selectedCard"
+        @close="selectedCard = null"
+      />
+    </transition>
   </container>
 </template>
 
@@ -124,8 +132,9 @@ import { computed, ref } from 'vue';
 
 import Card from '@/components/Card.vue';
 import TablePagination from './TablePagination.vue';
-import Container from '../Container.vue';
-import CardCost from '../card/CardCost.vue';
+import Container from '@/components/Container.vue';
+import CardCost from '@/components/card/CardCost.vue';
+import CardDetail from '@/components/CardDetail.vue';
 
 import { useCardStore } from '@/stores/cardStore';
 
@@ -134,6 +143,7 @@ export default {
   components: {
     Card,
     CardCost,
+    CardDetail,
     Container,
     TablePagination,
   },
@@ -150,6 +160,7 @@ export default {
     const currentPage = ref(1);
     const order = ref('cost');
     const costFilter = ref(null);
+    const selectedCard = ref(null);
 
     const getCards = () => {
       const options = {
@@ -160,6 +171,9 @@ export default {
       };
       cardStore.getUserCards(options);
     };
+
+    // Load cards on created
+    getCards();
 
     const changePage = (page) => {
       if (page === currentPage.value) return;
@@ -195,23 +209,22 @@ export default {
       getCards();
     };
 
-    getCards();
-
     return {
-      isLoading,
+      cardPerRow,
       cards,
+      changePage,
+      costFilter,
+      currentPage,
+      getCards,
+      isLoading,
+      nextPage,
+      order,
+      previousPage,
+      resetCostFilter,
+      selectedCard,
+      setCostFilter,
       totalCards,
       totalPages,
-      changePage,
-      previousPage,
-      nextPage,
-      currentPage,
-      order,
-      getCards,
-      cardPerRow,
-      costFilter,
-      setCostFilter,
-      resetCostFilter,
     };
   },
 };

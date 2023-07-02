@@ -6,8 +6,14 @@ export const useCardStore = defineStore('cardStore', {
   state: () => ({
     isCardLoading: false,
     isUserCardsLoading: false,
+    isUserCardLoading: false,
+    isUserCardIdsLoading: false,
     userCards: [],
     userCardsCount: 0,
+    /**
+     * @type {number[]}
+     */
+    userCardIds: [],
     cards: [],
     card: {},
   }),
@@ -32,8 +38,8 @@ export const useCardStore = defineStore('cardStore', {
     async getUserCards(options) {
       this.isUserCardsLoading = true;
       try {
-        const { data: { data, count } } = await $API.get('/collection', { params: options });
-        this.userCards = data;
+        const { data: { cards, count } } = await $API.get('/collection', { params: options });
+        this.userCards = cards;
         this.userCardsCount = count;
       } catch (err) {
         throw err.response.data;
