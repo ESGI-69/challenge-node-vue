@@ -19,6 +19,13 @@ module.exports = {
       },
       first_player: {
         type: Sequelize.INTEGER,
+        references : {
+          model: 'users',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        primaryKey: true,
         allowNull: false,
         validate: {
           notEmpty: true
@@ -26,6 +33,13 @@ module.exports = {
       },
       second_player: {
         type: Sequelize.INTEGER,
+        references : {
+          model: 'users',
+          key: 'id'
+        },
+        primaryKey: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         allowNull: true,
         validate: {
           notEmpty: true

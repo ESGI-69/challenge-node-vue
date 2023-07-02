@@ -123,4 +123,10 @@ export default {
     if (!user) throw new Error('User not found', { cause: 'Not Found' });
     return { emailToken: user.mailToken };
   },
+  /**
+   * @param {import('../db/index.js').User} userModel
+   */
+  getGame: function (userModel) {
+    return userModel.getGame();
+  }
 };

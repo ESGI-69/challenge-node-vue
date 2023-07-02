@@ -41,13 +41,17 @@ export default {
     validate: function (data) {
         return Game.build(data).validate();
     },
-    findByUserId: function (userId) {
+    /**
+     * 
+     * @param {typeof import('../db/index.js').User} userModel
+     */
+    findByUserId: function (userModel) {
         // if userId is first_player or second_player
-        return Game.findAll({
+        return Game.findOne({
             where: {
                 [Op.or]: [
-                    { first_player: userId },
-                    { second_player: userId }
+                    { first_player: userModel.id },
+                    { second_player: userModel.id }
                 ]
             }
         });

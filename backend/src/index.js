@@ -29,7 +29,6 @@ const io = new SocketIoServer(server, {
 io.on('connection', (client) => {
   // eslint-disable-next-line no-console
   console.log('Client connected');
-  console.log(io.sockets.adapter.rooms);
   client.on('disconnect', () => {
     // eslint-disable-next-line no-console
     console.log('Client disconnected');

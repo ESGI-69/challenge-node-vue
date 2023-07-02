@@ -62,7 +62,6 @@ describe('Recreating a game while the other is not finished (logged)', () => {
 describe('Creating a game (not logged)', () => {
     it('POST /game/ should return 401', () => request(app)
         .post('/game')
-        .send({ socketId: '1234567890' })
         .expect(401)
         .expect('Content-Type', /json/)
         .then(res => {
@@ -76,20 +75,14 @@ describe('Leaving a game (logged)', () => {
     it('POST /game/leave/:id should return 200', () => request(app)
         .post(`/game/leave/${gameCreated.id}`)
         .set('Authorization', `Bearer ${playerToken}`)
-        .expect(204)
-        .then(res => {
-            //
-        }));
+        .expect(204));
 });
 
 
 describe('Leaving a game (not logged)', () => {
     it('POST /game/leave/:id should return 401', () => request(app)
         .post(`/game/leave/${gameCreated.id}`)
-        .expect(401)
-        .then(res => {
-            //
-        }));
+        .expect(401));
 }
 );
 
@@ -97,9 +90,5 @@ describe('Leaving a game that does not exist (logged)', () => {
     it('POST /game/leave/:id should return 404', () => request(app)
         .post(`/game/leave/9999`)
         .set('Authorization', `Bearer ${playerToken}`)
-        .expect(404)
-        .then(res => {
-            //
-        }
-        ));
+        .expect(404));
 });

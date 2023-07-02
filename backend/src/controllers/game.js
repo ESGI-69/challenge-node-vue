@@ -1,36 +1,11 @@
 import gameService from '../services/game.js';
+import userService from '../services/user.js';
 import { Server as SocketIoServer } from 'socket.io';
 // import userService from '../services/user';
 import { io } from '../index.js';
 
 
 export default {
-    /**
-     * Express.js controller for GET /games
-     * @param {import('express').Request} req
-     * @param {import('express').Response} res
-     * @param {import('express').NextFunction} next
-     * @returns {Promise<void>}
-     * */
-    cget: async (req, res, next) => {
-        const {
-            _page = 1,
-            _itemsPerPage = 10,
-            _sort = {},
-            ...criteria
-        } = req.query;
-        try {
-            const games = await gameService.findAll(criteria, {
-                offset: (_page - 1) * _itemsPerPage,
-                limit: _itemsPerPage,
-                order: _sort,
-            });
-            res.json(games);
-        }
-        catch (err) {
-            next(err);
-        }
-    },
     /**
      * Express.js controller for POST /games
      * @param {import('express').Request} req
@@ -46,9 +21,11 @@ export default {
 
             let socketId = null;
             socketId = req.body.socketId;
-            const currentGame = await gameService.findByUserId(req.user.id);
+        
+            let user = await userService.findById(req.user.id);
+            const currentGame  = await gameService.findByUserId(user);
 
-            if (currentGame.length > 0) {
+            if (currentGame) {
                 // res.status(400).json({ message: 'You are already in a game' });
                 // return the current Game 
 
@@ -56,13 +33,12 @@ export default {
                 // game already exists so it should create a room and join it
                 let playerSocket = io.sockets.sockets.get(socketId);
                 if (!playerSocket) {
-                    // res.status(400).json({ socketList: io.sockets.sockets });
-                    // return;
+                    throw new Error('not connected to socket io')
                 }else{
-                    playerSocket.join(currentGame[0].token);
+                    playerSocket.join(currentGame.token);
                 }
 
-                res.status(201).json(currentGame[0]);
+                res.status(201).json(currentGame);
                 return;
             }
 
@@ -80,8 +56,7 @@ export default {
             // create a room and make the socketId join it
             let playerSocket = io.sockets.sockets.get(socketId);
             if(!playerSocket){
-                // res.status(400).json({ socketList: io.sockets.sockets });
-                // return;
+                throw new Error('not connected to socket io');
             }else{
                 playerSocket.join(generatedToken);
             }
@@ -89,7 +64,7 @@ export default {
             res.status(201).json(game);
         }
         catch (err) {
-            res.status(400).json({ error: err.message });
+            // res.status(400).json({ error: err.message });
             next(err);
         }
     },
@@ -106,29 +81,6 @@ export default {
             res.json(game);
         }
         catch (err) {
-            next(err);
-        }
-    },
-    /**
-     * Express.js controller for PUT /games/:id
-     * @param {import('express').Request} req
-     * @param {import('express').Response} res
-     * @param {import('express').NextFunction} next
-     * @returns {Promise<void>}
-     * */
-    put: async (req, res, next) => {
-        try {
-            await gameService.validate(req.body);
-
-            const nbRemoved = await gameService.remove({
-                id: parseInt(req.params.id)
-            });
-            const game = await gameService.create({
-                id: parseInt(req.params.id),
-                ...req.body
-            });
-            res.status(nbRemoved ? 200: 201).json(game);
-        } catch (err) {
             next(err);
         }
     },
@@ -171,11 +123,13 @@ export default {
     },
 
     leaveGame: async (req, res, next) => {
+        if (!req.body.socketId) throw new Error('You need to provide your socket id');
         try {
             // check if the game id is in the database with the req.user.id in the first_player or second_player
-            const currentGame = await gameService.findByUserId(req.user.id);
-            let socketId = null;
-            socketId = req.body.socketId;
+            let user = await userService.findById(req.user.id);
+            if(!user) throw new Error('User not found');
+            const currentGame = await gameService.findByUserId(user);
+            let socketId = req.body.socketId;
             let roomId = null;
             if(currentGame.length === 0) {
                 res.status(404).json({ error: 'You are not in a game' });
@@ -183,7 +137,7 @@ export default {
             }
             // return res.status(200).json(req);
             // if the game has the user id
-            if(currentGame[0].first_player === req.user.id || currentGame[0].second_player === req.user.id) {
+            if(currentGame && (currentGame.first_player === user.id || currentGame.second_player === user.id)) {
                 const nbRemoved = await gameService.remove({
                     id: parseInt(req.params.id)
                 })
@@ -191,11 +145,12 @@ export default {
 
                 // leave the room
                 let playerSocket = io.sockets.sockets.get(socketId);
-                roomId = currentGame[0].token;
+                roomId = currentGame.token;
                 playerSocket.leave(roomId);
 
             }else{
-                res.status(404).json({ error: 'You are not in a game' });
+                // L'user essaie de quitter une game dans laquelle il n'est pas
+                res.status(403).json({ error: 'You are not permitted to leave this game' });
             }
         } catch (err) {
             next(err)

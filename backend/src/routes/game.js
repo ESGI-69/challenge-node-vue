@@ -7,10 +7,8 @@ import { isAdmin, isLogged } from '../middleware.js';
 
 const router = Router();
 
-// router.get('/', isLogged, gameController.cget);
 router.post('/', isLogged, gameController.post);
 router.get('/:id', isLogged, gameController.get);
-// router.put('/:id', isLogged, gameController.put);
 // router.delete('/:id', isLogged, gameController.delete);
 
 // router.delete('/leave/:id', isLogged, gameController.leaveGame);

@@ -1,33 +1,24 @@
 import { DataTypes, Model } from 'sequelize';
 
+import { User } from '../index.js';
+
 /**
  * @param {import('sequelize').Sequelize} connection
  */
 
 export default (connection) => {
   class Game extends Model {
-
+    static associate() {
+        this.belongsTo(User, { through: User, foreignKey: 'first_player' });
+        this.belongsTo(User, { through: User, foreignKey: 'second_player' });
     }
+  }
 
     Game.init(
         {
             token: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            first_player: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                validate: {
-                    notEmpty: true
-                }
-            },
-            second_player: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
                 validate: {
                     notEmpty: true
                 }
