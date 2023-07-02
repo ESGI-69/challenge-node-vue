@@ -42,7 +42,7 @@ export default {
 
     const cardStore = useCardStore();
     const appStore = useAppStore();
-    const profileSotre = useProfileStore();
+    const profileStore = useProfileStore();
     const cardIds = computed(() => cardStore.userCards);
 
     await profileStore.getProfile();
