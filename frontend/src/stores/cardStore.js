@@ -18,6 +18,10 @@ export const useCardStore = defineStore('cardStore', {
     card: {},
   }),
 
+  getters: {
+    totalCardsCount: (state) => state.userCardIds.length,
+  },
+
   actions: {
     async getCards() {
       this.isCardLoading = true;
