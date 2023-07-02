@@ -10,14 +10,14 @@ export const useAppStore = defineStore('appStore', {
      * Preload card images and resolve the promise when all images are loaded
      * @param {Object[]} cards Array of card images to preload
      */
-    async preloadCardImages(cards) {
+    async preloadCardImages(cardIds) {
       const promises = [];
-      cards.forEach((card) => {
+      cardIds.forEach((id) => {
         promises.push(new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = resolve;
           img.onerror = reject;
-          img.src = `${import.meta.env.VITE_API}/cards/${card.id}/image`;
+          img.src = `${import.meta.env.VITE_API}/cards/${id}/image`;
         }));
       });
 

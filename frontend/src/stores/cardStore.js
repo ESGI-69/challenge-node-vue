@@ -41,5 +41,18 @@ export const useCardStore = defineStore('cardStore', {
         this.isUserCardsLoading = false;
       }
     },
+
+    async getUserCardIds() {
+      this.isUserCardIdsLoading = true;
+      try {
+        const { data } = await $API.get('/collection/all-ids');
+        this.userCardIds = data;
+        return data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserCardIdsLoading = false;
+      }
+    },
   },
 });
