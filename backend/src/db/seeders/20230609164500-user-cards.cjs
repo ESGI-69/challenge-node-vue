@@ -17,34 +17,42 @@ module.exports = {
       {
         userId: 1,
         cardId: 1,
+        obtainedAt: new Date(),
       },
       {
         userId: 1,
         cardId: 2,
+        obtainedAt: new Date(),
       },
       {
         userId: 1,
         cardId: 7,
+        obtainedAt: new Date(),
       },
       {
         userId: 1,
         cardId: 8,
+        obtainedAt: new Date(),
       },
       {
         userId: 1,
         cardId: 9,
+        obtainedAt: new Date(),
       },
       {
         userId: 2,
         cardId: 2,
+        obtainedAt: new Date(),
       },
       {
         userId: 2,
         cardId: 3,
+        obtainedAt: new Date(),
       },
       {
         userId: 3,
         cardId: 3,
+        obtainedAt: new Date(),
       },
     ]);
   },
