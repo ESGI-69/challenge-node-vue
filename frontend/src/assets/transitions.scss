@@ -1,4 +1,4 @@
-
+// SLIDE FROM LEFT
 
 .slide-left-enter-from {
   transform: translateX(-100%);
@@ -25,5 +25,31 @@
 
 .slide-left-leave-to {
   transform: translateX(-100%);
+  opacity: 0;
+}
+
+// FADE
+
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.fade-leave-to {
   opacity: 0;
 }
