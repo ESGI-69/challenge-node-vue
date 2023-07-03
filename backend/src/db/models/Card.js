@@ -70,14 +70,20 @@ export default (connection) => {
       sequelize: connection,
       tableName: 'cards',
       defaultScope: {
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'image'] },
       },
       scopes: {
         withTimestamps: {
-          attributes: { include: ['createdAt', 'updatedAt'] },
+          attributes: { include: ['createdAt', 'updatedAt'], exclude: ['image'] },
         },
       },
     },
   );
+
+  // Adding scope after class declaration for accesing attributes
+  Card.addScope('onlyImage', {
+    attributes: { include: ['image'], exclude: Object.keys(Card.getAttributes()) },
+  });
+
   return Card;
 };

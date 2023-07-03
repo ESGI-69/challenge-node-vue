@@ -1,5 +1,8 @@
-import userService from '../services/user.js';
 import jwt from 'jsonwebtoken';
+
+import userService from '../services/user.js';
+import cardService from '../services/card.js';
+import { Card, User } from '../db/index.js';
 
 export default {
   /**
@@ -247,14 +250,91 @@ export default {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
-   * @returns {Promise<void>}
    */
   getCards: async (req, res, next) => {
     try {
-      const cards = await userService.getCards(req.user);
+      const { order, limit, offset, cost } = req.query;
+
+      const orderDirection = order ? order.startsWith('-') ? 'DESC' : 'ASC' : null;
+      const orderField = order ? order.replace('-', '') : null;
+      const formatedOrder = orderField ? [[orderField, orderDirection]] : null;
+
+      if (order && !Object.keys(Card.getAttributes()).includes(orderField)) {
+        throw new Error(`Invalid order field, ${order.replace('-', '')} is not a valid field`);
+      }
+
+      if (cost && (parseInt(cost) < 0 || parseInt(cost) > 10)) {
+        throw new Error(`Invalid cost, ${cost} is not a valid cost`);
+      }
+
+      let where = {};
+
+      if (cost) {
+        where.cost = cost;
+      }
+
+      const options = {
+        where: {
+          ...where,
+        },
+        include: {
+          model: User,
+          where: {
+            id: req.user.id,
+          },
+        },
+        limit: limit || null,
+        offset: offset || null,
+        order: formatedOrder,
+      };
+
+      const count = await cardService.count(options);
+
+      const cards = await cardService.findAll(options);
+
+      const nextOffset = parseInt(options.offset) + parseInt(options.limit);
+
+      const cleanedCards = cards.map((card) => {
+        let cleanCard = card.toJSON();
+        cleanCard.obtainedAt = cleanCard.Users[0].User_Card.obtainedAt;
+        delete cleanCard.Users;
+        return cleanCard;
+      });
+
+      res.json({
+        count,
+        nextOffset,
+        cards: cleanedCards,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller for Get /collection/all-ids
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  getAllCardIds: async (req, res, next) => {
+    try {
+      const options = {
+        include: {
+          model: User,
+          where: {
+            id: req.user.id,
+          },
+        },
+        attributes: ['id'],
+      };
+
+      let cards = await cardService.findAll(options);
+      cards = cards.map((card) => {
+        return card.id;
+      });
       res.json(cards);
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },

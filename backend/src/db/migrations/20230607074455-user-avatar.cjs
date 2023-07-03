@@ -12,7 +12,7 @@ module.exports = {
     await queryInterface.addColumn('users', 'avatar', {
       type: Sequelize.STRING,
       allowNull: false,
-      defaultValue: 'default.png'
+      defaultValue: 'default.png',
     });
   },
 
@@ -24,5 +24,5 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await queryInterface.removeColumn('users', 'avatar');
-  }
+  },
 };

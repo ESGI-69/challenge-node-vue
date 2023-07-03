@@ -71,5 +71,5 @@ module.exports = {
     await queryInterface.dropTable('pack_cards');
     await queryInterface.dropTable('packs');
     await queryInterface.removeColumn('users', 'balance');
-  }
+  },
 };

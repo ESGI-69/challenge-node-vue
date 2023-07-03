@@ -23,7 +23,11 @@
         </template>
       </draggable>
       <button
-        class="packs__left__button nes-btn is-primary"
+        class="packs__left__button nes-btn"
+        :class="{
+          'is-disabled': profileBalance < 100,
+          'is-primary': profileBalance >= 100,
+        }"
         :disabled="profileBalance < 100"
         @click="isBuyModalOpen = true"
       >

@@ -51,5 +51,13 @@ export const useProfileStore = defineStore('profileStore', {
         throw err.response.data;
       }
     },
+
+    async addToBalance(amount) {
+      try {
+        this.profile.balance += amount;
+      } catch (err) {
+        throw err.response.data;
+      }
+    },
   },
 });

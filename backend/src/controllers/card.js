@@ -9,18 +9,8 @@ export default {
  * @returns {Promise<void>}
  */
   cget: async (req, res, next) => {
-    const {
-      _page = 1,
-      _itemsPerPage = 40,
-      _sort = {},
-      ...criteria
-    } = req.query;
     try {
-      const cards = await cardService.findAll(criteria, {
-        offset: (_page - 1) * _itemsPerPage,
-        limit: _itemsPerPage,
-        order: _sort,
-      });
+      const cards = await cardService.findAll();
       res.json(cards);
     } catch (err) {
       next(err);
@@ -36,7 +26,8 @@ export default {
   post: async (req, res, next) => {
     try {
       const card = await cardService.create(req.body);
-      res.status(201).json(card);
+      const createdCard = await cardService.findByIdAdmin(card.id);
+      res.status(201).json(createdCard);
     } catch (err) {
       next(err);
     }
@@ -58,24 +49,19 @@ export default {
     }
   },
   /**
-   * Express.js controller for PUT /cards/:id
+   * Express.js controller for GET /cards/:id/image
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    * @returns {Promise<void>}
-   */
-  put: async (req, res, next) => {
+   * */
+  getImage: async (req, res, next) => {
     try {
-      await cardService.validate(req.body);
-
-      const nbRemoved = await cardService.remove({
-        id: parseInt(req.params.id),
+      const card = await cardService.findByIdImage(parseInt(req.params.id));
+      if (!card) return res.sendStatus(404);
+      res.sendFile(card.image, {
+        root: 'public/card-images',
       });
-      const card = await cardService.create({
-        id: parseInt(req.params.id),
-        ...req.body,
-      });
-      res.status(nbRemoved ? 200 : 201).json(card);
     } catch (err) {
       next(err);
     }
@@ -94,7 +80,8 @@ export default {
         req.body,
       );
       if (!card) return res.sendStatus(404);
-      res.json(card);
+      const updatedCard = await cardService.findByIdAdmin(card.id);
+      res.json(updatedCard);
     } catch (err) {
       next(err);
     }

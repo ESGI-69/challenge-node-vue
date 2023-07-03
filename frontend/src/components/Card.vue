@@ -5,7 +5,10 @@
   >
     <div
       class="card__container"
-      :class="{ 'card__container--face-down': isFaceDown }"
+      :class="{
+        'card__container--face-down': isFaceDown,
+        'nes-pointer': isFlippable,
+      }"
     >
       <div class="card__container__front">
         <div
@@ -16,13 +19,14 @@
             Refunded
           </span>
         </div>
-        <span class="card__container__front__cost">
-          {{ cost }}
-        </span>
+        <card-cost
+          class="card__container__front__cost"
+          :cost="cost"
+        />
         <div class="card__container__front__header">
           <div
             class="card__container__front__header__image"
-            :style="{ backgroundImage: `url(${image})` }"
+            :style="{ backgroundImage: `url(${imageUrl})` }"
           />
           <span class="card__container__front__header__name">
             {{ name }}
@@ -69,10 +73,15 @@
 <script>
 import { toRefs, ref, computed } from 'vue';
 
+import CardCost from '@/components/card/CardCost.vue';
+
 import backOfCard from '@/assets/backOfCardResized.webp';
 
 export default {
   name: 'Card',
+  components: {
+    CardCost,
+  },
   props: {
     /**
      * The id of the card.
@@ -86,13 +95,6 @@ export default {
      */
     cost: {
       type: Number,
-      required: true,
-    },
-    /**
-     * The image of the card.
-     */
-    image: {
-      type: String,
       required: true,
     },
     /**
@@ -179,6 +181,7 @@ export default {
     const { isFlippable, id } = toRefs(props);
 
     const clickEvent = computed(() => isFlippable.value ? 'click' : null);
+    const imageUrl = computed(() => `${import.meta.env.VITE_API}/cards/${id.value}/image`);
     const isFaceDown = ref(props.isStartFaceDown);
 
     const flipCard = () => {
@@ -191,6 +194,7 @@ export default {
       flipCard,
       isFaceDown,
       backOfCard,
+      imageUrl,
     };
   },
 };
@@ -198,14 +202,13 @@ export default {
 
 <style lang="scss" scoped>
 .card {
-  width: 15rem;
-  height: 21rem;
+  width: 17rem;
+  height: 23rem;
   perspective: 27rem;
 
   &__container {
     position: relative;
-    width: 100%;
-    height: 100%;
+    height: calc(100% - 2rem);
     transition: transform 1s;
     transform-style: preserve-3d;
     margin: 1rem;
@@ -213,6 +216,10 @@ export default {
     &--face-down {
       transition: transform 0.5s;
       transform: rotateY(180deg);
+    }
+
+    &--is-flippable {
+      cursor: pointer;
     }
 
     &__front, &__back {
@@ -254,7 +261,7 @@ export default {
         }
       }
 
-      &__cost, &__attack, &__health {
+      &__attack, &__health {
         z-index: 1;
         position: absolute;
         height: 2rem;
@@ -267,9 +274,10 @@ export default {
       }
 
       &__cost {
-        background-color: blue;
         top: -1rem;
         left: -1rem;
+        z-index: 1;
+        position: absolute;
       }
 
       &__attack {

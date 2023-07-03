@@ -2,15 +2,29 @@ import { Op } from 'sequelize';
 import { Card, connection } from '../db/index.js';
 
 export default {
-  findAll: function (criteria, options = {}) {
-    return Card.findAll({
-      where: criteria,
-      ...options,
-      order: Object.entries(options.order || {}),
-    });
+  count: function (options = {}) {
+    return Card.count(options);
   },
-  findById: function (id) {
-    return Card.findByPk(id);
+  /**
+   * Find all cards matching the given criteria
+   * @param {import('sequelize').FindOptions} options
+   * @param {boolean} formated If true, return an object with count, nextOffset and data properties instead of just the data
+   * @returns {Promise<{count: number, nextOffset: number, data: Card[]}>}
+   */
+  findAll: function (options = {}) {
+    return Card.findAll(options);
+  },
+  findById: function (id, options = {}) {
+    return Card.findByPk(id, options);
+  },
+  /**
+   * Find a card by its ID, including timestamps
+   */
+  findByIdAdmin: function (id) {
+    return Card.scope('withTimestamps').findByPk(id);
+  },
+  findByIdImage: function (id) {
+    return Card.scope('onlyImage').findByPk(id);
   },
   /**
    * Find a random card with the given rarity and excluding the given IDs

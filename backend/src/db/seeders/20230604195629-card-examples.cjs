@@ -15,7 +15,7 @@ module.exports = {
     await queryInterface.bulkInsert('cards', [
       {
         name: 'Fireball',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
+        image: 'default.png',
         cost: 4,
         rarity: 'common',
         type: 'spell',
@@ -27,7 +27,7 @@ module.exports = {
       },
       {
         name: 'Fireball 2',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
+        image: 'default.png',
         cost: 4,
         rarity: 'common',
         type: 'minion',
@@ -39,7 +39,7 @@ module.exports = {
       },
       {
         name: 'Fireball 3',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
+        image: 'default.png',
         cost: 4,
         rarity: 'common',
         type: 'minion',
@@ -51,7 +51,7 @@ module.exports = {
       },
       {
         name: 'Fireball 4',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
+        image: 'default.png',
         cost: 4,
         rarity: 'common',
         type: 'minion',
@@ -63,7 +63,7 @@ module.exports = {
       },
       {
         name: 'Fireball 5',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_001.png',
+        image: 'default.png',
         cost: 4,
         rarity: 'common',
         type: 'minion',
@@ -75,7 +75,7 @@ module.exports = {
       },
       {
         name: 'Instant Death',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_116.png',
+        image: 'default.png',
         cost: 10,
         rarity: 'legendary',
         type: null,
@@ -87,7 +87,7 @@ module.exports = {
       },
       {
         name: 'Instant Death 2',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_116.png',
+        image: 'default.png',
         cost: 10,
         rarity: 'legendary',
         type: null,
@@ -99,7 +99,7 @@ module.exports = {
       },
       {
         name: 'Pillgrim',
-        image: 'https://art.hearthstonejson.com/v1/orig/CS2_073.png',
+        image: 'default.png',
         cost: 2,
         rarity: 'common',
         type: 'minion',
@@ -111,7 +111,7 @@ module.exports = {
       },
       {
         name: 'Explosive Shot',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_537.png',
+        image: 'default.png',
         cost: 5,
         rarity: 'rare',
         type: 'spell',
@@ -123,7 +123,7 @@ module.exports = {
       },
       {
         name: 'Explosive Shot 2',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_537.png',
+        image: 'default.png',
         cost: 5,
         rarity: 'rare',
         type: 'spell',
@@ -135,7 +135,7 @@ module.exports = {
       },
       {
         name: 'Explosive Shot 3',
-        image: 'https://art.hearthstonejson.com/v1/orig/EX1_537.png',
+        image: 'default.png',
         cost: 5,
         rarity: 'rare',
         type: 'spell',
@@ -147,7 +147,7 @@ module.exports = {
       },
       {
         name: 'Abominable Bowman',
-        image: 'https://art.hearthstonejson.com/v1/orig/ICC_825.png',
+        image: 'default.png',
         cost: 7,
         rarity: 'epic',
         type: 'minion',
@@ -159,7 +159,7 @@ module.exports = {
       },
       {
         name: 'Abominable Bowman 2',
-        image: 'https://art.hearthstonejson.com/v1/orig/ICC_825.png',
+        image: 'default.png',
         cost: 7,
         rarity: 'epic',
         type: 'minion',

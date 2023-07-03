@@ -6,7 +6,6 @@ import getJwt from '../../../tests/getJwt.js';
 const card =  {
   name: 'Card name',
   description: 'Card description',
-  image: 'https://via.placeholder.com/150',
   cost: 2,
   rarity: 'common',
   type: 'minion',
@@ -17,7 +16,6 @@ const card =  {
 const updatedCard = {
   name: 'New name',
   description: 'New description',
-  image: 'https://via.placeholder.com/150',
   type: 'new type',
   rarity: 'rare',
   cost: 6,
@@ -33,7 +31,14 @@ describe('Adding a Card as an Admin', () => {
   it('POST /cards/ should create a new card', () => request(app)
     .post('/cards/')
     .set('Authorization', `Bearer ${adminToken}`)
-    .send(card)
+    .field('name', card.name)
+    .field('description', card.description)
+    .field('cost', card.cost)
+    .field('rarity', card.rarity)
+    .field('type', card.type)
+    .field('attack', card.attack)
+    .field('health', card.health)
+    .attach('image', 'tests/assets/card.png')
     .expect(201)
     .expect('Content-Type', /json/)
     .then((response) => {
@@ -41,7 +46,6 @@ describe('Adding a Card as an Admin', () => {
       cardId = response.body.id;
       expect(response.body.name).toBe(card.name);
       expect(response.body.description).toBe(card.description);
-      expect(response.body.image).toBe(card.image);
       expect(response.body.type).toBe(card.type);
       expect(response.body.rarity).toBe(card.rarity);
       expect(response.body.cost).toBe(card.cost);
@@ -51,6 +55,7 @@ describe('Adding a Card as an Admin', () => {
       expect(response.body.createdAt).toBeDefined();
       expect(typeof new Date(response.body.updatedAt).toISOString()).toBe('string');
       expect(response.body.updatedAt).toBeDefined();
+      expect(response.body.image).toBeUndefined();
     }));
 
   it('POST /cards/ should return 400 if name is empty', () => request(app)
@@ -155,9 +160,14 @@ describe('Adding a card as Unlogged ', () => {
 });
 
 describe('Getting Cards and a Card', () => {
-  it('GET /cards/ should return an array of cards ', () => request(app)
+  it('GET /cards/ as player should return a 403', () => request(app)
     .get('/cards/')
     .set('Authorization', `Bearer ${playerToken}`)
+    .expect(403));
+
+  it('GET /cards/ as admin should return an array of cards', () => request(app)
+    .get('/cards/')
+    .set('Authorization', `Bearer ${adminToken}`)
     .expect(200)
     .expect('Content-Type', /json/)
     .then((response) => {
@@ -165,7 +175,12 @@ describe('Getting Cards and a Card', () => {
       expect(Array.isArray(response.body)).toBe(true);
       expect(cardFound.name).toBe(card.name);
       expect(cardFound.description).toBe(card.description);
-      expect(cardFound.image).toBe(card.image);
+      expect(cardFound.type).toBe(card.type);
+      expect(cardFound.rarity).toBe(card.rarity);
+      expect(cardFound.cost).toBe(card.cost);
+      expect(cardFound.attack).toBe(card.attack);
+      expect(cardFound.health).toBe(card.health);
+      expect(cardFound.image).toBeUndefined();
       expect(cardFound.createdAt).toBeUndefined();
       expect(cardFound.updatedAt).toBeUndefined();
     }));
@@ -178,7 +193,6 @@ describe('Getting Cards and a Card', () => {
     .then((response) => {
       expect(response.body.name).toBe(card.name);
       expect(response.body.description).toBe(card.description);
-      expect(response.body.image).toBe(card.image);
       expect(response.body.type).toBe(card.type);
       expect(response.body.rarity).toBe(card.rarity);
       expect(response.body.cost).toBe(card.cost);
@@ -186,7 +200,19 @@ describe('Getting Cards and a Card', () => {
       expect(response.body.health).toBe(card.health);
       expect(response.body.createdAt).toBeUndefined();
       expect(response.body.updatedAt).toBeUndefined();
+      expect(response.body.image).toBeUndefined();
     }));
+
+  it('GET /cards/:id should return 404 if the card does not exist', () => request(app)
+    .get('/cards/999999')
+    .set('Authorization', `Bearer ${playerToken}`)
+    .expect(404));
+
+  it('GET /cards/:id/image should return the image of the card', () => request(app)
+    .get(`/cards/${cardId}/image`)
+    .set('Authorization', `Bearer ${playerToken}`)
+    .expect(200)
+    .expect('Content-Type', 'application/octet-stream'));
 });
 
 describe('Getting Cards as Unlogged', () => {
@@ -212,7 +238,6 @@ describe('Updating a Card PATCH', () => {
       expect(typeof response.body.id).toBe('number');
       expect(response.body.name).toBe('New test');
       expect(response.body.description).toBe(updatedCard.description);
-      expect(response.body.image).toBe(updatedCard.image);
       expect(response.body.type).toBe(updatedCard.type);
       expect(response.body.rarity).toBe(updatedCard.rarity);
       expect(response.body.cost).toBe(updatedCard.cost);
@@ -222,13 +247,13 @@ describe('Updating a Card PATCH', () => {
       expect(response.body.createdAt).toBeDefined();
       expect(typeof new Date(response.body.updatedAt).toISOString()).toBe('string');
       expect(response.body.updatedAt).toBeDefined();
+      expect(response.body.image).toBeUndefined();
     }));
 
   it('PATCH /cards/:id as a Player should return 403', async () => {
     const updatedCard = {
       name: 'New name',
       description: 'New description',
-      image: 'https://via.placeholder.com/150',
     };
     await request(app)
       .patch(`/cards/${cardId}`)
@@ -244,7 +269,6 @@ describe('Updating a Card PATCH', () => {
     const updatedCard = {
       name: 'New name',
       description: 'New description',
-      image: 'https://via.placeholder.com/150',
     };
     await request(app)
       .patch(`/cards/${cardId}`)
@@ -278,138 +302,6 @@ describe('Updating a Card PATCH', () => {
       .expect(200)
       .expect('Content-Type', /json/)
       .then((response) => {
-        expect(response.body.invalidFields).not.toBeDefined();
-      });
-  });
-});
-
-
-describe('Updating a Card PUT', () => {
-  it('PUT /cards/:id as an Admin should update the card', async () => {
-    const newCard = {
-      ...updatedCard,
-      id: cardId,
-    };
-    await request(app)
-      .put(`/cards/${cardId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send(newCard)
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .then((response) => {
-        expect(response.body.name).toBe(updatedCard.name);
-        expect(response.body.description).toBe(updatedCard.description);
-        expect(response.body.image).toBe(updatedCard.image);
-        expect(response.body.type).toBe(updatedCard.type);
-        expect(response.body.rarity).toBe(updatedCard.rarity);
-        expect(response.body.cost).toBe(updatedCard.cost);
-        expect(response.body.attack).toBe(updatedCard.attack);
-        expect(response.body.health).toBe(updatedCard.health);
-        expect(typeof new Date(response.body.createdAt).toISOString()).toBe('string');
-        expect(response.body.createdAt).toBeDefined();
-        expect(typeof new Date(response.body.updatedAt).toISOString()).toBe('string');
-        expect(response.body.updatedAt).toBeDefined();
-      });
-  });
-
-  it('PUT /cards/:id as a Player should return 403', () => request(app)
-    .put(`/cards/${cardId}`)
-    .set('Authorization', `Bearer ${playerToken}`)
-    .send(updatedCard)
-    .expect(403)
-    .then((response) => {
-      expect(response.body).toStrictEqual({});
-    }));
-
-  it('PUT /cards/:id as Unlogged should return 401', () => request(app)
-    .put(`/cards/${cardId}`)
-    .send(updatedCard)
-    .expect(401)
-    .then((response) => {
-      expect(response.body).toStrictEqual({
-        code: 'not_logged_in',
-        message: 'Not logged in',
-      });
-    }));
-
-  it('PUT /cards/:id should return 400 if name is empty', async () => {
-    const newCard = {
-      ...updatedCard,
-      id: cardId,
-      name: '',
-    };
-    await request(app)
-      .put(`/cards/${cardId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send(newCard)
-      .expect(400)
-      .expect('Content-Type', /json/)
-      .then((response) => {
-        expect(response.body.invalidFields).toContain('name');
-      });
-  });
-
-  it('PUT /cards/:id should return 400 if name is not provided', async () => {
-    const noTitleCard = { ...card };
-    delete noTitleCard.name;
-    await request(app)
-      .put(`/cards/${cardId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send(noTitleCard)
-      .expect(400)
-      .expect('Content-Type', /json/)
-      .then((response) => {
-        expect(response.body.missingFields).toContain('name');
-        expect(response.body.invalidFields).not.toBeDefined();
-      });
-  });
-
-  it('PUT /cards/:id should return 400 if description is empty', () => request(app)
-    .put(`/cards/${cardId}`)
-    .set('Authorization', `Bearer ${adminToken}`)
-    .send({ ...card, description: '' })
-    .expect(400)
-    .expect('Content-Type', /json/)
-    .then((response) => {
-      expect(response.body.invalidFields).toContain('description');
-    }));
-
-  it('PUT /cards/:id should return 400 if description is not provided', async () => {
-    const noDescriptionCard = { ...card };
-    delete noDescriptionCard.description;
-    await request(app)
-      .put(`/cards/${cardId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send(noDescriptionCard)
-      .expect(400)
-      .expect('Content-Type', /json/)
-      .then((response) => {
-        expect(response.body.missingFields).toContain('description');
-        expect(response.body.invalidFields).not.toBeDefined();
-      });
-  });
-
-  it('PUT /cards/:id should return 400 if image is empty', () => request(app)
-    .put(`/cards/${cardId}`)
-    .set('Authorization', `Bearer ${adminToken}`)
-    .send({ ...card, image: '' })
-    .expect(400)
-    .expect('Content-Type', /json/)
-    .then((response) => {
-      expect(response.body.invalidFields).toContain('image');
-    }));
-
-  it('PUT /cards/:id should return 400 if image is not provided', async () => {
-    const noImageCard = { ...card };
-    delete noImageCard.image;
-    await request(app)
-      .put(`/cards/${cardId}`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send(noImageCard)
-      .expect(400)
-      .expect('Content-Type', /json/)
-      .then((response) => {
-        expect(response.body.missingFields).toContain('image');
         expect(response.body.invalidFields).not.toBeDefined();
       });
   });

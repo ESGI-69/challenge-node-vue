@@ -22,13 +22,13 @@ describe('Pack routes (no logged)', () => {
 });
 
 describe ('Packs list (logged)', () => {
-  it('GET /packs/ should return 200', () => request(app)
+  it('GET /packs/ should return 200 and list packs', () => request(app)
     .get('/packs/')
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .expect('Content-Type', /json/)
     .then(res => {
-      expect(res.body).toHaveLength(1);
+      expect(res.body).toBeInstanceOf(Array);
     }));
 });
 

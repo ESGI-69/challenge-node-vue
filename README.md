@@ -166,4 +166,3 @@ Environment variables are used to configure the application. You can find the li
 | `SENDINBLUE_KEY` | The API key of the sendinblue (brevo) account for the mailer | |
 | `SENDINBLUE_EMAIL` | The email of the sender for the mailer | |
 | `SENDINBLUE_NAME` | The name of the sender for the mailer |  |
-

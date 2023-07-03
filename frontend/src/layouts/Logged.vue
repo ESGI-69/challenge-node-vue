@@ -43,15 +43,14 @@ export default {
     const cardStore = useCardStore();
     const appStore = useAppStore();
     const profileStore = useProfileStore();
-    const cards = computed(() => cardStore.cards);
+    const cardIds = computed(() => cardStore.userCards);
 
     await profileStore.getProfile();
     await profileStore.getProfileAvatar();
 
-    await cardStore.getCards();
+    await cardStore.getUserCardIds();
 
-    const cardImages = cards.value.map((card) => card.image);
-    await appStore.preloadCardImages(cardImages);
+    await appStore.preloadCardImages(cardIds.value);
 
     return {
       background,

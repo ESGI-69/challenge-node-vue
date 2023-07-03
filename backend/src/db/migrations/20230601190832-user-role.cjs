@@ -12,7 +12,7 @@ module.exports = {
     await queryInterface.addColumn('users', 'role', {
       type: Sequelize.ENUM('ADMIN', 'PLAYER'),
       allowNull: false,
-      defaultValue: 'PLAYER'
+      defaultValue: 'PLAYER',
     });
   },
 
@@ -24,5 +24,5 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await queryInterface.removeColumn('users', 'role');
-  }
+  },
 };
