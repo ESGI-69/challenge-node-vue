@@ -25,7 +25,6 @@ module.exports = {
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        primaryKey: true,
         allowNull: false,
         validate: {
           notEmpty: true
@@ -37,7 +36,6 @@ module.exports = {
           model: 'users',
           key: 'id'
         },
-        primaryKey: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         allowNull: true,
