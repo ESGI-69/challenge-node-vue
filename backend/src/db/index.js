@@ -9,6 +9,7 @@ import pack from './models/Pack.js';
 import pack_Card from './models/PackCard.js';
 import user from './models/User.js';
 import user_Card from './models/UserCard.js';
+import game from './models/Game.js';
 
 /**
  * The domain name of the postgres database
@@ -48,11 +49,13 @@ const Pack = pack(connection);
 const Pack_Card = pack_Card(connection);
 const User = user(connection);
 const User_Card = user_Card(connection);
+const Game = game(connection);
 
 // Launch associations methods for relations between tables
 User.associate();
 Card.associate();
 Pack.associate();
+Game.associate();
 
 // Syncronize MongoDB with MySQL database, create documents in MongoDB for each row in MySQL. Do not pass junction tables to syncMongo
 await syncMongo([ Card, Pack, User ], connection);
@@ -64,5 +67,6 @@ export {
   Pack_Card,
   User_Card,
   User,
+  Game,
 };
 

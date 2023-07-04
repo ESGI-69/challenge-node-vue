@@ -11,6 +11,7 @@ import collectionRouter from './routes/collection.js';
 import packRouter from './routes/pack.js';
 import securityRouter from './routes/security.js';
 import userRouter from './routes/user.js';
+import gameRouter from './routes/game.js';
 
 import { connection } from './db/index.js';
 import { populateUser } from './middleware.js';
@@ -28,7 +29,6 @@ const io = new SocketIoServer(server, {
 io.on('connection', (client) => {
   // eslint-disable-next-line no-console
   console.log('Client connected');
-
   client.on('disconnect', () => {
     // eslint-disable-next-line no-console
     console.log('Client disconnected');
@@ -53,6 +53,8 @@ app.use('/collection', collectionRouter);
 
 app.use('/packs', packRouter);
 
+app.use('/game', gameRouter);
+
 app.get('/health', async (req, res) => {
   try {
     await connection.authenticate({ logging: false });
@@ -69,4 +71,4 @@ if (process.env.NODE_ENV !== 'test') {
   server.listen(3000, () => console.log('Server started on port 3000'));
 }
 
-export { app };
+export { app, io };
