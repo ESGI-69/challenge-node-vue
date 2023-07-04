@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import multer from 'multer';
 
 import gameController from '../controllers/game.js';
-import { isAdmin, isLogged } from '../middleware.js';
+import { isLogged } from '../middleware.js';
 // import io from '../index.js';
 
 const router = Router();
