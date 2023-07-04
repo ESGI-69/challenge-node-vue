@@ -123,7 +123,10 @@ export default {
     },
 
     leaveGame: async (req, res, next) => {
-        if (!req.body.socketId) throw new Error('You need to provide your socket id');
+        if (!req.body.socketId) {
+            res.status(400).json({ error: 'missing socketId' });
+            return;
+        }
         try {
             // check if the game id is in the database with the req.user.id in the first_player or second_player
             let user = await userService.findById(req.user.id);
@@ -131,7 +134,7 @@ export default {
             const currentGame = await gameService.findByUserId(user);
             let socketId = req.body.socketId;
             let roomId = null;
-            if(currentGame.length === 0) {
+            if(!currentGame) {
                 res.status(404).json({ error: 'You are not in a game' });
                 return;
             }
@@ -146,7 +149,13 @@ export default {
                 // leave the room
                 let playerSocket = io.sockets.sockets.get(socketId);
                 roomId = currentGame.token;
-                playerSocket.leave(roomId);
+
+                if(!playerSocket){
+                    res.status(404).json({ error: 'You are not connected to the socket' });
+                    return;
+                }else{
+                    playerSocket.leave(roomId);
+                }
 
             }else{
                 // L'user essaie de quitter une game dans laquelle il n'est pas

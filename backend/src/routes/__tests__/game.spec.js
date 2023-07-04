@@ -19,7 +19,7 @@ const newGame = {
     winnerd: null,
 };
 
-const playerToken = await getJwt('janedoe@example.com', '123456');
+const playerToken = await getJwt('git ', '123456');
 // const adminToken = await getJwt('admin@example.com', '123456');
 
 let gameCreated = {};
@@ -72,9 +72,10 @@ describe('Creating a game (not logged)', () => {
 );
 
 describe('Leaving a game (logged)', () => {
-    it('POST /game/leave/:id should return 200', () => request(app)
+    it('POST /game/leave/:id should return 204', () => request(app)
         .post(`/game/leave/${gameCreated.id}`)
         .set('Authorization', `Bearer ${playerToken}`)
+        .send({ socketId: '1234567890'})
         .expect(204));
 });
 
@@ -89,6 +90,7 @@ describe('Leaving a game (not logged)', () => {
 describe('Leaving a game that does not exist (logged)', () => {
     it('POST /game/leave/:id should return 404', () => request(app)
         .post(`/game/leave/9999`)
+        .send({ socketId: '1234567890'})
         .set('Authorization', `Bearer ${playerToken}`)
         .expect(404));
 });
