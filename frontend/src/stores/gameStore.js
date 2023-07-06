@@ -6,6 +6,7 @@ export const useGameStore = defineStore('gameStore', {
   state: () => ({
     isGameLoading: false,
     isGameLeft: false,
+    isLeaveGameLoading: false,
     /**
      * @type {{
      *  id: string;
