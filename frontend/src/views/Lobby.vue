@@ -1,5 +1,9 @@
 <template>
-  <div class="the-game nes-container is-rounded  is-centered">
+  <container
+    class="the-game"
+    :is-rounded="true"
+    :is-centered="true"
+  >
     <div v-if="isGameLoading">
       <h2>Crushing the Bridge of Khazad-dûm ...</h2>
     </div>
@@ -15,7 +19,7 @@
         Quitter la partie
       </button>
     </div>
-  </div>
+  </container>
 </template>
 
 
@@ -24,12 +28,13 @@
 import { computed } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
 import router from '@/router';
-// import Game from '@/components/Game.vue';
+
+import Container from '@/components/Container.vue';
 
 export default {
   name: 'GameView',
   components: {
-    // Game,
+    Container,
   },
   setup() {
     const gameStore = useGameStore();
