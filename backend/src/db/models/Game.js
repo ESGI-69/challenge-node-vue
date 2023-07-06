@@ -16,16 +16,29 @@ export default (connection) => {
 
   Game.init(
     {
-      token: {
-        type: DataTypes.STRING,
+      id: {
+        type: DataTypes.STRING(6),
+        primaryKey: true,
         allowNull: false,
+        unique: true,
         validate: {
           notEmpty: true,
+          max: 6,
+          min: 6,
         },
       },
       winner: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        defaultValue: null,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      endAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
         validate: {
           notEmpty: true,
         },
@@ -45,6 +58,5 @@ export default (connection) => {
     },
   );
   return Game;
-
 
 };

@@ -1,7 +1,7 @@
 import { connection } from './db/index.js';
 
-connection.sync({ force: true }).then(() => {
-  // eslint-disable-next-line no-console
-  console.log('Database synchronized');
-  connection.close();
-});
+await connection.sync({ force: true });
+// eslint-disable-next-line no-console
+console.log('Database synchronized');
+await connection.close();
+process.exit(0);

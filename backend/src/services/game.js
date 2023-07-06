@@ -12,6 +12,12 @@ export default {
       where: criteria,
     });
   },
+  findAllIds: async function () {
+    const games = await Game.findAll({
+      attributes: ['id'],
+    });
+    return games.map((code) => code.id);
+  },
   findByToken: function (token) {
     return Game.findOne({
       where: {
@@ -56,6 +62,5 @@ export default {
       },
     });
   },
-
 
 };

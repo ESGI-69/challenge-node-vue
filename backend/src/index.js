@@ -1,5 +1,5 @@
 import express from 'express';
-import { createServer } from 'http';
+import { createServer as createHttpServer } from 'http';
 import cors from 'cors';
 import { Server as SocketIoServer } from 'socket.io';
 
@@ -14,26 +14,19 @@ import userRouter from './routes/user.js';
 import gameRouter from './routes/game.js';
 
 import { connection } from './db/index.js';
+import initSocket from './socket/index.js';
 import { populateUser } from './middleware.js';
 
 const app = express();
 
-const server = createServer(app);
+const server = createHttpServer(app);
 
 const io = new SocketIoServer(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
   },
 });
-
-io.on('connection', (client) => {
-  // eslint-disable-next-line no-console
-  console.log('Client connected');
-  client.on('disconnect', () => {
-    // eslint-disable-next-line no-console
-    console.log('Client disconnected');
-  });
-});
+initSocket();
 
 process.env.PWD = process.cwd();
 

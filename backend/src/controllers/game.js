@@ -1,69 +1,42 @@
 import gameService from '../services/game.js';
 import userService from '../services/user.js';
-// import userService from '../services/user';
+import generateGameCode from '../utils/generateGameCode.js';
 import { io } from '../index.js';
-
+import { users } from '../socket/index.js';
 
 export default {
   /**
-     * Express.js controller for POST /games
-     * @param {import('express').Request} req
-     * @param {import('express').Response} res
-     * @param {import('express').NextFunction} next
-     * @returns {Promise<void>}
-     * */
+   * Express.js controller for POST /games
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   **/
   post: async (req, res, next) => {
-    // req.user
-    // Pour l'instant, on part du principe que le joueur ne peut être que dans une game tant qu'il ne l'a pas quitté
-    // Donc on vérifie qu'il n'est pas déjà dans une game
     try {
+      const currentGame = await gameService.findByUserId(req.user);
 
-      let socketId = null;
-      socketId = req.body.socketId;
+      if (currentGame) throw new Error('user already in a game');
 
-      let user = await userService.findById(req.user.id);
-      const currentGame  = await gameService.findByUserId(user);
+      // generate a code for the game
+      let id = await generateGameCode();
 
-      if (currentGame) {
-        // res.status(400).json({ message: 'You are already in a game' });
-        // return the current Game
-
-        // join the room or create it if it doesn't exist
-        // game already exists so it should create a room and join it
-        let playerSocket = io.sockets.sockets.get(socketId);
-        if (!playerSocket) {
-          throw new Error('not connected to socket io');
-        } else {
-          playerSocket.join(currentGame.token);
-        }
-
-        res.status(201).json(currentGame);
-        return;
-      }
-
-      // generate a token for the game
-      let generatedToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-      const gamePayload = {
-        token: generatedToken,
+      const game = await gameService.create({
+        id,
         first_player: req.user.id,
-        second_player: null,
-        winner: null,
-      };
-      const game = await gameService.create(gamePayload);
+      });
 
       // create a room and make the socketId join it
-      let playerSocket = io.sockets.sockets.get(socketId);
-      if (!playerSocket){
+      let playerSocket = users[req.user.id];
+      if (!playerSocket) {
         throw new Error('not connected to socket io');
       } else {
-        playerSocket.join(generatedToken);
+        playerSocket.join(id);
       }
 
       res.status(201).json(game);
     }
     catch (err) {
-      // res.status(400).json({ error: err.message });
       next(err);
     }
   },
@@ -149,7 +122,7 @@ export default {
         let playerSocket = io.sockets.sockets.get(socketId);
         roomId = currentGame.token;
 
-        if (!playerSocket){
+        if (!playerSocket) {
           res.status(404).json({ error: 'You are not connected to the socket' });
           return;
         } else {
