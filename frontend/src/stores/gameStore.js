@@ -6,21 +6,28 @@ export const useGameStore = defineStore('gameStore', {
   state: () => ({
     isGameLoading: false,
     isGameLeft: false,
+    /**
+     * @type {{
+     *  id: string;
+     *  first_player: number;
+     *  second_player: number;
+     *  winner: number;
+     *  createdAt: string;
+     *  updatedAt: string;
+     *  endAt: string;
+     * }}
+     */
     games: {},
   }),
 
   actions: {
     /**
-         * Create a new game
-         *
-         * @param {{ token: string, first_player: number, second_player: number, winner: number }} payload The payload sent to the API
-         */
-    async create(payload) {
+     * Create a new game
+     */
+    async create() {
       this.isGameLoading = true;
-      // payload contains the socket id of the player
       try {
-        // await $API.post('/game/', payload);
-        const { data } = await $API.post('/game/', payload);
+        const { data } = await $API.post('/game/');
         this.games = data;
       } catch (err) {
         throw err.response.data;
@@ -34,7 +41,7 @@ export const useGameStore = defineStore('gameStore', {
       let gameId = payload.id;
       try {
         // await $API.post('/game/', payload);
-        await $API.post('/game/leave/'+gameId, payload);
+        await $API.post(`/game/leave/${gameId}`, payload);
       }
       catch (err) {
         throw err.response.data;
@@ -45,8 +52,5 @@ export const useGameStore = defineStore('gameStore', {
         this.isGameLeft = true;
       }
     },
-
-
   },
-
 });
