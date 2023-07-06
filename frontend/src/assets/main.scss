@@ -13,7 +13,12 @@ html, body, #app {
 }
 
 /* Fix for border that should not show as a line */
-.nes-progress, .nes-input, .nes-btn, .nes-select > select {
+.nes-progress,
+.nes-input,
+.nes-btn,
+.nes-select > select,
+.nes-container,
+.nes-container.is-rounded {
   border-image-repeat: unset;
 }
 

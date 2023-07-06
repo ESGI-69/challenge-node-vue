@@ -1,12 +1,11 @@
 <template>
   <div class="the-game nes-container is-rounded  is-centered">
-    <div v-if="isGameLoading.value">
-      <h2>Game is loading</h2>
+    <div v-if="isGameLoading">
+      <h2>Crushing the Bridge of Khazad-dûm ...</h2>
     </div>
     <div v-else>
-      <h2>{{ status }}</h2>
-      <p v-if="actualGame.value.token">
-        Game token : {{ actualGame.value.token }}
+      <p v-if="actualGame.id">
+        Game ID : {{ actualGame.id }}
       </p>
       <button
         type="button"
@@ -22,10 +21,9 @@
 
 
 <script>
-import { reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
 import router from '@/router';
-import { socket } from '@/socket';
 // import Game from '@/components/Game.vue';
 
 export default {
@@ -35,54 +33,25 @@ export default {
   },
   setup() {
     const gameStore = useGameStore();
-    const isGameLoading = reactive({
-      value: false,
-    });
-    const createGame = reactive({
-      value: null,
-    });
-    const actualGame = reactive({
-      value: null,
-    });
-    const isGameLeft = reactive({
-      value: false,
-    });
 
-    // watchEffect(() => {
-    //   if(actualGame.value != null){
-    //     if(actualGame.value.token != null){
-    //       //
-    //     }
-    //   }
-    // });
+    gameStore.create();
+    const actualGame = computed(() => gameStore.games);
+    const isGameLoading = computed(() => gameStore.isGameLoading);
+    const isGameLeft = computed(() => gameStore.isGameLeft);
 
-    createGame.value = computed(() => gameStore.create({ socketId : socket.id }));
-    actualGame.value = computed(() => gameStore.games);
-    isGameLoading.value = computed(() => gameStore.isGameLoading);
-    isGameLeft.value = computed(() => gameStore.isGameLeft);
-
-    const status = computed(() => {
-      if (isGameLoading.value) return 'Loading...';
-      if (createGame.value) return 'Game created';
-      if (actualGame.value) return 'Game loaded';
-      return 'Crushing the Bridge of Khazad-dûm ...';
-    });
-
-    function leaveGame() {
-      gameStore.leave({ id: actualGame.value.id, socketId : socket.id }).then(() => {
-        if (isGameLeft.value){
-          router.push({ path: '/' });
-        } else {
-          // do nothing
-        }
-      });
-    }
+    const leaveGame = async () => {
+      try {
+        await gameStore.leave();
+        router.push({ path: '/' });
+      } catch (error) {
+        console.error('Error while leaving game');
+        console.error(error);
+      }
+    };
 
     return {
-      createGame,
       isGameLoading,
       actualGame,
-      status,
       leaveGame,
       isGameLeft,
     };

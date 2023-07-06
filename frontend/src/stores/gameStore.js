@@ -36,18 +36,19 @@ export const useGameStore = defineStore('gameStore', {
       }
     },
 
-    async leave(payload) {
-      this.isGameLoading = true;
-      let gameId = payload.id;
+    /**
+     * Leave the current game
+     */
+    async leave() {
+      this.isLeaveGameLoading = true;
       try {
-        // await $API.post('/game/', payload);
-        await $API.post(`/game/leave/${gameId}`, payload);
+        await $API.post('/game/leave');
       }
       catch (err) {
         throw err.response.data;
       }
       finally {
-        this.games =  {};
+        this.games = {};
         this.isGameLoading = false;
         this.isGameLeft = true;
       }

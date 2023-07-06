@@ -48,11 +48,10 @@ export default {
     return Game.build(data).validate();
   },
   /**
-     *
+     * Find game where the user is first_player or second_player
      * @param {typeof import('../db/index.js').User} userModel
      */
   findByUserId: function (userModel) {
-    // if userId is first_player or second_player
     return Game.findOne({
       where: {
         [Op.or]: [
@@ -62,5 +61,25 @@ export default {
       },
     });
   },
+  /**
+   * Make the second user leave the game
+   * @param {typeof import('../db/index.js').User} gameModel
+   * @param {typeof import('../db/index.js').User} userModel
+   */
+  leave: async function (userModel) {
+    const game = await this.findByUserId(userModel);
+    if (!game) throw new Error('user not in a game');
 
+    const data = {
+      second_player: null,
+    };
+    if (game.first_player === userModel.id) {
+      throw new Error('user is first player');
+    }
+    if (game.second_player === userModel.id) {
+      data.second_player = null;
+    }
+
+    return this.update({ id: game.id }, data);
+  },
 };

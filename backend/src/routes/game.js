@@ -10,8 +10,6 @@ router.post('/', isLogged, gameController.post);
 router.get('/:id', isLogged, gameController.get);
 // router.delete('/:id', isLogged, gameController.delete);
 
-// router.delete('/leave/:id', isLogged, gameController.leaveGame);
-// en post parce que y'a un payload (roomId)
-router.post('/leave/:id', isLogged, gameController.leaveGame);
+router.post('/leave', isLogged, gameController.leaveGame);
 
 export default router;
