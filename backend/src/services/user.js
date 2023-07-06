@@ -99,6 +99,14 @@ export default {
     return userModel.decrement('balance', { by: amount });
   },
   /**
+   * Add xp to the user
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} amount
+   */
+  addXp: function (userModel, amount) {
+    return userModel.increment('xp', { by: amount });
+  },
+  /**
    * Confirm the user email
    * @param {import('../db/index.js').User} userModel
    * @param {import('sequelize').WhereOptions} emailToken
