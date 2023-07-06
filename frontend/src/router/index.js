@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      component: () => import('@/views/Home.vue'),
       meta: {
         displayName: 'Home',
         authRequired: true,
@@ -41,7 +41,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/PacksView.vue'),
+      component: () => import('@/views/Packs.vue'),
       meta: {
         displayName: 'Packs',
         authRequired: true,
@@ -49,7 +49,7 @@ const router = createRouter({
     },
     {
       path:'/profile',
-      name:'EditProfile',
+      name:'edit-profile',
       component: () => import('@/views/EditProfile.vue'),
       meta: {
         displayName: 'Edit Profile',
@@ -57,11 +57,11 @@ const router = createRouter({
       },
     },
     {
-      path: '/game',
-      name: 'game',
-      component: () => import('@/views/GameView.vue'),
+      path: '/lobby',
+      name: 'lobby',
+      component: () => import('@/views/Lobby.vue'),
       meta: {
-        displayName: 'Game',
+        displayName: 'Lobby',
         authRequired: true,
       },
     },

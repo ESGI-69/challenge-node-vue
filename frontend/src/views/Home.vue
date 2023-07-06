@@ -6,19 +6,26 @@
           Main Menu
         </h1>
         <router-link
-          to="/game"
+          :to="{ name: 'lobby' }"
           class="nes-btn is-primary"
         >
-          Start Game
+          Launch Game
         </router-link>
         <router-link
-          to="/cards"
+          :to="{ name: 'home' }"
+          class="nes-btn"
+        >
+          Join Game
+        </router-link>
+        <div class="nes-separator" />
+        <router-link
+          :to="{ name: 'cards' }"
           class="nes-btn"
         >
           My Cards
         </router-link>
         <router-link
-          to="/packs"
+          :to="{ name: 'packs' }"
           class="nes-btn"
         >
           My Packs
@@ -32,13 +39,13 @@
           Admin Panel
         </router-link>
         <router-link
-          to="/settings"
+          :to="{ name: 'home' }"
           class="nes-btn"
         >
           Settings
         </router-link>
         <router-link
-          to="/profile"
+          :to="{ name: 'edit-profile' }"
           class="nes-btn"
         >
           Edit Profile
