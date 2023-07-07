@@ -98,7 +98,7 @@ const router = createRouter({
         },
       ],
     },
-    
+
   ],
 });
 

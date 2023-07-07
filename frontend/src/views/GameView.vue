@@ -1,16 +1,22 @@
 <template>
   <div class="the-game nes-container is-rounded  is-centered">
-
-      <div v-if="isGameLoading.value">
-          <h2>Game is loading</h2>
-      </div>
-      <div v-else>
-          <h2>{{ status }}</h2>
-          <p v-if="actualGame.value.token">  Game token : {{ actualGame.value.token }} </p>
-          <button @click="leaveGame" type="button" class="nes-btn is-error">Quitter la partie</button>
-      </div>
- 
- </div> 
+    <div v-if="isGameLoading.value">
+      <h2>Game is loading</h2>
+    </div>
+    <div v-else>
+      <h2>{{ status }}</h2>
+      <p v-if="actualGame.value.token">
+        Game token : {{ actualGame.value.token }}
+      </p>
+      <button
+        type="button"
+        class="nes-btn is-error"
+        @click="leaveGame"
+      >
+        Quitter la partie
+      </button>
+    </div>
+  </div>
 </template>
 
 
@@ -19,7 +25,7 @@
 import { reactive, computed } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
 import router from '@/router';
-import { socket } from "@/socket";
+import { socket } from '@/socket';
 // import Game from '@/components/Game.vue';
 
 export default {
@@ -50,7 +56,7 @@ export default {
     //   }
     // });
 
-    createGame.value = computed(() => gameStore.create({socketId : socket.id}));
+    createGame.value = computed(() => gameStore.create({ socketId : socket.id }));
     actualGame.value = computed(() => gameStore.games);
     isGameLoading.value = computed(() => gameStore.isGameLoading);
     isGameLeft.value = computed(() => gameStore.isGameLeft);
@@ -64,9 +70,9 @@ export default {
 
     function leaveGame() {
       gameStore.leave({ id: actualGame.value.id, socketId : socket.id }).then(() => {
-        if(isGameLeft.value){
+        if (isGameLeft.value){
           router.push({ path: '/' });
-        }else{
+        } else {
           // do nothing
         }
       });

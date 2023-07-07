@@ -175,5 +175,6 @@ module.exports = {
     'eol-last': [ 'error', 'always' ],
     'keyword-spacing': [ 'error', { before: true, after: true } ],
     'comma-spacing': [ 'error', { before: false, after: true } ],
+    'no-empty': [ 'error', { allowEmptyCatch: true } ],
   },
 };
