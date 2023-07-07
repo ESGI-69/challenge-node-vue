@@ -9,7 +9,8 @@
     "start": "NODE_ENV=production npx sequelize-cli db:migrate && npx sequelize-cli db:seed && node src/index.js",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test:dev": "NODE_ENV=development NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
-    "lint": "eslint src/**/*.js",
+    "lint": "eslint src/**/*.js src/**/*.cjs",
+    "lint:fix": "eslint src/**/*.js src/**/*.cjs --fix",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:force": "node src/migrate.js",
     "seed": "npx sequelize-cli db:seed:all"

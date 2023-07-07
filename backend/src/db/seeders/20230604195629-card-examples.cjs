@@ -23,7 +23,7 @@ module.exports = {
         health: null,
         description: 'Deal 6 damage.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Fireball 2',
@@ -35,7 +35,7 @@ module.exports = {
         health: 3,
         description: 'Deal 6 damage.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Fireball 3',
@@ -47,7 +47,7 @@ module.exports = {
         health: 3,
         description: 'Deal 6 damage.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Fireball 4',
@@ -59,7 +59,7 @@ module.exports = {
         health: 3,
         description: 'Deal 6 damage.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Fireball 5',
@@ -71,7 +71,7 @@ module.exports = {
         health: 3,
         description: 'Deal 6 damage.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Instant Death',
@@ -83,7 +83,7 @@ module.exports = {
         health: null,
         description: 'Kill your opponent.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Instant Death 2',
@@ -95,7 +95,7 @@ module.exports = {
         health: null,
         description: 'Kill your opponent.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Pillgrim',
@@ -107,7 +107,7 @@ module.exports = {
         health: 2,
         description: 'Battlecry: Draw a card.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Explosive Shot',
@@ -119,7 +119,7 @@ module.exports = {
         health: null,
         description: 'Deal 5 damage to a minion and 2 damage to adjacent ones.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Explosive Shot 2',
@@ -131,7 +131,7 @@ module.exports = {
         health: null,
         description: 'Deal 5 damage to a minion and 2 damage to adjacent ones.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Explosive Shot 3',
@@ -143,7 +143,7 @@ module.exports = {
         health: null,
         description: 'Deal 5 damage to a minion and 2 damage to adjacent ones.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Abominable Bowman',
@@ -155,7 +155,7 @@ module.exports = {
         health: 7,
         description: 'Deathrattle: Summon a random friendly Beast that died this game.',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       {
         name: 'Abominable Bowman 2',
@@ -167,8 +167,8 @@ module.exports = {
         health: 7,
         description: 'Deathrattle: Summon a random friendly Beast that died this game.',
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     ]);
   },
 
@@ -180,5 +180,5 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     await queryInterface.bulkDelete('cards', null, {});
-  }
+  },
 };

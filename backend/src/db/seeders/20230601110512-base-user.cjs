@@ -51,7 +51,7 @@ module.exports = {
         role: 'PLAYER',
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ]);
   },
 
@@ -63,5 +63,5 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     await queryInterface.bulkDelete('Users', null, {});
-  }
+  },
 };
