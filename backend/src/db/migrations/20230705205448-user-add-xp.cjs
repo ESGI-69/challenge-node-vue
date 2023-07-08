@@ -10,14 +10,14 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
 
-      await queryInterface.addColumn('users', 'xp', {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-      });
+    await queryInterface.addColumn('users', 'xp', {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down (queryInterface) {
     /**
      * Add reverting commands here.
      *
@@ -25,5 +25,5 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await queryInterface.removeColumn('users', 'xp');
-  }
+  },
 };
