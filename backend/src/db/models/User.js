@@ -119,6 +119,11 @@ export default (connection) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      xp: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
     },
     {
       sequelize: connection,

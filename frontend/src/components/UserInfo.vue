@@ -39,12 +39,14 @@ export default {
     const username = computed(() => profileStore.profile.firstname);
     const balance = computed(() => profileStore.profile.balance);
     const avatarUrl = computed(() => profileStore.avatarUrl);
+    const xp = computed(() => profileStore.profile.xp);
 
     return {
       isConnected,
       username,
       balance,
       avatarUrl,
+      xp,
     };
   },
 };

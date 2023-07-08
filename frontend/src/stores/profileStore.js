@@ -15,6 +15,7 @@ export const useProfileStore = defineStore('profileStore', {
      *  avatar: string;
      *  role: string;
      *  balance: number;
+     *  xp: number;
      *  createdAt: string;
      *  updatedAt: string;
      * }
