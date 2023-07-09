@@ -28,6 +28,7 @@ export default (err, req, res, _next) => {
 
     if (missingFields.length > 0) {
       response.missingFields = missingFields.map((e) => e.path);
+      responseCode = 422;
     }
 
     /**
