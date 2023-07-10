@@ -12,6 +12,7 @@ export default (err, req, res, _next) => {
   let responseCode = 400;
 
   if (err.name === 'SequelizeValidationError') {
+
     /**
      * The errors from sequelize
      * @type {import('sequelize').ValidationErrorItem[]}
@@ -27,6 +28,7 @@ export default (err, req, res, _next) => {
 
     if (missingFields.length > 0) {
       response.missingFields = missingFields.map((e) => e.path);
+      responseCode = 422;
     }
 
     /**
@@ -37,6 +39,7 @@ export default (err, req, res, _next) => {
 
     if (invalidFields.length > 0) {
       response.invalidFields = invalidFields.map((e) => e.path);
+      responseCode = 422;
     }
   }
 
