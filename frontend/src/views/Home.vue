@@ -95,7 +95,6 @@ export default {
     const createGame = async () => {
       try {
         const id = await gameStore.create();
-        console.log('id', id);
         router.push({ name: 'lobby', params: { id } });
       } catch (error) {
         console.error('Error while creating game');

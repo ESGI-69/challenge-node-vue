@@ -1,4 +1,4 @@
-import { Game } from '../db/index.js';
+import { Game, User } from '../db/index.js';
 import { Op } from 'sequelize';
 
 export default {
@@ -18,15 +18,19 @@ export default {
     });
     return games.map((code) => code.id);
   },
-  findByToken: function (token) {
-    return Game.findOne({
-      where: {
-        token: token,
-      },
-    });
-  },
   findById: function (id) {
-    return Game.findByPk(id);
+    return Game.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'firstPlayer',
+        },
+        {
+          model: User,
+          as: 'secondPlayer',
+        },
+      ],
+    });
   },
   create: function (data) {
     return Game.create(data);

@@ -50,7 +50,7 @@ export default {
     const joinGame = async () => {
       gameNotFound.value = false;
       try {
-        const id = await gameStore.join(gameId.value);
+        const { id } = await gameStore.join(gameId.value);
         router.push({ name: 'lobby', params: { id } });
       } catch (error) {
         if (error.status === 404) {

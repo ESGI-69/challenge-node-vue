@@ -18,13 +18,13 @@
           {{ profile.firstname }} (you)
         </li>
         <li v-else>
-          {{ actualGame.owner.firstname }}
+          {{ actualGame.firstPlayer.firstname }}
         </li>
         <li v-if="actualGame.second_player === profile.id">
           {{ profile.firstname }} (you)
         </li>
-        <li v-else-if="actualGame.second_player">
-          {{ actualGame.second_player }}
+        <li v-else-if="actualGame.secondPlayer">
+          {{ actualGame.secondPlayer.firstname }}
         </li>
         <li v-else>
           Waiting for a second player ...

@@ -13,7 +13,9 @@ export const useGameStore = defineStore('gameStore', {
     /**
      * @type {{
      *  id: string;
+     *  firstPlayer: Object;
      *  first_player: number;
+     *  secondPlayer: Object;
      *  second_player: number;
      *  winner: number;
      *  createdAt: string;
@@ -52,7 +54,6 @@ export const useGameStore = defineStore('gameStore', {
       this.isCreateGameLoading = true;
       try {
         const { data: { id } } = await $API.post('/game/');
-        console.log(id);
         return id;
       } catch (error) {
         throw error.response;
@@ -72,7 +73,8 @@ export const useGameStore = defineStore('gameStore', {
     async join(id) {
       this.isJoinGameLoading = true;
       try {
-        return (await $API.post('/game/join', { id })).id;
+        const { data } = await $API.post('/game/join', { id });
+        return { id: data.id };
       } catch (error) {
         throw error.response;
       } finally {

@@ -9,8 +9,8 @@ import { User } from '../index.js';
 export default (connection) => {
   class Game extends Model {
     static associate() {
-      this.belongsTo(User, { through: User, foreignKey: 'first_player' });
-      this.belongsTo(User, { through: User, foreignKey: 'second_player' });
+      this.belongsTo(User, { through: User, foreignKey: 'first_player', as: 'firstPlayer' });
+      this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
     }
   }
 
