@@ -177,7 +177,7 @@ describe('User register with avatar', () => {
     expect(typeof avatarEmailToken).toBe('string');
   });
 
-  it ('POST /users/confirm-email should confirm the user', (done) => {
+  it('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
       .post('/users/confirm-email')
       .send({ mailToken: avatarEmailToken })
@@ -224,6 +224,28 @@ describe('User info access (Admin)', () => {
       })
       .catch(done);
   });
+});
+
+describe('User Balance Update (Admin)', () => {
+  it('PATCH /users/:id/balance should update a user balance', () => request(app)
+    .patch(`/users/${userId}/balance`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send({ balance: 2000 })
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then((res) => {
+      expect(typeof res.body.id).toBe('number');
+      expect(res.body.email).toBe(user.email);
+      expect(res.body.firstname).toBe(user.firstname);
+      expect(res.body.lastname).toBe(user.lastname);
+      expect(res.body.updatedAt).toBeDefined();
+      expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+      expect(res.body.createdAt).toBeDefined();
+      expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+      expect(res.body.createdAt).toBe(user.createdAt);
+      expect(res.body.password).toBeUndefined();
+      expect(res.body.balance).toBe(2000);
+    }));
 });
 
 describe('User updating his profile', () => {
@@ -354,7 +376,7 @@ describe('User updating his profile', () => {
       .catch(done);
   });
 
-  it ('PATCH /users/me with no password should return a 400', (done) => {
+  it('PATCH /users/me with no password should return a 400', (done) => {
     request(app)
       .patch('/users/me')
       .set('Authorization', `Bearer ${playerToken}`)
@@ -371,7 +393,6 @@ describe('User updating his profile', () => {
       .catch(done);
   });
 });
-
 
 describe('User not authenticated access', () => {
   it('GET /users/ should return ', () => request(app)

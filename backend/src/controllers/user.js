@@ -217,9 +217,31 @@ export default {
    */
   patch: async (req, res, next) => {
     try {
+      if (req.body.balance) {
+        delete req.body.balance;
+      }
       const user = await userService.update(
         { id: parseInt(req.params.id) },
         req.body,
+      );
+      if (!user) return res.sendStatus(404);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  },
+  /**
+   * Express.js controller for PATCH /users/:id/balance
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  patchBalance: async (req, res, next) => {
+    try {
+      const user = await userService.update(
+        { id: parseInt(req.params.id) },
+        { balance: req.body.balance },
       );
       if (!user) return res.sendStatus(404);
       res.json(user);
