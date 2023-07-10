@@ -59,8 +59,8 @@ export default {
   },
 
   /**
-     * Express.js controller for DELETE /games/:id
-     * @param {import('express').Request} req
+   * Express.js controller for DELETE /games/:id
+   * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    * @returns {Promise<void>}
@@ -71,8 +71,17 @@ export default {
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
       if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game');
       const nbRemoved = await gameService.remove({ id: game.id });
-      io.to(game.id).emit('game:deleted');
-      res.sendStatus(nbRemoved ? 204 : 404);
+      if (nbRemoved) {
+        io.to(game.id).emit('game:removed');
+        // remove the socket room
+        let playerSocket = users[game.second_player];
+        let ownerSocket = users[game.first_player];
+        if (playerSocket) playerSocket.leave(game.id);
+        if (ownerSocket) ownerSocket.leave(game.id);
+        res.sendStatus(204);
+      } else {
+        throw new Error('Game not found', { cause: 'Not Found' });
+      }
     } catch (err) {
       next(err);
     }
@@ -130,6 +139,7 @@ export default {
       // leave the socket io room
       if (!playerSocket) throw new Error('You are not connected to the socket');
       playerSocket.leave(leavedGame.id);
+      io.to(leavedGame.id).emit('game:leaved', leavedGame);
       res.sendStatus(200);
     } catch (err) {
       next(err);

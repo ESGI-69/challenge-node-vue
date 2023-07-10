@@ -83,8 +83,16 @@ export default {
     const isGameFound = ref(true);
 
     socket.on('game:joined', (game) => {
-      console.log('game:joined', game);
       gameStore.setGame(game);
+    });
+
+    socket.on('game:leaved', (game) => {
+      gameStore.setGame(game);
+    });
+
+    socket.on('game:removed', () => {
+      gameStore.$reset();
+      router.push({ name: 'home' });
     });
 
     const leaveGame = async () => {
@@ -100,7 +108,6 @@ export default {
     const removeGame = async () => {
       try {
         await gameStore.remove();
-        router.push({ name: 'home' });
       } catch (error) {
         console.error('Error while removing game');
         console.error(error);

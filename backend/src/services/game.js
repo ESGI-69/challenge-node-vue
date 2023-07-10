@@ -84,15 +84,17 @@ export default {
       data.second_player = null;
     }
 
-    return this.update({ id: game.id }, data);
+    await this.update({ id: game.id }, data);
+    return this.findById(game.id);
   },
   /**
    * Join the game
    * @param {import('../db/index.js').Game} gameModel
    * @param {import('../db/index.js').User} userModel
    */
-  join: function (gameModel, userModel) {
+  join: async function (gameModel, userModel) {
     gameModel.second_player = userModel.id;
-    return gameModel.save();
+    await gameModel.save();
+    return this.findById(gameModel.id);
   },
 };
