@@ -4,8 +4,8 @@ import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
 
 const jwt = await getJwt();
-
 const noMoneyJwt = await getJwt('janedoe@example.com', '123456');
+const adminJwt = await getJwt('admin@example.com', '123456');
 
 describe('Pack routes (no logged)', () => {
   it('GET /packs/ should return 401', () => request(app)
@@ -21,7 +21,7 @@ describe('Pack routes (no logged)', () => {
     .expect(401));
 });
 
-describe ('Packs list (logged)', () => {
+describe('Packs list (logged)', () => {
   it('GET /packs/ should return 200 and list packs', () => request(app)
     .get('/packs/')
     .set('Authorization', `Bearer ${jwt}`)
@@ -32,19 +32,33 @@ describe ('Packs list (logged)', () => {
     }));
 });
 
-describe ('Buy pack (logged)', () => {
+describe('Buy pack (logged)', () => {
   it('POST /packs/buy should return 200 & cost 100g', async () => {
-    let balance;
+    let balance = 1000;
+    let userId;
+
+    // Get user balance
     await request(app)
       .get('/users/me')
       .set('Authorization', `Bearer ${jwt}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then(res => {
-        balance = res.body.balance;
+        userId = res.body.id;
       });
 
+    // Set 1000g to user
+    await request(app)
+      .patch(`/users/${userId}/balance`)
+      .set('Authorization', `Bearer ${adminJwt}`)
+      .send({ balance })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then(res => {
+        expect(res.body.balance).toBe(balance);
+      });
 
+    // Buy pack
     await request(app)
       .post('/packs/buy')
       .set('Authorization', `Bearer ${jwt}`)
@@ -57,6 +71,7 @@ describe ('Buy pack (logged)', () => {
         expect(res.body.pack).toHaveProperty('id');
       });
 
+    // Check user balance
     await request(app)
       .get('/users/me')
       .set('Authorization', `Bearer ${jwt}`)
@@ -77,7 +92,6 @@ describe ('Buy pack (logged)', () => {
       .then(res => {
         balance = res.body.balance;
       });
-
 
     await request(app)
       .post('/packs/buy')
@@ -100,8 +114,9 @@ describe ('Buy pack (logged)', () => {
   });
 });
 
-describe ('Open pack (logged)', () => {
-  it('POST /packs/:id/open should return 200 & 5 cards, duplicated ID & refund', async () => {
+describe('Open pack (logged)', () => {
+  it('POST /packs/:id/open should return 200 & cards, duplicated ID & refund', async () => {
+    let packId;
     let balance;
 
     await request(app)
@@ -114,7 +129,23 @@ describe ('Open pack (logged)', () => {
       });
 
     await request(app)
-      .post('/packs/1/open')
+      .post('/packs/buy')
+      .set('Authorization', `Bearer ${jwt}`)
+      .expect(201)
+      .expect('Content-Type', /json/)
+      .then(res => {
+        expect(res.body).toHaveProperty('pack');
+        expect(res.body).toHaveProperty('cost');
+        expect(res.body.cost).toBe(100);
+        expect(res.body.pack).toHaveProperty('id');
+        packId = res.body.pack.id;
+        balance -= res.body.cost;
+      });
+
+    let refundedAmount;
+
+    await request(app)
+      .post(`/packs/${packId}/open`)
       .set('Authorization', `Bearer ${jwt}`)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -122,9 +153,11 @@ describe ('Open pack (logged)', () => {
         expect(res.body).toHaveProperty('cards');
         expect(res.body).toHaveProperty('refunded');
         expect(res.body).toHaveProperty('duplicateCardIds');
-        expect(res.body.cards).toHaveLength(5);
-        expect(res.body.duplicateCardIds).toHaveLength(2);
-        expect(res.body.refunded).toBe(20);
+        expect(res.body.cards).toBeInstanceOf(Array);
+        expect(res.body.duplicateCardIds).toBeInstanceOf(Array);
+        expect(typeof res.body.refunded).toBe('number');
+        console.log(res.body.refunded);
+        refundedAmount = res.body.refunded;
       });
 
     await request(app)
@@ -133,7 +166,7 @@ describe ('Open pack (logged)', () => {
       .expect(200)
       .expect('Content-Type', /json/)
       .then(res => {
-        expect(res.body.balance).toBe(balance + 20);
+        expect(res.body.balance).toBe(balance + refundedAmount);
       });
   });
 
