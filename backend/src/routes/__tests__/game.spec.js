@@ -102,8 +102,6 @@ describe('Game routes (logged)', () => {
     secondPlayerSocket.disconnect();
     thirdPlayerSocket.disconnect();
     server.close(done);
-    // gameService.remove({ id: gameId }).then(() => {
-    // });
   });
 
   it('GET /game/:id that not exist should return 404', () => request(app)
@@ -176,7 +174,7 @@ describe('Game routes (logged)', () => {
       .post('/game/join')
       .send({ id: gameId })
       .set('Authorization', `Bearer ${secondJwt}`)
-      // .expect(200)
+      .expect(200)
       .then((response) => {
         expect(response.body).toHaveProperty('id');
         expect(response.body.id).toBe(gameId);
