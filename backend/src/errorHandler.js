@@ -55,6 +55,8 @@ export default (err, req, res, _next) => {
     response.reason = err.message;
     if (err.cause === 'Not Found') {
       responseCode = 404;
+    } else if (err.cause === 'Unauthorized') {
+      responseCode = 403;
     }
   }
 

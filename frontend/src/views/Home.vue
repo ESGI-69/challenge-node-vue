@@ -5,14 +5,14 @@
         <h1 class="home__menu__content__title">
           Main Menu
         </h1>
-        <router-link
-          :to="{ name: 'lobby' }"
+        <button
           class="nes-btn is-primary"
+          @click="createGame"
         >
           Launch Game
-        </router-link>
+        </button>
         <router-link
-          :to="{ name: 'home' }"
+          :to="{ name: 'join' }"
           class="nes-btn"
         >
           Join Game
@@ -63,13 +63,13 @@
 
 <script>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 import Container from '@/components/Container.vue';
 
-import { useRouter } from 'vue-router';
-
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileStore } from '@/stores/profileStore';
+import { useGameStore } from '@/stores/gameStore';
 
 export default {
   name: 'HomeView',
@@ -79,6 +79,7 @@ export default {
   setup() {
     const authStore = useAuthStore();
     const profileStore = useProfileStore();
+    const gameStore = useGameStore();
     const router = useRouter();
 
     const isAdmin = computed(() => profileStore.isAdmin);
@@ -90,10 +91,23 @@ export default {
       // reload the page to reset the app
       router.go();
     };
+
+    const createGame = async () => {
+      try {
+        const id = await gameStore.create();
+        console.log('id', id);
+        router.push({ name: 'lobby', params: { id } });
+      } catch (error) {
+        console.error('Error while creating game');
+        console.error(error);
+      }
+    };
+
     return {
       logout,
       isAdmin,
       avatarUrl,
+      createGame,
     };
   },
 };

@@ -82,4 +82,13 @@ export default {
 
     return this.update({ id: game.id }, data);
   },
+  /**
+   * Join the game
+   * @param {import('../db/index.js').Game} gameModel
+   * @param {import('../db/index.js').User} userModel
+   */
+  join: function (gameModel, userModel) {
+    gameModel.second_player = userModel.id;
+    return gameModel.save();
+  },
 };

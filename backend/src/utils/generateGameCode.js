@@ -10,6 +10,7 @@ export default async () => {
   let code = '';
   do {
     code = Math.random().toString(36).substring(2, 8);
+    console.log(code);
   }
   while (allGamesCodes.includes(code));
   return code;

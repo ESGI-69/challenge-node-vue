@@ -57,11 +57,20 @@ const router = createRouter({
       },
     },
     {
-      path: '/lobby',
+      path: '/lobby/:id',
       name: 'lobby',
       component: () => import('@/views/Lobby.vue'),
       meta: {
         displayName: 'Lobby',
+        authRequired: true,
+      },
+    },
+    {
+      path: '/join',
+      name: 'join',
+      component: () => import('@/views/Join.vue'),
+      meta: {
+        displayName: 'Join',
         authRequired: true,
       },
     },

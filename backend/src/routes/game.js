@@ -6,10 +6,10 @@ import { isLogged } from '../middleware.js';
 
 const router = Router();
 
-router.post('/', isLogged, gameController.post);
 router.get('/:id', isLogged, gameController.get);
-// router.delete('/:id', isLogged, gameController.delete);
-
-router.post('/leave', isLogged, gameController.leaveGame);
+router.post('/', isLogged, gameController.post);
+router.post('/leave', isLogged, gameController.leave);
+router.post('/join', isLogged, gameController.join);
+router.delete('/', isLogged, gameController.delete);
 
 export default router;
