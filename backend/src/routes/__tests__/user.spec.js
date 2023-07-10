@@ -226,6 +226,28 @@ describe('User info access (Admin)', () => {
   });
 });
 
+describe('User Balance Update (Admin)', () => {
+  it('PATCH /users/:id/balance should update a user balance', () => request(app)
+    .patch(`/users/${userId}/balance`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send({ balance: 2000 })
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then((res) => {
+      expect(typeof res.body.id).toBe('number');
+      expect(res.body.email).toBe(user.email);
+      expect(res.body.firstname).toBe(user.firstname);
+      expect(res.body.lastname).toBe(user.lastname);
+      expect(res.body.updatedAt).toBeDefined();
+      expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+      expect(res.body.createdAt).toBeDefined();
+      expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+      expect(res.body.createdAt).toBe(user.createdAt);
+      expect(res.body.password).toBeUndefined();
+      expect(res.body.balance).toBe(2000);
+    }));
+});
+
 describe('User updating his profile', () => {
   it('PATCH /users/me should update the user', (done) => {
     request(app)

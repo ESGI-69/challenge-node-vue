@@ -41,6 +41,7 @@ router.get('/:id', isAdmin, userController.get);
 router.get('/:id/avatar', isLogged, userController.getAvatar);
 router.put('/:id', isAdmin, userController.put);
 router.patch('/:id', isAdmin, userController.patch);
+router.patch('/:id/balance', isAdmin, userController.patchBalance);
 router.delete('/:id', isAdmin, userController.delete);
 router.post('/confirm-email', userController.confirmEmail);
 
