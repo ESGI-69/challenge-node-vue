@@ -53,7 +53,6 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
     );
   });
 
-
   afterAll(async () => {
     // Disconnect from MongoDB
     await mongoConnection.disconnect();

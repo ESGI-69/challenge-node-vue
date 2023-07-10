@@ -177,7 +177,7 @@ describe('User register with avatar', () => {
     expect(typeof avatarEmailToken).toBe('string');
   });
 
-  it ('POST /users/confirm-email should confirm the user', (done) => {
+  it('POST /users/confirm-email should confirm the user', (done) => {
     request(app)
       .post('/users/confirm-email')
       .send({ mailToken: avatarEmailToken })
@@ -376,7 +376,7 @@ describe('User updating his profile', () => {
       .catch(done);
   });
 
-  it ('PATCH /users/me with no password should return a 400', (done) => {
+  it('PATCH /users/me with no password should return a 400', (done) => {
     request(app)
       .patch('/users/me')
       .set('Authorization', `Bearer ${playerToken}`)
@@ -393,7 +393,6 @@ describe('User updating his profile', () => {
       .catch(done);
   });
 });
-
 
 describe('User not authenticated access', () => {
   it('GET /users/ should return ', () => request(app)

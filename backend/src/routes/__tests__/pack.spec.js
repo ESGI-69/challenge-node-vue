@@ -156,7 +156,6 @@ describe('Open pack (logged)', () => {
         expect(res.body.cards).toBeInstanceOf(Array);
         expect(res.body.duplicateCardIds).toBeInstanceOf(Array);
         expect(typeof res.body.refunded).toBe('number');
-        console.log(res.body.refunded);
         refundedAmount = res.body.refunded;
       });
 
