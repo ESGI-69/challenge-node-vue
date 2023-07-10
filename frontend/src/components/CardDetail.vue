@@ -45,7 +45,7 @@ export default {
   setup(props) {
     const obtainedDate = computed(() => {
       const date = new Date(props.card.obtainedAt);
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+      return `${date.toLocaleDateString()  } ${  date.toLocaleTimeString()}`;
     });
 
     return {

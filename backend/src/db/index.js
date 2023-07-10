@@ -58,7 +58,15 @@ Pack.associate();
 Game.associate();
 
 // Syncronize MongoDB with MySQL database, create documents in MongoDB for each row in MySQL. Do not pass junction tables to syncMongo
-await syncMongo([ Card, Pack, User ], connection);
+await syncMongo(
+  [
+    Card,
+    Pack,
+    User,
+    Game,
+  ],
+  connection,
+);
 
 export {
   Card,

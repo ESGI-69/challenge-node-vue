@@ -5,20 +5,27 @@
         <h1 class="home__menu__content__title">
           Main Menu
         </h1>
-        <router-link
-          to="/game"
+        <button
           class="nes-btn is-primary"
+          @click="createGame"
         >
-          Start Game
-        </router-link>
+          Launch Game
+        </button>
         <router-link
-          to="/cards"
+          :to="{ name: 'join' }"
+          class="nes-btn"
+        >
+          Join Game
+        </router-link>
+        <div class="nes-separator" />
+        <router-link
+          :to="{ name: 'cards' }"
           class="nes-btn"
         >
           My Cards
         </router-link>
         <router-link
-          to="/packs"
+          :to="{ name: 'packs' }"
           class="nes-btn"
         >
           My Packs
@@ -32,13 +39,13 @@
           Admin Panel
         </router-link>
         <router-link
-          to="/settings"
+          :to="{ name: 'home' }"
           class="nes-btn"
         >
           Settings
         </router-link>
         <router-link
-          to="/profile"
+          :to="{ name: 'edit-profile' }"
           class="nes-btn"
         >
           Edit Profile
@@ -56,13 +63,13 @@
 
 <script>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 import Container from '@/components/Container.vue';
 
-import { useRouter } from 'vue-router';
-
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileStore } from '@/stores/profileStore';
+import { useGameStore } from '@/stores/gameStore';
 
 export default {
   name: 'HomeView',
@@ -72,6 +79,7 @@ export default {
   setup() {
     const authStore = useAuthStore();
     const profileStore = useProfileStore();
+    const gameStore = useGameStore();
     const router = useRouter();
 
     const isAdmin = computed(() => profileStore.isAdmin);
@@ -83,10 +91,22 @@ export default {
       // reload the page to reset the app
       router.go();
     };
+
+    const createGame = async () => {
+      try {
+        const id = await gameStore.create();
+        router.push({ name: 'lobby', params: { id } });
+      } catch (error) {
+        console.error('Error while creating game');
+        console.error(error);
+      }
+    };
+
     return {
       logout,
       isAdmin,
       avatarUrl,
+      createGame,
     };
   },
 };

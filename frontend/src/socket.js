@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
 import { io } from 'socket.io-client';
+import Cookies from 'js-cookie';
 
 export const state = reactive({
   connected: false,
@@ -9,7 +10,12 @@ export const state = reactive({
 
 // TODO use env variable
 // export const socket = io(import.meta.env.VITE_API);
-export const socket = io('http://localhost:3000/', { autoConnect: false });
+export const socket = io('ws://localhost:3000/', {
+  autoConnect: false,
+  query: {
+    token: Cookies.get(import.meta.env.VITE_COOKIE_TOKEN_NAME),
+  },
+});
 
 export const connect = () => new Promise((resolve) => {
   socket.connect();

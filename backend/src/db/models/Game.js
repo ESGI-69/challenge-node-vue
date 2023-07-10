@@ -9,23 +9,36 @@ import { User } from '../index.js';
 export default (connection) => {
   class Game extends Model {
     static associate() {
-      this.belongsTo(User, { through: User, foreignKey: 'first_player' });
-      this.belongsTo(User, { through: User, foreignKey: 'second_player' });
+      this.belongsTo(User, { through: User, foreignKey: 'first_player', as: 'firstPlayer' });
+      this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
     }
   }
 
   Game.init(
     {
-      token: {
-        type: DataTypes.STRING,
+      id: {
+        type: DataTypes.STRING(6),
+        primaryKey: true,
         allowNull: false,
+        unique: true,
         validate: {
           notEmpty: true,
+          max: 6,
+          min: 6,
         },
       },
       winner: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        defaultValue: null,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      endAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
         validate: {
           notEmpty: true,
         },
@@ -45,6 +58,5 @@ export default (connection) => {
     },
   );
   return Game;
-
 
 };

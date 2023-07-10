@@ -1,6 +1,7 @@
 /* eslint-env node */
 module.exports = {
   root: true,
+  plugins: [ 'promise' ],
   extends: [
     'plugin:vue/vue3-essential',
     'plugin:vue/vue3-recommended',
@@ -176,5 +177,7 @@ module.exports = {
     'keyword-spacing': [ 'error', { before: true, after: true } ],
     'comma-spacing': [ 'error', { before: false, after: true } ],
     'no-empty': [ 'error', { allowEmptyCatch: true } ],
+    'prefer-template': 'error',
+    'promise/prefer-await-to-then': 'error',
   },
 };

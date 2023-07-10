@@ -1,7 +1,11 @@
 <template>
   <div
     class="nes-container"
-    :class="{ 'with-title': !!title }"
+    :class="{
+      'with-title': !!title,
+      'is-rounded': isRounded,
+      'is-centered': isCentered,
+    }"
     :style="{ backgroundImage: hasWoodBackground ? `url(${wood})` : null }"
   >
     <h3
@@ -25,6 +29,14 @@ export default {
       default: null,
     },
     hasWoodBackground: {
+      type: Boolean,
+      default: false,
+    },
+    isRounded: {
+      type: Boolean,
+      default: false,
+    },
+    isCentered: {
       type: Boolean,
       default: false,
     },

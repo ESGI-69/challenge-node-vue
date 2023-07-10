@@ -16,12 +16,12 @@ if (!process.env.VITE_LAST_COMMIT || process.env.VITE_LAST_COMMIT === '') {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) =>{
+export default defineConfig(({ mode }) => {
   if (mode !== 'production') {
     return {
       envDir: '../',
       server: {
-        port: 8080,
+        port: 8081,
         proxy: {
           '^/api': {
             target: 'http://localhost:3000',

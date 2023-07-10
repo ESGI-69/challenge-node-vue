@@ -38,11 +38,13 @@ export default (axios, router) => {
           if (router.currentRoute.value.meta.authRequired) {
             query.next = encodeURIComponent(router.currentRoute.value.path);
           }
-          router.push({ name: 'login', query }).catch((failure) => {
+          try {
+            await router.push({ name: 'login', query });
+          } catch (failure) {
             if (!router.isNavigationFailure(failure, router.NavigationFailureType.redirected)) {
               throw failure;
             }
-          });
+          }
 
           if (getActivePinia()) {
             // Reset pinia stores

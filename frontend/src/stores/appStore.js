@@ -23,6 +23,8 @@ export const useAppStore = defineStore('appStore', {
 
       // When a promise is resolved, increment the preloadedCardImages counter
       promises.forEach((promise) => {
+        // Use then() instead of await to avoid blocking the loop
+        // eslint-disable-next-line promise/prefer-await-to-then
         promise.then(() => {
           this.preloadedCardImages += 1;
         });
