@@ -23,6 +23,8 @@ The goal of this challenge is to create a web card game. The game is a simplifie
 
 - **Backend unit tests**, running in github action with `jest` test suite (see the [Launch the tests](#launch-the-tests) section for more details). Also include a **code sanity** check with eslint.
 
+  The `game.spec.js` include socket io tests.
+
   You can find the backend github action [here](https://github.com/ESGI-69/challenge-node-vue/actions/workflows/backend-test.yml).
 
 - **Frontend tests** include a **code sanity** check with eslint and a **build** runner for ensuring that the build is working.
