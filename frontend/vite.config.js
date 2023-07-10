@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
     return {
       envDir: '../',
       server: {
-        port: 8081,
+        port: 8080,
         proxy: {
           '^/api': {
             target: 'http://localhost:3000',
