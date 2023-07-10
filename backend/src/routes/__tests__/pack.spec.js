@@ -115,6 +115,8 @@ describe('Buy pack (logged)', () => {
 });
 
 describe('Open pack (logged)', () => {
+  let allreadyOpenedPackId;
+
   it('POST /packs/:id/open should return 200 & cards, duplicated ID & refund', async () => {
     let packId;
     let balance;
@@ -157,6 +159,7 @@ describe('Open pack (logged)', () => {
         expect(res.body.duplicateCardIds).toBeInstanceOf(Array);
         expect(typeof res.body.refunded).toBe('number');
         refundedAmount = res.body.refunded;
+        allreadyOpenedPackId = packId;
       });
 
     await request(app)
@@ -170,7 +173,7 @@ describe('Open pack (logged)', () => {
   });
 
   it('POST /packs/:id/open if allready opened should return 403', () => request(app)
-    .post('/packs/1/open')
+    .post(`/packs/${allreadyOpenedPackId}/open`)
     .set('Authorization', `Bearer ${jwt}`)
     .expect(403)
     .expect('Content-Type', /json/)
