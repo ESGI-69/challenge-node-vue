@@ -73,11 +73,11 @@ describe('Register flow', () => {
     expect(typeof userEmailToken).toBe('string');
   });
 
-  it('POST /users/ should return 400 if email is invalid', (done) => {
+  it('POST /users/ should return 422 if email is invalid', (done) => {
     request(app)
       .post('/users/')
       .send({ ...user, email: 'invalid' })
-      .expect(400)
+      .expect(422)
       .expect('Content-Type', /json/)
       .then((res) => {
         expect(res.body.invalidFields).toContain('email');
@@ -87,13 +87,13 @@ describe('Register flow', () => {
       .catch(done);
   });
 
-  it('POST /users/ should return 400 if email is missing', (done) => {
+  it('POST /users/ should return 422 if email is missing', (done) => {
     const noEmailUser = { ...user };
     delete noEmailUser.email;
     request(app)
       .post('/users/')
       .send(noEmailUser)
-      .expect(400)
+      .expect(422)
       .expect('Content-Type', /json/)
       .then((res) => {
         expect(res.body.missingFields).toContain('email');

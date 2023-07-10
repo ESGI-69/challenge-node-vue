@@ -58,24 +58,24 @@ describe('Adding a Card as an Admin', () => {
       expect(response.body.image).toBeUndefined();
     }));
 
-  it('POST /cards/ should return 400 if name is empty', () => request(app)
+  it('POST /cards/ should return 422 if name is empty', () => request(app)
     .post('/cards/')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({ ...card, name: '' })
-    .expect(400)
+    .expect(422)
     .expect('Content-Type', /json/)
     .then((response) => {
       expect(response.body.invalidFields).toContain('name');
     }));
 
-  it('POST /cards/ should return 400 if name is not provided', async () => {
+  it('POST /cards/ should return 422 if name is not provided', async () => {
     const noTitleCard = { ...card };
     delete noTitleCard.name;
     await request(app)
       .post('/cards/')
       .set('Authorization', `Bearer ${adminToken}`)
       .send(noTitleCard)
-      .expect(400)
+      .expect(422)
       .expect('Content-Type', /json/)
       .then((response) => {
         expect(response.body.missingFields).toContain('name');
@@ -83,24 +83,24 @@ describe('Adding a Card as an Admin', () => {
       });
   });
 
-  it('POST /cards/ should return 400 if description is empty', () => request(app)
+  it('POST /cards/ should return 422 if description is empty', () => request(app)
     .post('/cards/')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({ ...card, description: '' })
-    .expect(400)
+    .expect(422)
     .expect('Content-Type', /json/)
     .then((response) => {
       expect(response.body.invalidFields).toContain('description');
     }));
 
-  it('POST /cards/ should return 400 if description is not provided', async () => {
+  it('POST /cards/ should return 422 if description is not provided', async () => {
     const noDescriptionCard = { ...card };
     delete noDescriptionCard.description;
     await request(app)
       .post('/cards/')
       .set('Authorization', `Bearer ${adminToken}`)
       .send(noDescriptionCard)
-      .expect(400)
+      .expect(422)
       .expect('Content-Type', /json/)
       .then((response) => {
         expect(response.body.missingFields).toContain('description');
@@ -108,24 +108,24 @@ describe('Adding a Card as an Admin', () => {
       });
   });
 
-  it('POST /cards/ should return 400 if image is empty', () => request(app)
+  it('POST /cards/ should return 422 if image is empty', () => request(app)
     .post('/cards/')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({ ...card, image: '' })
-    .expect(400)
+    .expect(422)
     .expect('Content-Type', /json/)
     .then((response) => {
       expect(response.body.invalidFields).toContain('image');
     }));
 
-  it('POST /cards/ should return 400 if image is not provided', async () => {
+  it('POST /cards/ should return 422 if image is not provided', async () => {
     const noImageCard = { ...card };
     delete noImageCard.image;
     await request(app)
       .post('/cards/')
       .set('Authorization', `Bearer ${adminToken}`)
       .send(noImageCard)
-      .expect(400)
+      .expect(422)
       .expect('Content-Type', /json/)
       .then((response) => {
         expect(response.body.missingFields).toContain('image');
@@ -282,11 +282,11 @@ describe('Updating a Card PATCH', () => {
       });
   });
 
-  it('PATCH /cards/:id should return 400 if name is empty', () => request(app)
+  it('PATCH /cards/:id should return 422 if name is empty', () => request(app)
     .patch(`/cards/${cardId}`)
     .set('Authorization', `Bearer ${adminToken}`)
     .send({ ...card, name: '' })
-    .expect(400)
+    .expect(422)
     .expect('Content-Type', /json/)
     .then((response) => {
       expect(response.body.invalidFields).toContain('name');
