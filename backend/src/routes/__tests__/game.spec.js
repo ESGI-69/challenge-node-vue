@@ -138,8 +138,8 @@ describe('Game routes (logged)', () => {
       expect(response.body.second_player).toBeNull();
       expect(response.body).toHaveProperty('secondPlayer');
       expect(response.body.secondPlayer).toBeNull();
-      expect(response.body).toHaveProperty('endAt');
-      expect(response.body.endAt).toBeNull();
+      expect(response.body).toHaveProperty('endedAt');
+      expect(response.body.endedAt).toBeNull();
       expect(response.body).toHaveProperty('winner');
       expect(response.body.winner).toBeNull();
     }));
