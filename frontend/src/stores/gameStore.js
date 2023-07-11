@@ -20,7 +20,7 @@ export const useGameStore = defineStore('gameStore', {
      *  winner: number;
      *  createdAt: string;
      *  updatedAt: string;
-     *  endAt: string;
+     *  endedAt: string;
      * }}
      */
     game: {},

@@ -35,7 +35,7 @@ export default (connection) => {
           notEmpty: true,
         },
       },
-      endAt: {
+      endedAt: {
         type: DataTypes.DATE,
         allowNull: true,
         defaultValue: null,
