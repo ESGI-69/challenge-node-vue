@@ -76,9 +76,8 @@ export default {
       raw: true,
       nest: true,
     });
-    await packModel.update({ id: packModel.id }, {
-      openedAt: new Date(),
-    });
+    packModel.openedAt = new Date();
+    await packModel.save();
     cards.forEach((card) => {
       delete card['pack_cards'];
     });
