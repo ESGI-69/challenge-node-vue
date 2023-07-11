@@ -54,6 +54,9 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
   });
 
   afterAll(async () => {
+    // Drop the MongoDB collection
+    await mongoConnection.connection.db.dropCollection('testmodels');
+
     // Disconnect from MongoDB
     await mongoConnection.disconnect();
 
@@ -87,9 +90,6 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
   });
 
   it('should replicate data on create', async () => {
-    // Call the syncMongo function with the test model and schema
-    await syncMongo([TestModel], connection);
-
     // Create a row in the MySQL table
     const testRow = await TestModel.create({ name: 'Test sync on create' });
 
@@ -104,9 +104,6 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
   });
 
   it('should replicate data on update', async () => {
-    // Call the syncMongo function with the test model and schema
-    await syncMongo([TestModel], connection);
-
     // Create a row in the MySQL table
     const testRow = await TestModel.create({ name: 'Test sync on update' });
 
@@ -127,9 +124,6 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
   });
 
   it('should replicate data on delete', async () => {
-    // Call the syncMongo function with the test model and schema
-    await syncMongo([TestModel], connection);
-
     // Create a row in the MySQL table
     const testRow = await TestModel.create({ name: 'Test sync on delete' });
 
