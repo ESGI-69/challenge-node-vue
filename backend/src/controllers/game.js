@@ -13,7 +13,7 @@ export default {
    **/
   post: async (req, res, next) => {
     try {
-      const currentGame = await gameService.findByUserId(req.user);
+      const currentGame = await gameService.findByUser(req.user);
 
       if (currentGame) throw new Error('user already in a game');
 
@@ -67,7 +67,7 @@ export default {
    */
   delete: async (req, res, next) => {
     try {
-      const game = await gameService.findByUserId(req.user);
+      const game = await gameService.findByUser(req.user);
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
       if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game');
       const nbRemoved = await gameService.remove({ id: game.id });

@@ -55,7 +55,7 @@ export default {
      * Find game where the user is first_player or second_player
      * @param {typeof import('../db/index.js').User} userModel
      */
-  findByUserId: function (userModel) {
+  findByUser: function (userModel) {
     return Game.findOne({
       where: {
         [Op.or]: [
@@ -71,7 +71,7 @@ export default {
    * @param {typeof import('../db/index.js').User} userModel
    */
   leave: async function (userModel) {
-    const game = await this.findByUserId(userModel);
+    const game = await this.findByUser(userModel);
     if (!game) throw new Error('user not in a game');
 
     const data = {
