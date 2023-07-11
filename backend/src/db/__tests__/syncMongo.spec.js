@@ -103,6 +103,26 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
     expect(testDoc).toMatchObject({ id: testRow.id, name: 'Test sync on create' });
   });
 
+  it('should replicate data on bulk update', async () => {
+    // Create a row in the MySQL table
+    const testRow = await TestModel.create({ name: 'Test sync bulk update' });
+
+    // Wait for the row to be replicated to MongoDB
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Update the row in the MySQL table
+    await TestModel.update({ name: 'Test sync bulk update (bulk updated)' }, { where: { id: testRow.id } });
+
+    // Wait for the row to be replicated to MongoDB
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Check that the row exists in MongoDB
+    const testDoc = await mongoose.model('testmodel', TestModel.mongoSchema).findOne({
+      id: testRow.id,
+    });
+    expect(testDoc).toMatchObject({ id: testRow.id, name: 'Test sync bulk update (bulk updated)' });
+  });
+
   it('should replicate data on update', async () => {
     // Create a row in the MySQL table
     const testRow = await TestModel.create({ name: 'Test sync on update' });
@@ -111,7 +131,7 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Update the row in the MySQL table
-    await TestModel.update({ name: 'Test sync on update (updated)' }, { where: { id: testRow.id } });
+    await testRow.update({ name: 'Test sync on update (updated)' });
 
     // Wait for the row to be replicated to MongoDB
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -121,6 +141,27 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
       id: testRow.id,
     });
     expect(testDoc).toMatchObject({ id: testRow.id, name: 'Test sync on update (updated)' });
+  });
+
+  it('should replicate data on model save', async () => {
+    // Create a row in the MySQL table
+    const testRow = await TestModel.create({ name: 'Test sync on save' });
+
+    // Wait for the row to be replicated to MongoDB
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Update the row in the MySQL table
+    testRow.name = 'Test sync on save (saved)';
+    await testRow.save();
+
+    // Wait for the row to be replicated to MongoDB
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Check that the row exists in MongoDB
+    const testDoc = await mongoose.model('testmodel', TestModel.mongoSchema).findOne({
+      id: testRow.id,
+    });
+    expect(testDoc).toMatchObject({ id: testRow.id, name: 'Test sync on save (saved)' });
   });
 
   it('should replicate data on delete', async () => {
