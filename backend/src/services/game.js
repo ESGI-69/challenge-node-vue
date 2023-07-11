@@ -93,8 +93,15 @@ export default {
    * @param {import('../db/index.js').User} userModel
    */
   join: async function (gameModel, userModel) {
-    gameModel.second_player = userModel.id;
-    await gameModel.save();
+    await gameModel.update({ id: gameModel.id }, {
+      second_player: userModel.id,
+    });
+    return this.findById(gameModel.id);
+  },
+  start: async function (gameModel) {
+    await gameModel.update({ id: gameModel.id }, {
+      startedAt: new Date(),
+    });
     return this.findById(gameModel.id);
   },
 };
