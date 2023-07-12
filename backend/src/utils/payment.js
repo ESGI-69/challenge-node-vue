@@ -3,74 +3,56 @@ const stripe = new Stripe(process.env.STRIPE_SECRET);
 
 const payment = {
   /**
-   * Create a payment intent
-   * @param {number} amount - amount of the payment
-   * @param {string} currency - currency of the payment
-   * @param {object} paymentMethod - payment method object
-   * @param {object} billingDetails - billing details object
-   * @returns {object} - payment intent object
+   * Create a checkout session
+   * @param {object} product - product object
+   * @returns {object} - checkout session object
+   * @see https://stripe.com/docs/api/checkout/sessions/create
    */
-  createPaymentIntent: async (amount, currency, paymentMethod, billingDetails) => {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
+  createCheckout: async (product) => {
+    const checkout = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: product.name,
+            images: [product.image],
+          },
+          unit_amount: product.price,
+        },
+        quantity: product.quantity,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL}/shop/success`,
+      cancel_url: `${process.env.FRONTEND_URL}/shop/cancel`,
     });
-
-    const paymentDetails = {
-      payment_method: paymentMethod,
-      billing_details: billingDetails,
-    };
-
-    try {
-      const confirmedPaymentIntent = await stripe.paymentIntents.confirm(
-        paymentIntent.id,
-        paymentDetails,
-      );
-      if (confirmedPaymentIntent.status === 'succeeded') {
-        // eslint-disable-next-line no-console
-        console.log('Payment succeeded!');
-        console.log('confirmedPaymentIntent : ', confirmedPaymentIntent);
-        return confirmedPaymentIntent;
-      }
-    } catch (error) {
-      console.error('Payment failed : ', error);
-      throw new Error('Payment failed.');
-    }
+    console.log(res.json({ id: checkout.id }));
+    return checkout;
   },
+  //   app.post("/payment", async (req, res) => {
+  //     const { product } = req.body;
+  //     const session = await stripe.checkout.sessions.create({
+  //         payment_method_types: ["card"],
+  //         line_items: [
+  //             {
+  //                 price_data: {
+  //                     currency: "inr",
+  //                     product_data: {
+  //                         name: product.name,
+  //                         images: [product.image],
+  //                     },
+  //                     unit_amount: product.amount * 100,
+  //                 },
+  //                 quantity: product.quantity,
+  //             },
+  //         ],
+  //         mode: "payment",
+  //         success_url: `${YOUR_DOMAIN}/success.html`,
+  //         cancel_url: `${YOUR_DOMAIN}/cancel.html`,
+  //     });
+
+//     res.json({ id: session.id });
+// });
 };
 
 export default payment;
-
-// const paymentIntent = await stripe.paymentIntents.create({
-//   amount: 1000,
-//   currency: 'usd',
-// });
-
-// // Collect payment details from the user
-// const paymentDetails = {
-//   payment_method: {
-//     card: {
-//       number: '4242424242424242',
-//       exp_month: 12,
-//       exp_year: 2022,
-//       cvc: '123',
-//     },
-//     billing_details: {
-//       name: 'John Doe',
-//       email: 'john.doe@example.com',
-//     },
-//   },
-// };
-
-// // Confirm the payment intent
-// const confirmedPaymentIntent = await stripe.paymentIntents.confirm(
-//   paymentIntent.id,
-//   paymentDetails,
-// );
-
-// // Handle the response
-// if (confirmedPaymentIntent.status === 'succeeded') {
-//   console.log('Payment succeeded!');
-// } else {
-//   console.log('Payment failed.');
-// }
