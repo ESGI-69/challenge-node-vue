@@ -26,7 +26,7 @@ const payment = {
       success_url: `${process.env.FRONTEND_URL}/shop/success`,
       cancel_url: `${process.env.FRONTEND_URL}/shop/cancel`,
     });
-    console.log(res.json({ id: checkout.id }));
+    console.log('payments checkout', checkout);
     return checkout;
   },
 };
