@@ -110,5 +110,16 @@ export const useGameStore = defineStore('gameStore', {
         throw error.response;
       }
     },
+
+    /**
+     * Start the current game
+     */
+    async start() {
+      try {
+        await $API.post('/game/start');
+      } catch (error) {
+        throw error.response;
+      }
+    },
   },
 });

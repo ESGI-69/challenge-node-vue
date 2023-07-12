@@ -145,5 +145,28 @@ export default {
       next(err);
     }
   },
+
+  /**
+   * Express.js controller for POST /games/start
+   * Start the game if the user is the owner of the game and the game has two players
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   * */
+  start: async (req, res, next) => {
+    try {
+      const game = await gameService.findByUser(req.user);
+      if (!game) throw new Error('Game not found', { cause: 'Not Found' });
+      if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game');
+      if (!game.hasTwoPlayers) throw new Error('Game has only one player');
+      if (game.isStarted) throw new Error('Game already started');
+      const startedGame = await gameService.start(game);
+      io.to(game.id).emit('game:started', startedGame);
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 

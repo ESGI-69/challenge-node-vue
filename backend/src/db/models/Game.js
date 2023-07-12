@@ -43,6 +43,14 @@ export default (connection) => {
           notEmpty: true,
         },
       },
+      startedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+        validate: {
+          notEmpty: true,
+        },
+      },
     },
     {
       sequelize: connection,
@@ -54,6 +62,17 @@ export default (connection) => {
         withTimestamps: { attributes: {
           include: ['createdAt', 'updatedAt'],
         } },
+      },
+      getterMethods: {
+        isStarted() {
+          return this.startedAt !== null;
+        },
+        isEnded() {
+          return this.endedAt !== null;
+        },
+        hasTwoPlayers() {
+          return this.first_player !== null && this.second_player !== null;
+        },
       },
     },
   );
