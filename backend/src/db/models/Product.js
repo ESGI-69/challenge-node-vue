@@ -18,13 +18,6 @@ export default (connection) => {
           notEmpty: true,
         },
       },
-      image: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
       price: {
         type: DataTypes.FLOAT,
         allowNull: false,
