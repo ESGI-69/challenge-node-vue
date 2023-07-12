@@ -17,14 +17,12 @@ module.exports = {
       {
         name: '11000 Coins',
         price: 10,
-        image: 'http://placehold.it/350x350',
         categorie: 'COINS',
         value: 11000,
       },
       {
         name: '5000 Coins',
         price: 5,
-        image: 'http://placehold.it/350x350',
         categorie: 'COINS',
         value: 5000,
       },

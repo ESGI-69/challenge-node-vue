@@ -39,6 +39,8 @@ export default async(models, sequelize) => {
         schema[attribute].enum = attributeObject.values;
       } else if (attributeType.startsWith('TIMESTAMP')) {
         schema[attribute].type = Date;
+      } else if (attributeType.startsWith('FLOAT')) {
+        schema[attribute].type = Number;
       }
 
       // Add default values
