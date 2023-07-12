@@ -62,6 +62,7 @@ export default {
           { first_player: userModel.id },
           { second_player: userModel.id },
         ],
+        endedAt: null,
       },
     });
   },
