@@ -12,6 +12,16 @@ export default (connection) => {
       this.belongsToMany(Card, { through: Pack_Card, foreignKey: 'packId' });
     }
 
+    /**
+     * @type {import('mongoose').Model}
+     */
+    static mongoModel;
+
+    /**
+     * @type {import('mongoose').Schema}
+     */
+    static mongoSchema;
+
     isOpened() {
       return this.openedAt !== null;
     }

@@ -12,6 +12,16 @@ export default (connection) => {
       this.belongsToMany(User, { through: User_Card, foreignKey: 'cardId' });
       this.belongsToMany(Pack, { through: Pack_Card, foreignKey: 'cardId' });
     }
+
+    /**
+     * @type {import('mongoose').Model}
+     */
+    static mongoModel;
+
+    /**
+     * @type {import('mongoose').Schema}
+     */
+    static mongoSchema;
   }
 
   Card.init(
