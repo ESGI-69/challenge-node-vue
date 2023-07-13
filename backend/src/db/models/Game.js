@@ -12,6 +12,16 @@ export default (connection) => {
       this.belongsTo(User, { through: User, foreignKey: 'first_player', as: 'firstPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
     }
+
+    /**
+     * @type {import('mongoose').Model}
+     */
+    static mongoModel;
+
+    /**
+     * @type {import('mongoose').Schema}
+     */
+    static mongoSchema;
   }
 
   Game.init(
