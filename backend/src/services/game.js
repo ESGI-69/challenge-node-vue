@@ -55,13 +55,14 @@ export default {
      * Find game where the user is first_player or second_player
      * @param {typeof import('../db/index.js').User} userModel
      */
-  findByUserId: function (userModel) {
+  findByUser: function (userModel) {
     return Game.findOne({
       where: {
         [Op.or]: [
           { first_player: userModel.id },
           { second_player: userModel.id },
         ],
+        endedAt: null,
       },
     });
   },
@@ -71,7 +72,7 @@ export default {
    * @param {typeof import('../db/index.js').User} userModel
    */
   leave: async function (userModel) {
-    const game = await this.findByUserId(userModel);
+    const game = await this.findByUser(userModel);
     if (!game) throw new Error('user not in a game');
 
     const data = {
@@ -94,6 +95,11 @@ export default {
    */
   join: async function (gameModel, userModel) {
     gameModel.second_player = userModel.id;
+    await gameModel.save();
+    return this.findById(gameModel.id);
+  },
+  start: async function (gameModel) {
+    gameModel.startedAt = new Date();
     await gameModel.save();
     return this.findById(gameModel.id);
   },

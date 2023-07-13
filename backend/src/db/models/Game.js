@@ -12,6 +12,16 @@ export default (connection) => {
       this.belongsTo(User, { through: User, foreignKey: 'first_player', as: 'firstPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
     }
+
+    /**
+     * @type {import('mongoose').Model}
+     */
+    static mongoModel;
+
+    /**
+     * @type {import('mongoose').Schema}
+     */
+    static mongoSchema;
   }
 
   Game.init(
@@ -35,7 +45,15 @@ export default (connection) => {
           notEmpty: true,
         },
       },
-      endAt: {
+      endedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      startedAt: {
         type: DataTypes.DATE,
         allowNull: true,
         defaultValue: null,
@@ -54,6 +72,17 @@ export default (connection) => {
         withTimestamps: { attributes: {
           include: ['createdAt', 'updatedAt'],
         } },
+      },
+      getterMethods: {
+        isStarted() {
+          return this.startedAt !== null;
+        },
+        isEnded() {
+          return this.endedAt !== null;
+        },
+        hasTwoPlayers() {
+          return this.first_player !== null && this.second_player !== null;
+        },
       },
     },
   );

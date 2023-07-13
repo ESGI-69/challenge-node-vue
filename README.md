@@ -98,6 +98,8 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   ```
 - You can now access the frontend on http://localhost:8080 and the backend on http://localhost:3000 🎉
 
+- If you want to reset the database, you can use the `npm run db:reset` command. This command will drop all the tables of the database, and then migrate and seed the database. **⚠️ Be careful, this command will drop all the tables of the database. ⚠️**
+
 ### View the mongodb database content
 
 You can access the mongodb database with the credential defined in the `.env` file. (see the [environment variables](#environment-variables) section for more details

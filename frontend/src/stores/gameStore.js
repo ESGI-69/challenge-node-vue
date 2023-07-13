@@ -20,7 +20,7 @@ export const useGameStore = defineStore('gameStore', {
      *  winner: number;
      *  createdAt: string;
      *  updatedAt: string;
-     *  endAt: string;
+     *  endedAt: string;
      * }}
      */
     game: {},
@@ -106,6 +106,17 @@ export const useGameStore = defineStore('gameStore', {
     async remove() {
       try {
         await $API.delete('/game/');
+      } catch (error) {
+        throw error.response;
+      }
+    },
+
+    /**
+     * Start the current game
+     */
+    async start() {
+      try {
+        await $API.post('/game/start');
       } catch (error) {
         throw error.response;
       }

@@ -112,6 +112,12 @@ export default async(models, sequelize) => {
     this.updateToMongo(options.where.id, options.attributes);
   });
 
+  sequelize.addHook('afterUpdate', function (item) {
+    // If it's a join table, don't add it to MongoDB
+    if (this.tableName.includes('_')) return;
+    this.updateToMongo(item.id, item.toJSON());
+  });
+
   sequelize.addHook('afterBulkDestroy', function (options) {
     // If it's a join table, don't add it to MongoDB
     if (this.tableName.includes('_')) return;
