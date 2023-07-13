@@ -10,10 +10,14 @@ import pack_Card from './models/PackCard.js';
 import user from './models/User.js';
 import user_Card from './models/UserCard.js';
 import game from './models/Game.js';
+<<<<<<< HEAD
 import product from './models/Product.js';
 import payment from './models/Payment.js';
 import deck from './models/Deck.js';
 import deck_Card from './models/DeckCard.js';
+=======
+import deck from './models/Deck.js';
+>>>>>>> 361d525 (feat(Deck): adding deck backend (without association for now))
 
 /**
  * The domain name of the postgres database
@@ -54,10 +58,14 @@ const Pack_Card = pack_Card(connection);
 const User = user(connection);
 const User_Card = user_Card(connection);
 const Game = game(connection);
+<<<<<<< HEAD
 const Product = product(connection);
 const Payment = payment(connection);
 const Deck = deck(connection);
 const Deck_Card = deck_Card(connection);
+=======
+const Deck = deck(connection);
+>>>>>>> 361d525 (feat(Deck): adding deck backend (without association for now))
 
 // Launch associations methods for relations between tables
 User.associate();
