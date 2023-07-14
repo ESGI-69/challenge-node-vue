@@ -19,12 +19,16 @@ module.exports = {
         price: 10,
         categorie: 'COINS',
         value: 11000,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         name: '5000 Coins',
         price: 5,
         categorie: 'COINS',
         value: 5000,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ]);
   },
