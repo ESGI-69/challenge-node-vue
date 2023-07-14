@@ -54,7 +54,7 @@ export default {
     const isLoading = computed(() => productStore.isProductsLoading);
 
     await productStore.getProducts();
-    
+
 
     return {
       products,
@@ -83,8 +83,8 @@ export default {
   }
   &__items {
     display: grid;
-    grid-template-columns: repeat(v-bind(cardPerRow), 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
 }
 </style>
