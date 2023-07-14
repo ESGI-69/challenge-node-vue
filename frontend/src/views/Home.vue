@@ -30,6 +30,12 @@
         >
           My Packs
         </router-link>
+        <router-link
+          :to="{ name: 'shop' }"
+          class="nes-btn"
+        >
+          Shop
+        </router-link>
         <div class="nes-separator" />
         <router-link
           v-if="isAdmin"
