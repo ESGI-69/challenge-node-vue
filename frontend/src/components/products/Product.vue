@@ -1,16 +1,29 @@
 <template>
-  <p>{{ name }}</p>
-  <p>{{ price }} €</p>
-  <p>{{ categorie }}</p>
-  <img 
-    v-if="categorie === 'COINS'"
-    :src="coinBag"
-    alt=""
-    width="160"
-    height="160"
+  <div
+    class="shop-item nes-pointer"
+    @click="buyItem"
   >
-
-  <p>--------------------------------</p>
+    <div
+      v-if="categorie === 'COINS'"
+      class="shop-item__coin"
+    >
+      <p class="shop-item__coin__value">
+        {{ value.toLocaleString() }} <i class="nes-icon coin" />
+      </p>
+      <p>{{ price }} €</p>
+    </div>
+    <div v-else>
+      <p>{{ name }}</p>
+      <p>{{ price }} €</p>
+      <p>{{ categorie }}</p>
+    </div>
+    <img
+      v-if="categorie === 'COINS'"
+      :src="coinBag"
+      alt="coinbag-shop"
+      class="shop-item__img-coin"
+    >
+  </div>
 </template>
 
 <script>
@@ -40,11 +53,58 @@ export default {
     },
   },
   setup(props) {
+    const buyItem = () => {
+      // eslint-disable-next-line no-console
+      console.log('buyItem');
+
+    };
     return {
       props,
       coinBag,
+      buyItem,
     };
   },
 };
-
 </script>
+
+<style lang="scss" scoped>
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid black;
+  padding: 1rem 2rem;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background-color: #fefaee;
+
+  &:hover {
+    transform: translateY(-4px);
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    filter: brightness(90%);
+  }
+
+  &__img-coin {
+    width: 160px;
+    height: auto;
+  }
+
+  &__coin {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    &__value {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 20px;
+    }
+  }
+}
+</style>
