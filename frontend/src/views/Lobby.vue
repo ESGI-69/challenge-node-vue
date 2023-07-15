@@ -1,6 +1,6 @@
 <template>
   <container
-    class="the-game"
+    class="game"
     :is-rounded="true"
   >
     <div v-if="isGameLoading">
@@ -30,22 +30,36 @@
           Waiting for a second player ...
         </li>
       </ul>
-      <button
-        v-if="iAmGameOwner"
-        type="button"
-        class="nes-btn is-error"
-        @click="removeGame"
-      >
-        Cancel game
-      </button>
-      <button
-        v-else
-        type="button"
-        class="nes-btn is-error"
-        @click="leaveGame"
-      >
-        Leave Game
-      </button>
+      <div class="game__buttons">
+        <button
+          v-if="iAmGameOwner"
+          type="button"
+          class="nes-btn"
+          :class="{
+            'is-disabled': !actualGame.second_player,
+            'is-primary': actualGame.second_player,
+          }"
+          @click="startGame"
+        >
+          Start game
+        </button>
+        <button
+          v-if="iAmGameOwner"
+          type="button"
+          class="nes-btn is-error"
+          @click="removeGame"
+        >
+          Cancel game
+        </button>
+        <button
+          v-else
+          type="button"
+          class="nes-btn is-error"
+          @click="leaveGame"
+        >
+          Leave Game
+        </button>
+      </div>
     </div>
   </container>
 </template>
@@ -90,6 +104,12 @@ export default {
       gameStore.setGame(game);
     });
 
+    socket.once('game:started', (game) => {
+      console.log('game:started');
+      gameStore.setGame(game);
+      router.push({ name: 'game', params: { id: game.id } });
+    });
+
     socket.on('game:removed', () => {
       gameStore.$reset();
       router.push({ name: 'home' });
@@ -114,6 +134,15 @@ export default {
       }
     };
 
+    const startGame = async () => {
+      try {
+        await gameStore.start();
+      } catch (error) {
+        console.error('Error while starting game');
+        console.error(error);
+      }
+    };
+
     const getGame = async () => {
       isGameFound.value = false;
       try {
@@ -133,23 +162,29 @@ export default {
     return {
       actualGame,
       iAmGameOwner,
+      isGameFound,
       isGameLeft,
       isGameLoading,
       leaveGame,
       profile,
       removeGame,
-      isGameFound,
+      startGame,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.the-game {
+.game {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &__buttons {
+    display: flex;
+    gap: 1rem;
+  }
 }
 </style>
