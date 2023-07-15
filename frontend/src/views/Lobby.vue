@@ -105,7 +105,6 @@ export default {
     });
 
     socket.once('game:started', (game) => {
-      console.log('game:started');
       gameStore.setGame(game);
       router.push({ name: 'game', params: { id: game.id } });
     });
