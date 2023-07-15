@@ -59,11 +59,8 @@ export default {
 
     const cardsQuantity = computed(() => isEnemy.value ? cardsFixedQuantity.value : cards.value.length);
 
-    const log = () => console.log('qsdsqd');
-
     return {
       cardsQuantity,
-      log,
     };
   },
 };
