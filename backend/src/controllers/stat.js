@@ -17,4 +17,40 @@ export default {
       next(err);
     }
   },
+
+  getCardsCountByType: async (req, res, next) => {
+    try {
+      const count = await statService.getCardCountByType();
+      res.json(count);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getTotalXp: async (req, res, next) => {
+    try {
+      const count = await statService.getTotalXp();
+      res.json(count);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getTotalPackOpen: async (req, res, next) => {
+    try {
+      const count = await statService.getTotalPackOpen();
+      res.json(count);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getNumberOfPackOpenByDay: async (req, res, next) => {
+    try {
+      const count = await statService.getNumberOfPackOpenByDay();
+      res.json(count);
+    } catch (err) {
+      next(err);
+    }
+  },
 };
