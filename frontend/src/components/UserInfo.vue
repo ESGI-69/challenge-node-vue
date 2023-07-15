@@ -14,12 +14,18 @@
       </span>
       <i class="nes-icon coin is-small" />
     </div>
+    <span class="user-info__experience">
+      {{ xp }} XP
+    </span>
     <div class="user-info__connection-state">
       <div
         class="user-info__connection-state__status-circle"
         :class="{ 'user-info__connection-state__status-circle--connected': isConnected }"
       />
-      <span class="user-info__connection-state__status-text">{{ isConnected ? 'connected' : 'disconnected' }}</span>
+      <span
+        v-if="!isConnected"
+        class="user-info__connection-state__status-text"
+      >disconnected</span>
     </div>
   </div>
 </template>
@@ -56,9 +62,8 @@ export default {
 .user-info {
   position: relative;
   display: grid;
-  grid-template-areas: "avatar username balance";
+  grid-template-areas: "avatar username balance" "avatar user-experience connection-state";
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: 75px;
   column-gap: 0.5rem;
   row-gap: 0.5rem;
   padding: 1rem;
@@ -72,24 +77,35 @@ export default {
 
   &__avatar {
     grid-area: avatar;
-    height: 100%;
+    width: 75px;
+    align-self: center;
   }
 
   &__username {
     grid-area: username;
-    align-self: center;
+    align-self: top;
+    font-size: 1.25rem;
   }
 
   &__balance {
-    align-self: center;
+    align-self: top;
     grid-area: balance;
+    justify-self: end;
+  }
+
+  &__experience {
+    grid-area: user-experience;
+    align-self: end;
+    font-size: 0.75rem;
   }
 
   &__connection-state {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    align-self: end;
+    justify-self: end;
+    align-items: end;
+    grid-area: connection-state;
     display: flex;
+    gap: 0.5rem;
     align-items: center;
     font-size: 0.60rem;
 
@@ -99,8 +115,6 @@ export default {
       height: 0.60rem;
       border-radius: 50%;
       background-color: red;
-      margin-right: 0.5rem;
-      vertical-align: middle;
 
       &--connected {
         background-color: green;
