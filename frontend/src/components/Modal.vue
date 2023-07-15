@@ -5,7 +5,7 @@
   >
     <div
       class="modal-wrapper__overlay"
-      @click="closeModal"
+      @click="cancel"
     />
     <container
       class="modal"
