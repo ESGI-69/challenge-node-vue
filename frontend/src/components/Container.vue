@@ -54,6 +54,7 @@ export default {
   background-size: 192px;
   background-color: white;
   width: fit-content;
+  overflow: hidden;
 
   .title {
     font-weight: normal;
