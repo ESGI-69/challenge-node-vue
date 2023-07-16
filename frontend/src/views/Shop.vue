@@ -17,7 +17,7 @@
         class="shop__items"
       >
         <product
-          v-for="product in products"
+          v-for="product in products.sort((a, b) => a.price - b.price)"
           :key="product.id"
           v-bind="product"
         />

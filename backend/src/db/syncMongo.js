@@ -41,6 +41,8 @@ export default async(models, sequelize) => {
         schema[attribute].type = Date;
       } else if (attributeType.startsWith('FLOAT')) {
         schema[attribute].type = Number;
+      } else if (attributeType.startsWith('TEXT')) {
+        schema[attribute].type = String;
       }
 
       // Add default values

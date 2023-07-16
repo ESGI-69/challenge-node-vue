@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 
-const payment = {
+const stripePayment = {
   /**
    * Create a checkout session
    * @param {object} product - product object
@@ -9,6 +9,7 @@ const payment = {
    * @see https://stripe.com/docs/api/checkout/sessions/create
    */
   createCheckout: async (product) => {
+    console.log('payments product', product.price);
     const checkout = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [{
@@ -23,12 +24,14 @@ const payment = {
         quantity: product.quantity,
       }],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/shop/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/shop/cancel`,
+      success_url: `${process.env.FRONTEND_URL}/shop/succes?=productId=${product.id}`,
+      cancel_url: `${process.env.FRONTEND_URL}/shop/cancel?productId=${product.id}`,
     });
-    console.log('payments checkout', checkout);
+    // console.log('payments checkout', checkout);
+    console.log('-----------------------------');
+    // console.log('RETRIEVE CHECKOUT', await stripe.checkout.sessions.retrieve(checkout.id));
     return checkout;
   },
 };
 
-export default payment;
+export default stripePayment;
