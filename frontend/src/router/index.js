@@ -88,6 +88,26 @@ const router = createRouter({
         displayName: 'Shop',
         authRequired: true,
       },
+      children: [
+        {
+          path: 'success/:id',
+          name: 'success',
+          component: () => import('@/views/shop/Success.vue'),
+          meta: {
+            displayName: 'Success',
+            authRequired: true,
+          },
+        },
+        {
+          path: 'cancel/:id',
+          name: 'cancel',
+          component: () => import('@/views/shop/Cancel.vue'),
+          meta: {
+            displayName: 'Cancel',
+            authRequired: true,
+          },
+        },
+      ],
     },
     {
       path: '/auth',

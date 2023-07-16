@@ -1,5 +1,7 @@
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET);
+import fs from 'fs';
+import path from 'path';
 
 const stripePayment = {
   /**
@@ -9,8 +11,10 @@ const stripePayment = {
    * @see https://stripe.com/docs/api/checkout/sessions/create
    */
   createCheckout: async (product) => {
-    console.log('payments product', product.price);
+    // console.log('payments product', product.price);
     const checkout = await stripe.checkout.sessions.create({
+      // copy same image in back than in front and get just the name from the front
+      // const image = fs.readFileSync('../../frontend')
       payment_method_types: ['card'],
       line_items: [{
         price_data: {
@@ -24,11 +28,11 @@ const stripePayment = {
         quantity: product.quantity,
       }],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/shop/succes?=productId=${product.id}`,
-      cancel_url: `${process.env.FRONTEND_URL}/shop/cancel?productId=${product.id}`,
+      success_url: `${process.env.FRONTEND_URL}/shop/success/${product.paymentId}`,
+      cancel_url: `${process.env.FRONTEND_URL}/shop/cancel/${product.paymentId}`,
     });
     // console.log('payments checkout', checkout);
-    console.log('-----------------------------');
+    // console.log('-----------------------------');
     // console.log('RETRIEVE CHECKOUT', await stripe.checkout.sessions.retrieve(checkout.id));
     return checkout;
   },

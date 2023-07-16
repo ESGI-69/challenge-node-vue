@@ -27,6 +27,10 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+
+import { usePaymentStore } from '@/stores/paymentStore';
+
 import coinBag from '@/assets/coinBag.jpeg';
 export default {
   name: 'Product',
@@ -53,10 +57,20 @@ export default {
     },
   },
   setup(props) {
-    const buyItem = () => {
-      // eslint-disable-next-line no-console
-      console.log('buyItem');
+    const paymentStore = usePaymentStore();
 
+    const checkoutUrl = computed(() => paymentStore.checkoutUrl);
+
+
+    const buyItem = async () => {
+      await paymentStore.postPayment({
+        productId: props.id,
+        image: `http://localhost:8080${coinBag}`,
+        quantity: 1,
+      });
+      if (checkoutUrl.value) {
+        window.location.href = checkoutUrl.value;
+      }
     };
     return {
       props,

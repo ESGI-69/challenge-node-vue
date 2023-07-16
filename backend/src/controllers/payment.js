@@ -30,7 +30,7 @@ export default {
       let payment = await paymentService.create(paymentPayload);
 
       const checkoutPayload = {
-        id: product.id,
+        paymentId: payment.id,
         name : product.name,
         quantity: req.body.quantity,
         price: product.price * 100,
