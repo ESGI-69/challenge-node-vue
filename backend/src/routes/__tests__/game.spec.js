@@ -10,6 +10,7 @@ import { io as Client } from 'socket.io-client';
 
 import { app, server } from '../../index.js';
 import gameService from '../../services/game.js';
+import userService from '../../services/user.js';
 
 import getJwt from '../../../tests/getJwt.js';
 
@@ -32,6 +33,54 @@ let secondPlayerSocket;
  * @type {import('socket.io').Socket}
  **/
 let thirdPlayerSocket;
+
+beforeAll((done) => {
+  server.listen(3000, () => {
+    firstPlayerSocket = Client('ws://localhost:3000', {
+      query: {
+        token: jwt,
+      },
+    });
+    secondPlayerSocket = Client('ws://localhost:3000', {
+      query: {
+        token: secondJwt,
+      },
+    });
+    thirdPlayerSocket = Client('ws://localhost:3000', {
+      query: {
+        token: thirdJwt,
+      },
+    });
+    let connectedSocket = 0;
+    const socketConnected = () => {
+      connectedSocket += 1;
+      if (connectedSocket === 3) {
+        done();
+      }
+    };
+    firstPlayerSocket.connect();
+    firstPlayerSocket.on('connect', () => {
+      socketConnected();
+    });
+    secondPlayerSocket.connect();
+    secondPlayerSocket.on('connect', () => {
+      socketConnected();
+    });
+    thirdPlayerSocket.connect();
+    thirdPlayerSocket.on('connect', () => {
+      socketConnected();
+    });
+  });
+});
+
+let gameId;
+
+afterAll((done) => {
+  firstPlayerSocket.disconnect();
+  secondPlayerSocket.disconnect();
+  thirdPlayerSocket.disconnect();
+  server.close(done);
+});
 
 describe('Game routes (no logged)', () => {
   it('GET /game/:id should return 401', () => request(app)
@@ -56,54 +105,6 @@ describe('Game routes (no logged)', () => {
 });
 
 describe('Game routes (logged)', () => {
-  beforeAll((done) => {
-    server.listen(3000, () => {
-      firstPlayerSocket = Client('ws://localhost:3000', {
-        query: {
-          token: jwt,
-        },
-      });
-      secondPlayerSocket = Client('ws://localhost:3000', {
-        query: {
-          token: secondJwt,
-        },
-      });
-      thirdPlayerSocket = Client('ws://localhost:3000', {
-        query: {
-          token: thirdJwt,
-        },
-      });
-      let connectedSocket = 0;
-      const socketConnected = () => {
-        connectedSocket += 1;
-        if (connectedSocket === 3) {
-          done();
-        }
-      };
-      firstPlayerSocket.connect();
-      firstPlayerSocket.on('connect', () => {
-        socketConnected();
-      });
-      secondPlayerSocket.connect();
-      secondPlayerSocket.on('connect', () => {
-        socketConnected();
-      });
-      thirdPlayerSocket.connect();
-      thirdPlayerSocket.on('connect', () => {
-        socketConnected();
-      });
-    });
-  });
-
-  let gameId;
-
-  afterAll((done) => {
-    firstPlayerSocket.disconnect();
-    secondPlayerSocket.disconnect();
-    thirdPlayerSocket.disconnect();
-    server.close(done);
-  });
-
   it('GET /game/:id that not exist should return 404', () => request(app)
     .get('/game/notId')
     .set('Authorization', `Bearer ${jwt}`)
@@ -138,16 +139,16 @@ describe('Game routes (logged)', () => {
       expect(response.body.second_player).toBeNull();
       expect(response.body).toHaveProperty('secondPlayer');
       expect(response.body.secondPlayer).toBeNull();
-      expect(response.body).toHaveProperty('endAt');
-      expect(response.body.endAt).toBeNull();
+      expect(response.body).toHaveProperty('endedAt');
+      expect(response.body.endedAt).toBeNull();
       expect(response.body).toHaveProperty('winner');
       expect(response.body.winner).toBeNull();
     }));
 
-  it('POST /game/leave should return 400 if player is not in a game', () => request(app)
+  it('POST /game/leave should return 404 if player is not in a game', () => request(app)
     .post('/game/leave')
     .set('Authorization', `Bearer ${secondJwt}`)
-    .expect(400));
+    .expect(404));
 
   it('POST /game/join should return the id of the game & send the joined event to the first player', (done) => {
     let successCount = 0;
@@ -215,10 +216,10 @@ describe('Game routes (logged)', () => {
       .then(success);
   });
 
-  it('POST /game/leave should return 400 if player is not in a game', () => request(app)
+  it('POST /game/leave should return 404 if player is not in a game', () => request(app)
     .post('/game/leave')
     .set('Authorization', `Bearer ${secondJwt}`)
-    .expect(400));
+    .expect(404));
 
   it('POST /game/join should return the id of the game & send the joined event to the first player affter a player has leaved', (done) => {
     let successCount = 0;
@@ -292,4 +293,137 @@ describe('Game routes (logged)', () => {
     .then((game) => {
       expect(game).toBeNull();
     }));
+});
+
+describe('Game launch and forfeit', () => {
+  beforeAll(async () => {
+    // create game a make the 2 players join it
+    await request(app)
+      .post('/game')
+      .set('Authorization', `Bearer ${jwt}`)
+      .expect(201)
+      .then((response) => {
+        gameId = response.body.id;
+      });
+  });
+
+  it('POST /game/start should return 400 if the game is not full', () => request(app)
+    .post('/game/start')
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(400));
+
+  it('... second player join the game', (done) => {
+    let successCount = 0;
+
+    const success = () => {
+      successCount += 1;
+      if (successCount === 2) {
+        done();
+      }
+    };
+
+    firstPlayerSocket.on('game:joined', () => {
+      success();
+    });
+
+    request(app)
+      .post('/game/join')
+      .send({ id: gameId })
+      .set('Authorization', `Bearer ${secondJwt}`)
+      .expect(200)
+      .then(success);
+  });
+
+  it('POST /game/start should return 400 if the user don\'t own the game', () => request(app)
+    .post('/game/start')
+    .set('Authorization', `Bearer ${secondJwt}`)
+    .expect(400));
+
+  it('POST /game/start should return 200 and send game:started to the socket room', (done) => {
+    let successCount = 0;
+
+    const success = () => {
+      successCount += 1;
+      if (successCount === 3) {
+        done();
+      }
+    };
+
+    firstPlayerSocket.on('game:started', () => {
+      success();
+    });
+
+    secondPlayerSocket.on('game:started', () => {
+      success();
+    });
+
+    request(app)
+      .post('/game/start')
+      .set('Authorization', `Bearer ${jwt}`)
+      .expect(200)
+      .then(success);
+  });
+
+  it('The game should be started', () => gameService.findById(gameId)
+    .then((game) => {
+      expect(game).toHaveProperty('startedAt');
+      expect(game.startedAt).not.toBeNull();
+      expect(game).toHaveProperty('endedAt');
+      expect(game.endedAt).toBeNull();
+      expect(game).toHaveProperty('endType');
+      expect(game.endType).toBeNull();
+    }));
+
+  let userBalance, userXp;
+
+  it('... fetching future winner balance & xp', async () => {
+    const user = await userService.findById(2);
+    expect(user).toHaveProperty('balance');
+    expect(user).toHaveProperty('xp');
+    userBalance = user.balance;
+    userXp = user.xp;
+  });
+
+  it('POST /game/leave should return 200 and send game:forfeited to the socket room', (done) => {
+    let successCount = 0;
+
+    const success = () => {
+      successCount += 1;
+      if (successCount === 2) {
+        done();
+      }
+    };
+
+    secondPlayerSocket.on('game:forfeited', () => {
+      success();
+    });
+
+    request(app)
+      .post('/game/leave')
+      .set('Authorization', `Bearer ${jwt}`)
+      .expect(200)
+      .then(success);
+  });
+
+  it('The game should be forfeited', () => gameService.findById(gameId)
+    .then((game) => {
+      expect(game).toHaveProperty('endedAt');
+      expect(game.endedAt).not.toBeNull();
+      expect(game).toHaveProperty('endType');
+      expect(game.endType).toBe('surrender');
+      expect(game).toHaveProperty('winner');
+      expect(game.winner).toBe(2);
+    }));
+
+  it('The winner should have win 50 gold and 50 exp', () => userService.findById(2)
+    .then((user) => {
+      expect(user).toHaveProperty('balance');
+      expect(user.balance).toBe(userBalance + 50);
+      expect(user).toHaveProperty('xp');
+      expect(user.xp).toBe(userXp + 50);
+    }));
+
+  afterAll(async () => {
+    await gameService.remove({ id: gameId });
+  });
 });

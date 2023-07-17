@@ -11,56 +11,58 @@
       }"
     >
       <div class="card__container__front">
-        <div
-          v-if="isRefunded"
-          class="card__container__front__refunded"
-        >
-          <span class="text">
-            Refunded
-          </span>
-        </div>
-        <card-cost
-          class="card__container__front__cost"
-          :cost="cost"
-        />
-        <div class="card__container__front__header">
+        <template v-if="!isFrontHidden">
           <div
-            class="card__container__front__header__image"
-            :style="{ backgroundImage: `url(${imageUrl})` }"
-          />
-          <span class="card__container__front__header__name">
-            {{ name }}
-          </span>
-          <span
-            class="card__container__front__header__rarity"
-            :class="`card__container__front__header__rarity--${rarity}`"
+            v-if="isRefunded"
+            class="card__container__front__refunded"
           >
-            {{ rarity }}
-          </span>
-        </div>
-        <div class="card__container__front__content">
-          <div class="card__container__front__content__description">
-            {{ description }}
+            <span class="text">
+              Refunded
+            </span>
+          </div>
+          <card-cost
+            class="card__container__front__cost"
+            :cost="cost"
+          />
+          <div class="card__container__front__header">
+            <div
+              class="card__container__front__header__image"
+              :style="{ backgroundImage: `url(${imageUrl})` }"
+            />
+            <span class="card__container__front__header__name">
+              {{ name }}
+            </span>
+            <span
+              class="card__container__front__header__rarity"
+              :class="`card__container__front__header__rarity--${rarity}`"
+            >
+              {{ rarity }}
+            </span>
+          </div>
+          <div class="card__container__front__content">
+            <div class="card__container__front__content__description">
+              {{ description }}
+            </div>
+            <span
+              v-if="type"
+              class="card__container__front__type"
+            >
+              {{ type }}
+            </span>
           </div>
           <span
-            v-if="type"
-            class="card__container__front__type"
+            v-if="attack"
+            class="card__container__front__attack"
           >
-            {{ type }}
+            {{ attack }}
           </span>
-        </div>
-        <span
-          v-if="attack"
-          class="card__container__front__attack"
-        >
-          {{ attack }}
-        </span>
-        <span
-          v-if="health"
-          class="card__container__front__health"
-        >
-          {{ health }}
-        </span>
+          <span
+            v-if="health"
+            class="card__container__front__health"
+          >
+            {{ health }}
+          </span>
+        </template>
       </div>
       <div
         class="card__container__back"
@@ -88,21 +90,21 @@ export default {
      */
     id: {
       type: Number,
-      required: true,
+      default: null,
     },
     /**
      * The cost of the card.
      */
     cost: {
       type: Number,
-      required: true,
+      default: null,
     },
     /**
      * The name of the card.
      */
     name: {
       type: String,
-      required: true,
+      default: null,
     },
     /**
      * The rarity of the card. Can be one of the following:
@@ -113,7 +115,7 @@ export default {
      */
     rarity: {
       type: String,
-      required: true,
+      default: null,
       validator: (value) => [
         'common',
         'rare',
@@ -126,7 +128,7 @@ export default {
      */
     description: {
       type: String,
-      required: true,
+      default: null,
     },
     /**
      * The type of the card.
@@ -134,7 +136,6 @@ export default {
      */
     type: {
       type: String,
-      required: false,
       default: null,
     },
     /**
@@ -142,7 +143,6 @@ export default {
      */
     attack: {
       type: Number,
-      required: false,
       default: null,
       min: 1,
     },
@@ -151,7 +151,6 @@ export default {
      */
     health: {
       type: Number,
-      required: false,
       default: null,
     },
     /**
@@ -172,6 +171,13 @@ export default {
      * Is the card refunded
      */
     isRefunded: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * Is the front of the card is hiddent
+     */
+    isFrontHidden: {
       type: Boolean,
       default: false,
     },

@@ -98,6 +98,8 @@ The goal of this challenge is to create a web card game. The game is a simplifie
   ```
 - You can now access the frontend on http://localhost:8080 and the backend on http://localhost:3000 🎉
 
+- If you want to reset the database, you can use the `npm run db:reset` command. This command will drop all the tables of the database, and then migrate and seed the database. **⚠️ Be careful, this command will drop all the tables of the database. ⚠️**
+
 ### View the mongodb database content
 
 You can access the mongodb database with the credential defined in the `.env` file. (see the [environment variables](#environment-variables) section for more details
@@ -113,6 +115,8 @@ For viewing the database content, you have 2 options:
 Theses tests are launched in the CI/CD pipeline, but you can launch them locally for ensuring that your code is clean.
 
 Before launching the tests, you need to install the dependencies of the project (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details). You also need to launch the docker containers (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details) and have an empty migrated database.
+
+When you launching test **ensure that no frontend page is open**. This may interfere with the socket io tests.
 
 - You can launch the tests with
   ```bash

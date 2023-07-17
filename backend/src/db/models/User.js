@@ -17,6 +17,16 @@ export default (connection) => {
     }
 
     /**
+     * @type {import('mongoose').Model}
+     */
+    static mongoModel;
+
+    /**
+     * @type {import('mongoose').Schema}
+     */
+    static mongoSchema;
+
+    /**
      * Check if the given password is correct
      * @param {string} password User plain password
      * @returns {Promise<boolean>}

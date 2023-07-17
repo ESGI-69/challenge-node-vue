@@ -1,16 +1,15 @@
 <template>
   <div
     v-if="isOpen"
-    class="modal-wrapper"
+    class="popup-wrapper"
   >
     <div
-      class="modal-wrapper__overlay"
-      @click="cancel"
+      class="popup-wrapper__overlay"
     />
     <container
-      class="modal"
+      class="popup"
     >
-      <div class="modal__header">
+      <div class="popup__header">
         <slot
           name="header"
         >
@@ -19,20 +18,12 @@
           </h2>
         </slot>
       </div>
-      <div class="modal__content">
+      <div class="popup__content">
         <slot>
           Modal content
         </slot>
       </div>
-      <div class="modal__footer">
-        <button
-          class="nes-btn is-error"
-          @click="cancel"
-        >
-          <slot name="cancel">
-            Cancel
-          </slot>
-        </button>
+      <div class="popup__footer">
         <button
           class="nes-btn is-primary"
           @click="confirm"
@@ -60,25 +51,14 @@ export default {
       default: false,
     },
   },
-  emits: [
-    'update:isOpen',
-    'close',
-    'confirm',
-    'cancel',
-  ],
+  emits: [ 'update:isOpen', 'close' ],
   setup(props, { emit }) {
-    const cancel = () => {
-      emit('update:isOpen', false);
-      emit('cancel');
-    };
-
     const confirm = () => {
       emit('update:isOpen', false);
-      emit('confirm');
+      emit('close');
     };
 
     return {
-      cancel,
       confirm,
     };
   },
@@ -86,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-wrapper {
+.popup-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -108,7 +88,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.5);
   }
 
-  .modal {
+  .popup {
     z-index: 1002;
     width: 100%;
     max-width: 40vw;

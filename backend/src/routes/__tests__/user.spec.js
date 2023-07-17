@@ -61,6 +61,8 @@ describe('Register flow', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         user.createdAt = res.body.createdAt;
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         done();
       })
       .catch(done);
@@ -132,6 +134,8 @@ describe('Register flow', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         expect(res.body.createdAt).toBe(user.createdAt);
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         done();
       })
       .catch(done);
@@ -220,6 +224,8 @@ describe('User info access (Admin)', () => {
         expect(typeof new Date(responseUser.createdAt).toISOString()).toBe('string');
         expect(responseUser.createdAt).toBe(user.createdAt);
         expect(responseUser.password).not.toBeDefined();
+        expect(responseUser.xp).toBeDefined();
+        expect(typeof responseUser.xp).toBe('number');
         done();
       })
       .catch(done);
@@ -244,6 +250,8 @@ describe('User Balance Update (Admin)', () => {
       expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
       expect(res.body.createdAt).toBe(user.createdAt);
       expect(res.body.password).toBeUndefined();
+      expect(res.body.xp).toBeDefined();
+      expect(typeof res.body.xp).toBe('number');
       expect(res.body.balance).toBe(2000);
     }));
 });
@@ -272,6 +280,8 @@ describe('User updating his profile', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         expect(res.body.createdAt).toBe(user.createdAt);
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         done();
       })
       .catch(done);
@@ -320,6 +330,8 @@ describe('User updating his profile', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         expect(res.body.createdAt).toBe(user.createdAt);
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         expect(res.body.isEmailUpdated).toBeTruthy();
         done();
       })
@@ -350,6 +362,8 @@ describe('User updating his profile', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         expect(res.body.createdAt).toBe(user.createdAt);
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         expect(res.body.isPasswordUpdated).toBeTruthy();
         done();
       })
@@ -485,6 +499,8 @@ describe('User Update flow (Admin)', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         user.createdAt = res.body.createdAt;
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         done();
       })
       .catch(done);
@@ -512,6 +528,8 @@ describe('User Update flow (Admin)', () => {
         expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
         expect(res.body.createdAt).toBe(user.createdAt);
         expect(res.body.password).toBeUndefined();
+        expect(res.body.xp).toBeDefined();
+        expect(typeof res.body.xp).toBe('number');
         done();
       })
       .catch(done);
@@ -541,6 +559,8 @@ describe('User Update flow (Admin)', () => {
         expect(typeof new Date(responseUser.createdAt).toISOString()).toBe('string');
         expect(user.createdAt).toBe(responseUser.createdAt);
         expect(responseUser.password).toBeUndefined();
+        expect(responseUser.xp).toBeDefined();
+        expect(typeof responseUser.xp).toBe('number');
         done();
       })
       .catch(done);

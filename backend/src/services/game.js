@@ -55,14 +55,25 @@ export default {
      * Find game where the user is first_player or second_player
      * @param {typeof import('../db/index.js').User} userModel
      */
-  findByUserId: function (userModel) {
+  findCurrentGameByUser: function (userModel) {
     return Game.findOne({
       where: {
         [Op.or]: [
           { first_player: userModel.id },
           { second_player: userModel.id },
         ],
+        endedAt: null,
       },
+      include: [
+        {
+          model: User,
+          as: 'firstPlayer',
+        },
+        {
+          model: User,
+          as: 'secondPlayer',
+        },
+      ],
     });
   },
   /**
@@ -71,20 +82,13 @@ export default {
    * @param {typeof import('../db/index.js').User} userModel
    */
   leave: async function (userModel) {
-    const game = await this.findByUserId(userModel);
+    const game = await this.findCurrentGameByUser(userModel);
     if (!game) throw new Error('user not in a game');
 
-    const data = {
-      second_player: null,
-    };
-    if (game.first_player === userModel.id) {
-      throw new Error('user is first player');
-    }
-    if (game.second_player === userModel.id) {
-      data.second_player = null;
-    }
+    if (game.first_player === userModel.id) throw new Error('user is first player');
 
-    await this.update({ id: game.id }, data);
+    game.second_player = null;
+    await game.save();
     return this.findById(game.id);
   },
   /**
@@ -96,5 +100,28 @@ export default {
     gameModel.second_player = userModel.id;
     await gameModel.save();
     return this.findById(gameModel.id);
+  },
+  start: async function (gameModel) {
+    gameModel.startedAt = new Date();
+    await gameModel.save();
+    return this.findById(gameModel.id);
+  },
+  /**
+   * @param {import('../db/index.js').Game} gameModel The game model
+   * @param {import('../db/index.js').User} winnerUserModel The winner user model
+   */
+  forfeit: function (gameModel, winnerUserModel) {
+    return this.end(gameModel, winnerUserModel, 'surrender');
+  },
+  /**
+   * @param {import('../db/index.js').Game} gameModel The game model
+   * @param user Winner
+   * @param {'surrender' | 'disconnect' | 'health'} reason The reason why the game ended
+   */
+  end: function (gameModel, user, reason = 'health') {
+    gameModel.winner = user.id;
+    gameModel.endedAt = new Date();
+    gameModel.endType = reason;
+    return gameModel.save();
   },
 };

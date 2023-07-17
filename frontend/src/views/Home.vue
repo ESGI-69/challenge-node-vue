@@ -9,7 +9,7 @@
           class="nes-btn is-primary"
           @click="createGame"
         >
-          Launch Game
+          Create Game
         </button>
         <router-link
           :to="{ name: 'join' }"
