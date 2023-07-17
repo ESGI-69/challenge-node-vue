@@ -128,6 +128,12 @@ export default async(models, sequelize) => {
     this.removeFromMongo(options.where.id);
   });
 
+  sequelize.addHook('afterDestroy', function (item) {
+    // If it's a join table, don't add it to MongoDB
+    if (this.tableName.includes('_')) return;
+    this.removeFromMongo(item.id);
+  });
+
   // Loop through all models
   for (const model of models) {
     try {

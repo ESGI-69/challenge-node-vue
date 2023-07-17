@@ -164,6 +164,26 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
     expect(testDoc).toMatchObject({ id: testRow.id, name: 'Test sync on save (saved)' });
   });
 
+  it('should replicate data on bulk delete', async () => {
+    // Create a row in the MySQL table
+    const testRow = await TestModel.create({ name: 'Test sync on bulk delete' });
+
+    // Wait for the row to be replicated to MongoDB
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Delete the row in the MySQL table
+    await TestModel.destroy({ where: { id: testRow.id } });
+
+    // Wait for the row to be replicated to MongoDB
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Check that the row does not exist in MongoDB
+    const testDoc = await mongoose.model('testmodel', TestModel.mongoSchema).findOne({
+      id: testRow.id,
+    });
+    expect(testDoc).toBeNull();
+  });
+
   it('should replicate data on delete', async () => {
     // Create a row in the MySQL table
     const testRow = await TestModel.create({ name: 'Test sync on delete' });
@@ -172,7 +192,7 @@ describe('Sequelize hooks should replicate the Postgres state', () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Delete the row in the MySQL table
-    await TestModel.destroy({ where: { id: testRow.id } });
+    await testRow.destroy();
 
     // Wait for the row to be replicated to MongoDB
     await new Promise((resolve) => setTimeout(resolve, 200));
