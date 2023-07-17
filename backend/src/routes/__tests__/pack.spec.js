@@ -84,7 +84,7 @@ describe('Buy pack (logged)', () => {
   });
 
   it('POST /packs/buy if not enough money should return 403', async () => {
-    await userService.setMoney((await userService.findById(2)).id, 0);
+    await userService.setMoney((await userService.findById(2)), 0);
 
     let balance;
     await request(app)
