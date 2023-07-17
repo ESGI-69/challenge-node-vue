@@ -11,6 +11,7 @@ export default (connection) => {
     static associate() {
       this.belongsTo(User, { through: User, foreignKey: 'first_player', as: 'firstPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
+      this.belongsTo(User, { through: User, foreignKey: 'winner', as: 'winnerPlayer' });
     }
 
     /**
@@ -37,16 +38,16 @@ export default (connection) => {
           min: 6,
         },
       },
-      winner: {
-        type: DataTypes.INTEGER,
+      endedAt: {
+        type: DataTypes.DATE,
         allowNull: true,
         defaultValue: null,
         validate: {
           notEmpty: true,
         },
       },
-      endedAt: {
-        type: DataTypes.DATE,
+      endType: {
+        type: DataTypes.ENUM('surrender', 'disconnect', 'health'),
         allowNull: true,
         defaultValue: null,
         validate: {
@@ -74,8 +75,8 @@ export default (connection) => {
         } },
       },
       getterMethods: {
-        isStarted() {
-          return this.startedAt !== null;
+        isInProgress() {
+          return this.startedAt !== null && this.endedAt === null;
         },
         isEnded() {
           return this.endedAt !== null;

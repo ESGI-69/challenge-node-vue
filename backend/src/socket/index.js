@@ -3,15 +3,34 @@ import jwt from 'jsonwebtoken';
 import gameService from '../services/game.js';
 import userService from '../services/user.js';
 
-const reasignSocketToGameRoom = async (userId) => {
-  const user = await userService.findById(userId);
-  const game = await gameService.findByUser(user);
-  if (!user || !game) return;
+/**
+ * Assign the user socket to the game room
+ * @param {import('../models').User} user
+ * @param {string} [gameId] If not provided, the current game of the user will be used
+ */
+export const asignUserSocketToGameRoom = async (user, gameId) => {
+  const id = gameId || (await gameService.findCurrentGameByUser(user))?.id;
+  if (!user || !id) return;
   const socket = users[user.id];
   if (!socket) return;
-  await socket.join(game.id);
+  await socket.join(id);
   // eslint-disable-next-line no-console
-  console.log(`Socket ${socket.id} (user ${user.email}) reconnected to room ${game.id}`);
+  console.log(`[Socket ${user.email}] Connected to room ${id}`);
+};
+
+/**
+ * Remove the user socket from the game room
+ * @param {import('../models').User} user
+ * @param {string} [gameId] If not provided, the current game of the user will be used
+ */
+export const removeUserSocketFromGameRoom = async (user, gameId) => {
+  const id = gameId || (await gameService.findCurrentGameByUser(user))?.id;
+  if (!user || !id) return;
+  const socket = users[user.id];
+  if (!socket) return;
+  await socket.leave(id);
+  // eslint-disable-next-line no-console
+  console.log(`[Socket ${user.email}] Disconnected from room ${id}`);
 };
 
 /**
@@ -20,15 +39,17 @@ const reasignSocketToGameRoom = async (userId) => {
 export let users = {};
 
 export default () => {
-  io.on('connection', (client) => {
-    // eslint-disable-next-line no-console
-    console.log('Client connected');
+  io.on('connection', async (client) => {
+    let user;
     const clientJwt = client.handshake.query.token;
     try {
       jwt.verify(clientJwt, process.env.JWT_SECRET);
       const { id } = jwt.decode(clientJwt);
+      user = await userService.findById(id);
       users[id] = client;
-      reasignSocketToGameRoom(id);
+      // eslint-disable-next-line no-console
+      console.log(`[Socket ${user.email}] Connected`);
+      asignUserSocketToGameRoom(user);
     } catch {
       console.error('Invalid jwt');
       client.disconnect();
@@ -37,7 +58,7 @@ export default () => {
 
     client.on('disconnect', () => {
       // eslint-disable-next-line no-console
-      console.log('Client disconnected');
+      console.log(`[Socket ${user.email}] disconnected`);
       delete users[client.id];
     });
   });

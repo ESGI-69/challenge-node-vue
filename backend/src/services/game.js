@@ -55,7 +55,7 @@ export default {
      * Find game where the user is first_player or second_player
      * @param {typeof import('../db/index.js').User} userModel
      */
-  findByUser: function (userModel) {
+  findCurrentGameByUser: function (userModel) {
     return Game.findOne({
       where: {
         [Op.or]: [
@@ -72,21 +72,13 @@ export default {
    * @param {typeof import('../db/index.js').User} userModel
    */
   leave: async function (userModel) {
-    const game = await this.findByUser(userModel);
+    const game = await this.findCurrentGameByUser(userModel);
     if (!game) throw new Error('user not in a game');
 
-    const data = {
-      second_player: null,
-    };
-    if (game.first_player === userModel.id) {
-      throw new Error('user is first player');
-    }
-    if (game.second_player === userModel.id) {
-      data.second_player = null;
-    }
+    if (game.first_player === userModel.id) throw new Error('user is first player');
 
-    await this.update({ id: game.id }, data);
-    return this.findById(game.id);
+    game.second_player = null;
+    return game.save();
   },
   /**
    * Join the game
@@ -102,5 +94,18 @@ export default {
     gameModel.startedAt = new Date();
     await gameModel.save();
     return this.findById(gameModel.id);
+  },
+  forfeit: function (gameModel, userModel) {
+    return this.end(gameModel, userModel, 'surrender');
+  },
+  /**
+   * @param user Winner
+   * @param {'surrender' | 'disconnect' | 'health'} reason The reason why the game ended
+   */
+  end: function (gameModel, user, reason = 'health') {
+    gameModel.winner = user.id;
+    gameModel.endedAt = new Date();
+    gameModel.endType = reason;
+    return gameModel.save();
   },
 };

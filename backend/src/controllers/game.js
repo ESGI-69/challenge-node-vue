@@ -1,7 +1,8 @@
 import gameService from '../services/game.js';
 import generateGameCode from '../utils/generateGameCode.js';
-import { users } from '../socket/index.js';
+import { asignUserSocketToGameRoom, removeUserSocketFromGameRoom, users } from '../socket/index.js';
 import { io } from '../index.js';
+import userService from '../services/user.js';
 
 export default {
   /**
@@ -13,9 +14,9 @@ export default {
    **/
   post: async (req, res, next) => {
     try {
-      const currentGame = await gameService.findByUser(req.user);
+      const currentGame = await gameService.findCurrentGameByUser(req.user);
 
-      if (currentGame) throw new Error('user already in a game');
+      if (currentGame) throw new Error('User already have a game in progress');
 
       // generate a code for the game
       let id = await generateGameCode();
@@ -25,15 +26,11 @@ export default {
         first_player: req.user.id,
       });
 
-      // create a room and make the socketId join it
-      let playerSocket = users[req.user.id];
-      if (!playerSocket) {
-        throw new Error('not connected to socket io');
-      } else {
-        playerSocket.join(id);
-      }
+      asignUserSocketToGameRoom(req.user);
 
       res.status(201).json({ id: game.id });
+      // eslint-disable-next-line no-console
+      console.log(`[Game ${game.id}] Created by ${req.user.email}`);
     }
     catch (err) {
       next(err);
@@ -51,6 +48,7 @@ export default {
       const game = await gameService.findById(req.params.id);
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
       if (game.first_player !== req.user.id && game.second_player !== req.user.id) throw new Error('You\'r not in this game', { cause: 'Unauthorized' });
+      if (game.isEnded) throw new Error('Game is ended', { cause: 'Forbidden' });
       res.json(game);
     }
     catch (err) {
@@ -67,18 +65,17 @@ export default {
    */
   delete: async (req, res, next) => {
     try {
-      const game = await gameService.findByUser(req.user);
+      const game = await gameService.findCurrentGameByUser(req.user);
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
       if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game');
       const nbRemoved = await gameService.remove({ id: game.id });
       if (nbRemoved) {
         io.to(game.id).emit('game:removed');
-        // remove the socket room
-        let playerSocket = users[game.second_player];
-        let ownerSocket = users[game.first_player];
-        if (playerSocket) playerSocket.leave(game.id);
-        if (ownerSocket) ownerSocket.leave(game.id);
+        if (game.first_player) removeUserSocketFromGameRoom((await userService.findById(game.first_player)), game.id);
+        if (game.second_player) removeUserSocketFromGameRoom((await userService.findById(game.second_player)), game.id);
         res.sendStatus(204);
+        // eslint-disable-next-line no-console
+        console.log(`[Game ${game.id}] Deleted by ${req.user.email}`);
       } else {
         throw new Error('Game not found', { cause: 'Not Found' });
       }
@@ -109,15 +106,16 @@ export default {
       if (game.first_player === req.user.id) throw new Error('You cannot join your own game');
       if (game.second_player) throw new Error('Game already has two players');
 
-      let playerSocket = users[req.user.id];
-      playerSocket.join(gameId);
-
-      let ownerSoket = users[game.first_player];
-
       const updatedGame = await gameService.join(game, req.user);
 
+      asignUserSocketToGameRoom(req.user, gameId);
+
+      let ownerSoket = users[game.first_player];
       ownerSoket.emit('game:joined', updatedGame);
+
       res.send({ id: updatedGame.id });
+      // eslint-disable-next-line no-console
+      console.log(`[Game ${game.id}] Joined by ${req.user.email}`);
     } catch (err) {
       next(err);
     }
@@ -134,12 +132,34 @@ export default {
   leave: async (req, res, next) => {
     try {
       let playerSocket = users[req.user.id];
-      const leavedGame = await gameService.leave(req.user);
-
-      // leave the socket io room
       if (!playerSocket) throw new Error('You are not connected to the socket');
-      playerSocket.leave(leavedGame.id);
-      io.to(leavedGame.id).emit('game:leaved', leavedGame);
+
+      const game = await gameService.findCurrentGameByUser(req.user);
+      if (!game) throw new Error('Game not found', { cause: 'Not Found' });
+
+      if (game.isInProgress) {
+        const updatedGame = await gameService.forfeit(game, req.user);
+        const secondPlayer = userService.findById(updatedGame.second_player);
+        if (updatedGame.first_player === req.user.id) {
+          let secondPlayerSocket = users[updatedGame.second_player];
+          if (secondPlayerSocket) secondPlayerSocket.emit('game:forfeited', updatedGame);
+          removeUserSocketFromGameRoom(secondPlayer, updatedGame.id);
+          removeUserSocketFromGameRoom(req.user, updatedGame.id);
+        } else {
+          let firstPlayerSocket = users[updatedGame.first_player];
+          if (firstPlayerSocket) firstPlayerSocket.emit('game:forfeited', updatedGame);
+          removeUserSocketFromGameRoom(req.user, updatedGame.id);
+          removeUserSocketFromGameRoom(secondPlayer, updatedGame.id);
+        }
+        // eslint-disable-next-line no-console
+        console.log(`[Game ${game.id}] Forfeited by ${req.user.email}`);
+      } else {
+        const leavedGame = await gameService.leave(req.user);
+        removeUserSocketFromGameRoom(req.user, leavedGame.id);
+        io.to(leavedGame.id).emit('game:leaved', leavedGame);
+        // eslint-disable-next-line no-console
+        console.log(`[Game ${game.id}] Leaved by ${req.user.email}`);
+      }
       res.sendStatus(200);
     } catch (err) {
       next(err);
@@ -156,14 +176,16 @@ export default {
    * */
   start: async (req, res, next) => {
     try {
-      const game = await gameService.findByUser(req.user);
+      const game = await gameService.findCurrentGameByUser(req.user);
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
       if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game');
       if (!game.hasTwoPlayers) throw new Error('Game has only one player');
-      if (game.isStarted) throw new Error('Game already started');
+      if (game.isInProgress) throw new Error('Game already started');
       const startedGame = await gameService.start(game);
       io.to(game.id).emit('game:started', startedGame);
       res.sendStatus(200);
+      // eslint-disable-next-line no-console
+      console.log(`[Game ${game.id}] Started`);
     } catch (err) {
       next(err);
     }

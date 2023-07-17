@@ -18,13 +18,13 @@
           {{ profile.firstname }} (you)
         </li>
         <li v-else>
-          {{ actualGame.firstPlayer.firstname }}
+          {{ actualGame.firstPlayer?.firstname }}
         </li>
         <li v-if="actualGame.second_player === profile.id">
           {{ profile.firstname }} (you)
         </li>
         <li v-else-if="actualGame.secondPlayer">
-          {{ actualGame.secondPlayer.firstname }}
+          {{ actualGame.secondPlayer?.firstname }}
         </li>
         <li v-else>
           Waiting for a second player ...
@@ -42,22 +42,6 @@
           @click="startGame"
         >
           Start game
-        </button>
-        <button
-          v-if="iAmGameOwner"
-          type="button"
-          class="nes-btn is-error"
-          @click="removeGame"
-        >
-          Cancel game
-        </button>
-        <button
-          v-else
-          type="button"
-          class="nes-btn is-error"
-          @click="leaveGame"
-        >
-          Leave Game
         </button>
       </div>
     </div>
