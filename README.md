@@ -116,6 +116,8 @@ Theses tests are launched in the CI/CD pipeline, but you can launch them locally
 
 Before launching the tests, you need to install the dependencies of the project (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details). You also need to launch the docker containers (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details) and have an empty migrated database.
 
+When you launching test **ensure that no frontend page is open**. This may interfere with the socket io tests.
+
 - You can launch the tests with
   ```bash
   cd backend
