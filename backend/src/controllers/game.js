@@ -86,7 +86,7 @@ export default {
 
   /**
    * Express.js controller for POST /games/join
-   * Leave the game if the user is the second player of a game
+   * Join a game if the user is not the owner of the game and the game has no second player yet
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
