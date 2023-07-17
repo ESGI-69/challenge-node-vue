@@ -144,10 +144,10 @@ describe('Game routes (logged)', () => {
       expect(response.body.winner).toBeNull();
     }));
 
-  it('POST /game/leave should return 400 if player is not in a game', () => request(app)
+  it('POST /game/leave should return 404 if player is not in a game', () => request(app)
     .post('/game/leave')
     .set('Authorization', `Bearer ${secondJwt}`)
-    .expect(400));
+    .expect(404));
 
   it('POST /game/join should return the id of the game & send the joined event to the first player', (done) => {
     let successCount = 0;
@@ -215,10 +215,10 @@ describe('Game routes (logged)', () => {
       .then(success);
   });
 
-  it('POST /game/leave should return 400 if player is not in a game', () => request(app)
+  it('POST /game/leave should return 404 if player is not in a game', () => request(app)
     .post('/game/leave')
     .set('Authorization', `Bearer ${secondJwt}`)
-    .expect(400));
+    .expect(404));
 
   it('POST /game/join should return the id of the game & send the joined event to the first player affter a player has leaved', (done) => {
     let successCount = 0;

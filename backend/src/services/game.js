@@ -64,6 +64,16 @@ export default {
         ],
         endedAt: null,
       },
+      include: [
+        {
+          model: User,
+          as: 'firstPlayer',
+        },
+        {
+          model: User,
+          as: 'secondPlayer',
+        },
+      ],
     });
   },
   /**
@@ -78,7 +88,8 @@ export default {
     if (game.first_player === userModel.id) throw new Error('user is first player');
 
     game.second_player = null;
-    return game.save();
+    await game.save();
+    return this.findById(game.id);
   },
   /**
    * Join the game
