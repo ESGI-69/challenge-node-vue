@@ -104,7 +104,8 @@ export default {
    * @param {number} amount
    */
   setMoney: function (userModel, amount) {
-    return userModel.update({ balance: amount });
+    userModel.balance = amount;
+    return userModel.save();
   },
   /**
    * Add xp to the user
