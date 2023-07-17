@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
+import userService from '../../services/user.js';
 
 const jwt = await getJwt();
 const noMoneyJwt = await getJwt('janedoe@example.com', '123456');
@@ -83,6 +84,8 @@ describe('Buy pack (logged)', () => {
   });
 
   it('POST /packs/buy if not enough money should return 403', async () => {
+    await userService.setMoney((await userService.findById(2)).id, 0);
+
     let balance;
     await request(app)
       .get('/users/me')

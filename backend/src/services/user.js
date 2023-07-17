@@ -99,6 +99,14 @@ export default {
     return userModel.decrement('balance', { by: amount });
   },
   /**
+   * Set the user money
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} amount
+   */
+  setMoney: function (userModel, amount) {
+    return userModel.update({ balance: amount });
+  },
+  /**
    * Add xp to the user
    * @param {import('../db/index.js').User} userModel
    * @param {number} amount
