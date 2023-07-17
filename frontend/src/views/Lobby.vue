@@ -1,51 +1,66 @@
 <template>
-  <container
-    class="game"
-    :is-rounded="true"
-  >
-    <div v-if="isGameLoading">
-      <h2>Crushing the Bridge of Khazad-dûm ...</h2>
-    </div>
-    <div v-else-if="!isGameFound">
-      <h2>Game not found</h2>
-    </div>
-    <div v-else>
-      <p v-if="actualGame.id">
-        Game ID : {{ actualGame.id }}
-      </p>
-      <ul>
-        <li v-if="iAmGameOwner">
-          {{ profile.firstname }} (you)
-        </li>
-        <li v-else>
-          {{ actualGame.firstPlayer?.firstname }}
-        </li>
-        <li v-if="actualGame.second_player === profile.id">
-          {{ profile.firstname }} (you)
-        </li>
-        <li v-else-if="actualGame.secondPlayer">
-          {{ actualGame.secondPlayer?.firstname }}
-        </li>
-        <li v-else>
-          Waiting for a second player ...
-        </li>
-      </ul>
-      <div class="game__buttons">
-        <button
-          v-if="iAmGameOwner"
-          type="button"
-          class="nes-btn"
-          :class="{
-            'is-disabled': !actualGame.second_player,
-            'is-primary': actualGame.second_player,
-          }"
-          @click="startGame"
-        >
-          Start game
-        </button>
+  <div class="game">
+    <container
+      class="game__container"
+      :is-rounded="true"
+    >
+      <div v-if="isGameLoading">
+        <h2>Crushing the Bridge of Khazad-dûm ...</h2>
       </div>
-    </div>
-  </container>
+      <div v-else-if="!isGameFound">
+        <h2>Game not found</h2>
+      </div>
+      <div v-else>
+        <p v-if="actualGame.id">
+          Game ID : {{ actualGame.id }}
+        </p>
+        <ul>
+          <li v-if="iAmGameOwner">
+            {{ profile.firstname }} (you)
+          </li>
+          <li v-else>
+            {{ actualGame.firstPlayer?.firstname }}
+          </li>
+          <li v-if="actualGame.second_player === profile.id">
+            {{ profile.firstname }} (you)
+          </li>
+          <li v-else-if="actualGame.secondPlayer">
+            {{ actualGame.secondPlayer?.firstname }}
+          </li>
+          <li v-else>
+            Waiting for a second player ...
+          </li>
+        </ul>
+        <div class="game__container__buttons">
+          <button
+            v-if="iAmGameOwner"
+            type="button"
+            class="nes-btn"
+            :class="{
+              'is-disabled': !actualGame.second_player,
+              'is-primary': actualGame.second_player,
+            }"
+            @click="startGame"
+          >
+            Start game
+          </button>
+        </div>
+      </div>
+    </container>
+    <pop-up
+      v-model:isOpen="isGameCanceled"
+      @close="goToHome"
+    >
+      <template #header>
+        <h2>The game has been canceled</h2>
+      </template>
+      <p>The game has been canceled by {{ actualGame.firstPlayer?.firstname }}.</p>
+      <p>You will be redirected to the home page.</p>
+      <template #confirm>
+        <span>Ok :(</span>
+      </template>
+    </pop-up>
+  </div>
 </template>
 
 
@@ -55,6 +70,7 @@ import { computed, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import Container from '@/components/Container.vue';
+import PopUp from '@/components/PopUp.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
@@ -64,6 +80,7 @@ export default {
   name: 'GameView',
   components: {
     Container,
+    PopUp,
   },
   setup() {
     const router = useRouter();
@@ -79,6 +96,12 @@ export default {
     const profile = computed(() => profileStore.profile);
 
     const isGameFound = ref(true);
+    const isGameCanceled = ref(false);
+
+    const goToHome = () => {
+      gameStore.$reset();
+      router.push({ name: 'home' });
+    };
 
     socket.on('game:joined', (game) => {
       gameStore.setGame(game);
@@ -94,28 +117,12 @@ export default {
     });
 
     socket.on('game:removed', () => {
-      gameStore.$reset();
-      router.push({ name: 'home' });
+      if (iAmGameOwner.value) {
+        goToHome();
+      } else {
+        isGameCanceled.value = true;
+      }
     });
-
-    const leaveGame = async () => {
-      try {
-        await gameStore.leave();
-        router.push({ name: 'home' });
-      } catch (error) {
-        console.error('Error while leaving game');
-        console.error(error);
-      }
-    };
-
-    const removeGame = async () => {
-      try {
-        await gameStore.remove();
-      } catch (error) {
-        console.error('Error while removing game');
-        console.error(error);
-      }
-    };
 
     const startGame = async () => {
       try {
@@ -144,13 +151,13 @@ export default {
 
     return {
       actualGame,
+      goToHome,
       iAmGameOwner,
+      isGameCanceled,
       isGameFound,
       isGameLeft,
       isGameLoading,
-      leaveGame,
       profile,
-      removeGame,
       startGame,
     };
   },
@@ -161,13 +168,18 @@ export default {
 .game {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  &__buttons {
+  &__container {
+    width: 100%;
+    height: 100%;
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+
+    &__buttons {
+      display: flex;
+      gap: 1rem;
+    }
   }
 }
 </style>
