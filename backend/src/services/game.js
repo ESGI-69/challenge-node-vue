@@ -106,10 +106,15 @@ export default {
     await gameModel.save();
     return this.findById(gameModel.id);
   },
-  forfeit: function (gameModel, userModel) {
-    return this.end(gameModel, userModel, 'surrender');
+  /**
+   * @param {import('../db/index.js').Game} gameModel The game model
+   * @param {import('../db/index.js').User} winnerUserModel The winner user model
+   */
+  forfeit: function (gameModel, winnerUserModel) {
+    return this.end(gameModel, winnerUserModel, 'surrender');
   },
   /**
+   * @param {import('../db/index.js').Game} gameModel The game model
    * @param user Winner
    * @param {'surrender' | 'disconnect' | 'health'} reason The reason why the game ended
    */

@@ -138,19 +138,22 @@ export default {
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
 
       if (game.isInProgress) {
-        const updatedGame = await gameService.forfeit(game, req.user);
-        const secondPlayer = userService.findById(updatedGame.second_player);
-        if (updatedGame.first_player === req.user.id) {
+        const secondPlayer = await userService.findById(game.second_player);
+        /**
+         * @type {impot('../db/index.js').Game}
+         */
+        let updatedGame;
+        if (game.first_player === req.user.id) {
+          updatedGame = await gameService.forfeit(game, secondPlayer);
           let secondPlayerSocket = users[updatedGame.second_player];
           if (secondPlayerSocket) secondPlayerSocket.emit('game:forfeited', updatedGame);
-          removeUserSocketFromGameRoom(secondPlayer, updatedGame.id);
-          removeUserSocketFromGameRoom(req.user, updatedGame.id);
         } else {
+          updatedGame = await gameService.forfeit(game, req.user);
           let firstPlayerSocket = users[updatedGame.first_player];
           if (firstPlayerSocket) firstPlayerSocket.emit('game:forfeited', updatedGame);
-          removeUserSocketFromGameRoom(req.user, updatedGame.id);
-          removeUserSocketFromGameRoom(secondPlayer, updatedGame.id);
         }
+        removeUserSocketFromGameRoom(req.user, updatedGame.id);
+        removeUserSocketFromGameRoom(secondPlayer, updatedGame.id);
         // eslint-disable-next-line no-console
         console.log(`[Game ${game.id}] Forfeited by ${req.user.email}`);
       } else {
@@ -178,7 +181,7 @@ export default {
     try {
       const game = await gameService.findCurrentGameByUser(req.user);
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
-      if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game');
+      if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game', { cause: 'Forbidden' });
       if (!game.hasTwoPlayers) throw new Error('Game has only one player');
       if (game.isInProgress) throw new Error('Game already started');
       const startedGame = await gameService.start(game);
