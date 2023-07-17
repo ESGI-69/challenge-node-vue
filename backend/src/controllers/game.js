@@ -140,18 +140,23 @@ export default {
       if (game.isInProgress) {
         const secondPlayer = await userService.findById(game.second_player);
         /**
-         * @type {impot('../db/index.js').Game}
+         * @type {import('../db/index.js').Game}
          */
         let updatedGame;
+        /**
+         * @type {import('../db/index.js').User}
+         */
+        let winner;
         if (game.first_player === req.user.id) {
-          updatedGame = await gameService.forfeit(game, secondPlayer);
-          let secondPlayerSocket = users[updatedGame.second_player];
-          if (secondPlayerSocket) secondPlayerSocket.emit('game:forfeited', updatedGame);
+          winner = secondPlayer;
         } else {
-          updatedGame = await gameService.forfeit(game, req.user);
-          let firstPlayerSocket = users[updatedGame.first_player];
-          if (firstPlayerSocket) firstPlayerSocket.emit('game:forfeited', updatedGame);
+          winner = req.user;
         }
+        updatedGame = await gameService.forfeit(game, winner);
+        await userService.addMoney(winner, 50);
+        await userService.addXp(winner, 50);
+        let winnerSocket = users[winner.id];
+        if (winnerSocket) winnerSocket.emit('game:forfeited', updatedGame);
         removeUserSocketFromGameRoom(req.user, updatedGame.id);
         removeUserSocketFromGameRoom(secondPlayer, updatedGame.id);
         // eslint-disable-next-line no-console

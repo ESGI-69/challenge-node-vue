@@ -10,6 +10,7 @@ import { io as Client } from 'socket.io-client';
 
 import { app, server } from '../../index.js';
 import gameService from '../../services/game.js';
+import userService from '../../services/user.js';
 
 import getJwt from '../../../tests/getJwt.js';
 
@@ -373,6 +374,16 @@ describe('Game launch and forfeit', () => {
       expect(game.endType).toBeNull();
     }));
 
+  let userBalance, userXp;
+
+  it('... fetching future winner balance & xp', async () => {
+    const user = await userService.findById(2);
+    expect(user).toHaveProperty('balance');
+    expect(user).toHaveProperty('xp');
+    userBalance = user.balance;
+    userXp = user.xp;
+  });
+
   it('POST /game/leave should return 200 and send game:forfeited to the socket room', (done) => {
     let successCount = 0;
 
@@ -402,6 +413,14 @@ describe('Game launch and forfeit', () => {
       expect(game.endType).toBe('surrender');
       expect(game).toHaveProperty('winner');
       expect(game.winner).toBe(2);
+    }));
+
+  it('The winner should have win 50 gold and 50 exp', () => userService.findById(2)
+    .then((user) => {
+      expect(user).toHaveProperty('balance');
+      expect(user.balance).toBe(userBalance + 50);
+      expect(user).toHaveProperty('xp');
+      expect(user.xp).toBe(userXp + 50);
     }));
 
   afterAll(async () => {
