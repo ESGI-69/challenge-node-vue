@@ -8,11 +8,9 @@ export default {
    * @param {import('sequelize').FindOptions} options
    * @returns
    */
-  findAll: function (criteria, options = {}) {
+  findAll: function (criteria) {
     return Pack.findAll({
       where: criteria,
-      ...options,
-      order: Object.entries(options.order || {}),
     });
   },
   findById: function (id) {
