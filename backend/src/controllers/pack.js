@@ -10,17 +10,9 @@ export default {
    * @returns {Promise<void>}
    */
   findAll: async (req, res, next) => {
-    const {
-      // _page = 1,
-      // _itemsPerPage = 40,
-      _sort = {},
-      ...criteria
-    } = req.query;
     try {
-      const packs = await packService.findAll(criteria, {
-        // offset: (_page - 1) * _itemsPerPage,
-        // limit: _itemsPerPage,
-        order: _sort,
+      const packs = await packService.findAll({
+        userId: req.user.id,
       });
       res.json(packs);
     } catch (err) {
@@ -63,8 +55,8 @@ export default {
     try {
       const pack = await packService.findById(req.params.id);
       if (!pack) return res.status(404).json({ message: 'No pack found', code: 'pack_not_found' });
+      if (pack.userId !== req.user.id) throw new Error('You are not the owner of this pack', { cause: 'Unauthorized' });
       if (pack.isOpened()) return res.status(403).json({ message: 'Pack already opened', code: 'pack_already_opened' });
-      if (pack.userId !== req.user.id) return res.status(403).json({ message: 'You are not the owner of this pack', code: 'pack_not_owned' });
       /**
        * Array of cards that are in the pack
        */

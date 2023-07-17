@@ -1,12 +1,23 @@
-import { describe, expect, it } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
 import userService from '../../services/user.js';
+import packService from '../../services/pack.js';
+import { Pack } from '../../db/index.js';
 
 const jwt = await getJwt();
 const noMoneyJwt = await getJwt('janedoe@example.com', '123456');
 const adminJwt = await getJwt('admin@example.com', '123456');
+
+const generatePacks = [];
+let notOwnedPackId;
+
+beforeAll(async () => {
+  generatePacks.push((await packService.create({ id: 1 })).id);
+  notOwnedPackId = (await packService.create({ id: 2 })).id;
+  generatePacks.push(notOwnedPackId);
+});
 
 describe('Pack routes (no logged)', () => {
   it('GET /packs/ should return 401', () => request(app)
@@ -29,7 +40,12 @@ describe('Packs list (logged)', () => {
     .expect(200)
     .expect('Content-Type', /json/)
     .then(res => {
-      expect(res.body).toBeInstanceOf(Array);
+      const packs = res.body;
+      expect(packs).toBeInstanceOf(Array);
+      packs.forEach((pack) => {
+        expect(pack).toHaveProperty('userId');
+        expect(pack.userId).toBe(1);
+      });
     }));
 });
 
@@ -70,6 +86,7 @@ describe('Buy pack (logged)', () => {
         expect(res.body).toHaveProperty('cost');
         expect(res.body.cost).toBe(100);
         expect(res.body.pack).toHaveProperty('id');
+        generatePacks.push(res.body.pack.id);
       });
 
     // Check user balance
@@ -145,6 +162,7 @@ describe('Open pack (logged)', () => {
         expect(res.body.pack).toHaveProperty('id');
         packId = res.body.pack.id;
         balance -= res.body.cost;
+        generatePacks.push(packId);
       });
 
     let refundedAmount;
@@ -184,4 +202,22 @@ describe('Open pack (logged)', () => {
       expect(res.body).toHaveProperty('code');
       expect(res.body.code).toBe('pack_already_opened');
     }));
+
+  it('POST /packs/:id/open if there is no such pack should return 404', () => request(app)
+    .post('/packs/999999/open')
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(404));
+
+  it('POST /packs/:id/open if the pack is not owned by user should return 403', () => request(app)
+    .post(`/packs/${notOwnedPackId}/open`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(403));
+});
+
+afterAll(async () => {
+  const packsToDestroy = [];
+  generatePacks.forEach((id) => {
+    packsToDestroy.push(Pack.destroy({ where: { id } }));
+  });
+  await Promise.all(packsToDestroy);
 });

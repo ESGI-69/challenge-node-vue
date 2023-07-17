@@ -18,6 +18,11 @@ module.exports = {
         createdAt: new Date(),
         openedAt: null,
       },
+      {
+        userId: 1,
+        createdAt: new Date(),
+        openedAt: null,
+      },
     ]);
 
     await queryInterface.bulkInsert('pack_cards', [
@@ -43,6 +48,31 @@ module.exports = {
       },
       {
         packId: 1,
+        cardId: 5,
+        createdAt: new Date(),
+      },
+      {
+        packId: 2,
+        cardId: 1,
+        createdAt: new Date(),
+      },
+      {
+        packId: 2,
+        cardId: 2,
+        createdAt: new Date(),
+      },
+      {
+        packId: 2,
+        cardId: 3,
+        createdAt: new Date(),
+      },
+      {
+        packId: 2,
+        cardId: 4,
+        createdAt: new Date(),
+      },
+      {
+        packId: 2,
         cardId: 5,
         createdAt: new Date(),
       },
