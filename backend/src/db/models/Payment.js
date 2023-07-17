@@ -16,6 +16,11 @@ export default (connection) => {
         allowNull: false,
         defaultValue: 'PENDING',
       },
+      isCredited: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       sessionId: DataTypes.STRING,
       checkoutUrl: DataTypes.TEXT,
     },

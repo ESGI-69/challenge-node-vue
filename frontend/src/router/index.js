@@ -90,20 +90,11 @@ const router = createRouter({
       },
       children: [
         {
-          path: 'success/:id',
-          name: 'success',
-          component: () => import('@/views/shop/Success.vue'),
+          path: 'checkout',
+          name: 'checkout',
+          component: () => import('@/views/shop/Checkout.vue'),
           meta: {
-            displayName: 'Success',
-            authRequired: true,
-          },
-        },
-        {
-          path: 'cancel/:id',
-          name: 'cancel',
-          component: () => import('@/views/shop/Cancel.vue'),
-          meta: {
-            displayName: 'Cancel',
+            displayName: 'Checkout',
             authRequired: true,
           },
         },

@@ -9,5 +9,6 @@ const router = Router();
 const upload = multer();
 
 router.post('/', isLogged, upload.none(), paymentController.post);
+router.patch('/:id', isLogged, upload.none(), paymentController.patch);
 
 export default router;

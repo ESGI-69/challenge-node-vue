@@ -3,6 +3,7 @@
     <h1>
       <i class="nes-icon is-large coin" />&nbsp;Shop&nbsp;<i class="nes-icon is-large coin" />
     </h1>
+    <router-view />
     <container>
       <div
         v-if="!isLoading && products.length === 0"

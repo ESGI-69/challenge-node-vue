@@ -12,7 +12,7 @@ const stripePayment = {
    */
   createCheckout: async (product) => {
     // console.log('payments product', product.price);
-    const checkout = await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       // copy same image in back than in front and get just the name from the front
       // const image = fs.readFileSync('../../frontend')
       payment_method_types: ['card'],
@@ -28,13 +28,26 @@ const stripePayment = {
         quantity: product.quantity,
       }],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/shop/success/${product.paymentId}`,
-      cancel_url: `${process.env.FRONTEND_URL}/shop/cancel/${product.paymentId}`,
+      success_url: `${process.env.FRONTEND_URL}/shop/checkout?id=${product.paymentId}&isSuccess=true`,
+      cancel_url: `${process.env.FRONTEND_URL}/shop/checkout?id=${product.paymentId}&isSuccess=false`,
+      // https://localhost:8080/auth/confirm?token=caca
     });
-    // console.log('payments checkout', checkout);
-    // console.log('-----------------------------');
-    // console.log('RETRIEVE CHECKOUT', await stripe.checkout.sessions.retrieve(checkout.id));
-    return checkout;
+    return session;
+  },
+
+  /**
+   *
+   * @param {string} sessionId - checkout session id
+   * @returns
+   */
+
+  retrieveCheckout: async (sessionId) => {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    return session;
+  },
+
+  closeCheckout: async (sessionId) => {
+    await stripe.checkout.sessions.expire(sessionId);
   },
 };
 

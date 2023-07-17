@@ -2,6 +2,7 @@
 import stripePayment from '../utils/stripePayment.js';
 import paymentService from '../services/payment.js';
 import productService from '../services/product.js';
+import userService from '../services/user.js';
 
 export default {
   /**
@@ -48,6 +49,61 @@ export default {
       );
 
       res.status(201).json(finalPayment);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller PATCH /payment/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  async patch(req, res, next) {
+    try {
+      let paymentStatus = 'CANCELED';
+
+      if (!req.params.id || typeof req.params.id !== 'string') {
+        throw new Error('Payment not found');
+      }
+
+      const payment = await paymentService.findByIdWithSessionId(req.params.id);
+      if (!payment || payment.userId !== req.user.id) {
+        throw new Error('Payment not found');
+      }
+
+      if (payment.isCredited) {
+        throw new Error('Payment already credited');
+      }
+
+      const checkout = await stripePayment.retrieveCheckout(payment.sessionId);
+      if (checkout.payment_status === 'paid') {
+        paymentStatus = 'PAID';
+        const product = await productService.findById(payment.productId);
+        await userService.addMoney(req.user, product.value);
+        await paymentService.update(
+          { id: parseInt(payment.id) },
+          { isCredited: true },
+        );
+      }
+
+      if (checkout.status === 'expired') {
+        throw new Error('Payment expired');
+      }
+
+      if (checkout.status !== 'complete') {
+        await stripePayment.closeCheckout(payment.sessionId);
+      }
+
+      const paymentUpdate = await paymentService.update(
+        { id: parseInt(payment.id) },
+        { status: paymentStatus },
+      );
+
+      res.status(200).json(paymentUpdate);
+
     } catch (err) {
       next(err);
     }

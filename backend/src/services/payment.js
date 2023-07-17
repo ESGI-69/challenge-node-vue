@@ -21,6 +21,15 @@ export default {
   },
 
   /**
+   * Find a payment by id with session id
+   * @param {string} id
+   * @returns
+   */
+  findByIdWithSessionId: function (id) {
+    return Payment.scope('withSessionId').findByPk(id);
+  },
+
+  /**
    * Update a payment
    * @param {import('sequelize').WhereOptions} criteria
    * @param {object} data
