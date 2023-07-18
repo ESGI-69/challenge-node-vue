@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET);
 import fs from 'fs';
 import path from 'path';
+// import { coinBag } from '../../public/product-images/coinBag.jpeg';
 
 const stripePayment = {
   /**
@@ -11,17 +12,16 @@ const stripePayment = {
    * @see https://stripe.com/docs/api/checkout/sessions/create
    */
   createCheckout: async (product) => {
-    // console.log('payments product', product.price);
+    const imageLink = process.env.FRONTEND_URL + product.image;
+    console.log('image', imageLink);
     const session = await stripe.checkout.sessions.create({
-      // copy same image in back than in front and get just the name from the front
-      // const image = fs.readFileSync('../../frontend')
       payment_method_types: ['card'],
       line_items: [{
         price_data: {
           currency: 'eur',
           product_data: {
             name: product.name,
-            images: [product.image],
+            images: [imageLink],
           },
           unit_amount: product.price,
         },
@@ -30,8 +30,8 @@ const stripePayment = {
       mode: 'payment',
       success_url: `${process.env.FRONTEND_URL}/shop/checkout?id=${product.paymentId}&isSuccess=true`,
       cancel_url: `${process.env.FRONTEND_URL}/shop/checkout?id=${product.paymentId}&isSuccess=false`,
-      // https://localhost:8080/auth/confirm?token=caca
     });
+
     return session;
   },
 

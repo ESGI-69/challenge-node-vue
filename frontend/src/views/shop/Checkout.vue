@@ -4,7 +4,8 @@
     class="checkout"
   >
     <span
-      class="checkout__text is-error"
+      class="checkout__text nes-text"
+      :class="`${isSuccess ? 'is-success' : 'is-error'}`"
     >
       {{ checkoutText }}
     </span>
@@ -28,6 +29,9 @@ export default {
   name: 'Checkout',
   async setup()  {
     const isOpen= ref(true);
+    const isSuccess = ref(router.currentRoute.value.query.isSuccess === 'true');
+    const successText = ref('The payment has been successful, thank you for your purchase!');
+    const errorText = ref('The payment has been canceled, we didn\'t deduct any money from your account.');
 
     const paymentStore = usePaymentStore();
 
@@ -39,14 +43,13 @@ export default {
       router.push('/shop');
     }
 
-    const checkoutText = computed(() => {
-      const isSuccess = router.currentRoute.value.query.isSuccess === 'true';
-      return isSuccess ? 'The payment has been successful, thank you for your purchase!' : 'The payment has been canceled, we didn\'t deduct any money from your account.';
-    });
+    const checkoutText = computed(() => isSuccess.value ? successText.value : errorText.value,
+    );
 
     return {
       isOpen,
       checkoutText,
+      isSuccess,
     };
   },
 };
@@ -62,10 +65,6 @@ export default {
   min-height: 2rem;
   padding: 2rem 6rem;
   position: relative;
-
-  &__text {
-  }
-
   &__button {
     position: absolute;
     top: 1rem;

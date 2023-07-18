@@ -3,10 +3,13 @@
     <h1>
       <i class="nes-icon is-large coin" />&nbsp;Shop&nbsp;<i class="nes-icon is-large coin" />
     </h1>
+    <h2 v-if="isPaymentLoading">
+      Loading...
+    </h2>
     <router-view />
     <container>
       <div
-        v-if="!isLoading && products.length === 0"
+        v-if="!isProductsLoading && products.length === 0"
         class="shop__empty"
       >
         <p>
@@ -14,7 +17,7 @@
         </p>
       </div>
       <div
-        v-else-if="!isLoading"
+        v-else-if="!isProductsLoading"
         class="shop__items"
       >
         <product
@@ -41,6 +44,7 @@ import Container from '@/components/Container.vue';
 import Product from '@/components/products/Product.vue';
 
 import { useProductStore } from '@/stores/productStore';
+import { usePaymentStore } from '@/stores/paymentStore';
 
 export default {
   name: 'Shop',
@@ -50,16 +54,20 @@ export default {
   },
   async setup() {
     const productStore = useProductStore();
+    const paymentStore = usePaymentStore();
+
 
     const products = computed(() => productStore.products);
-    const isLoading = computed(() => productStore.isProductsLoading);
+    const isProductsLoading = computed(() => productStore.isProductsLoading);
+    const isPaymentLoading = computed(() => paymentStore.isPostPaymentLoading);
 
     await productStore.getProducts();
 
 
     return {
       products,
-      isLoading,
+      isProductsLoading,
+      isPaymentLoading,
     };
   },
 };

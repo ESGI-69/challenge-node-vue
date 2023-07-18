@@ -1,6 +1,8 @@
 <template>
   <div
     class="shop-item nes-pointer"
+    :class="{ 'is-disabled': isPostPaymentLoading }"
+    :disabled="isPostPaymentLoading"
     @click="buyItem"
   >
     <div
@@ -61,11 +63,12 @@ export default {
 
     const checkoutUrl = computed(() => paymentStore.checkoutUrl);
 
+    const isPostPaymentLoading = computed(() => paymentStore.isPostPaymentLoading);
 
     const buyItem = async () => {
       await paymentStore.postPayment({
         productId: props.id,
-        image: `http://localhost:8080${coinBag}`,
+        image: coinBag,
         quantity: 1,
       });
       if (checkoutUrl.value) {
@@ -76,6 +79,7 @@ export default {
       props,
       coinBag,
       buyItem,
+      isPostPaymentLoading,
     };
   },
 };
@@ -119,6 +123,10 @@ export default {
       gap: 0.5rem;
       font-size: 20px;
     }
+  }
+  &.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 }
 </style>
