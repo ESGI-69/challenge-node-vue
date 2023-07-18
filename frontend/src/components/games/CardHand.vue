@@ -15,30 +15,42 @@
         />
       </div>
     </template>
-    <template v-else>
-      <div
-        v-for="card in cards"
-        :key="card.id"
-        class="card-hand__card-wrapper"
-      >
-        <card
-          class="card-hand__card-wrapper__card"
-          v-bind="card"
-        />
-      </div>
-    </template>
+    <draggable
+      v-else
+      v-model="cardsDraggable"
+      :group="{
+        name: 'cards',
+        put: false,
+      }"
+      item-key="id"
+      class="card-hand"
+      @remove="onRemove"
+    >
+      <template #item="{ element }">
+        <div
+          class="card-hand__card-wrapper nes-pointer"
+        >
+          <card
+            class="card-hand__card-wrapper__card"
+            v-bind="element"
+          />
+        </div>
+      </template>
+    </draggable>
   </div>
 </template>
 
 <script>
-import { computed, toRefs } from 'vue';
+import { computed, toRefs, ref } from 'vue';
 
+import Draggable from 'vuedraggable';
 import Card from '@/components/Card.vue';
 
 export default {
   name: 'CardHand',
   components: {
     Card,
+    Draggable,
   },
   props: {
     cards: {
@@ -59,8 +71,20 @@ export default {
 
     const cardsQuantity = computed(() => isEnemy.value ? cardsFixedQuantity.value : cards.value.length);
 
+    /**
+     * Computed with get set
+     */
+    const cardsDraggable = ref(cards.value);
+
+    const onRemove = () => {
+      // When a card is removed from the hand of the player
+      // console.log('onRemove');
+    };
+
     return {
+      onRemove,
       cardsQuantity,
+      cardsDraggable,
     };
   },
 };
@@ -90,7 +114,8 @@ export default {
       position: absolute;
       right: -60px;
       top: 0px;
-      z-index: 10
+      z-index: 10;
+      // background-color: rgba($color: red, $alpha: 0.2);
     }
 
     &:hover {

@@ -8,6 +8,7 @@
       :class="{
         'card__container--face-down': isFaceDown,
         'nes-pointer': isFlippable,
+        'nes-pointer': isDraggable,
       }"
     >
       <div class="card__container__front">
@@ -178,6 +179,13 @@ export default {
      * Is the front of the card is hiddent
      */
     isFrontHidden: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * Is the card draggable ? Change the cursor.
+     */
+    isDraggable: {
       type: Boolean,
       default: false,
     },
