@@ -24,6 +24,7 @@ import { ref, computed } from 'vue';
 import router from '@/router';
 
 import { usePaymentStore } from '@/stores/paymentStore';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default {
   name: 'Checkout',
@@ -34,17 +35,20 @@ export default {
     const errorText = ref('The payment has been canceled, we didn\'t deduct any money from your account.');
 
     const paymentStore = usePaymentStore();
+    const profileStore = useProfileStore();
 
     try {
       await paymentStore.patchPayment({
         id: router.currentRoute.value.query.id,
       });
+      if (isSuccess.value) {
+        await profileStore.getProfile();
+      }
     } catch (error) {
       router.push('/shop');
     }
 
-    const checkoutText = computed(() => isSuccess.value ? successText.value : errorText.value,
-    );
+    const checkoutText = computed(() => isSuccess.value ? successText.value : errorText.value);
 
     return {
       isOpen,
