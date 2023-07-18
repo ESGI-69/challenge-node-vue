@@ -2,6 +2,20 @@ import { Payment } from './../db/index.js';
 
 export default {
   /**
+   * Find all payments matching the criteria
+   * @param {import('sequelize').WhereOptions} criteria
+   * @param {import('sequelize').FindOptions} options
+   * @returns
+   */
+  findAll: function (criteria, options = {}) {
+    return Payment.findAll({
+      where: criteria,
+      ...options,
+      order: Object.entries(options.order || {}),
+    });
+  },
+
+  /**
    * Create a payment
    * @param {object} data
    * @returns

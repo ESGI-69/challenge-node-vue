@@ -1,8 +1,5 @@
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET);
-import fs from 'fs';
-import path from 'path';
-// import { coinBag } from '../../public/product-images/coinBag.jpeg';
 
 const stripePayment = {
   /**
@@ -13,7 +10,6 @@ const stripePayment = {
    */
   createCheckout: async (product) => {
     const imageLink = process.env.FRONTEND_URL + product.image;
-    console.log('image', imageLink);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [{
@@ -31,7 +27,6 @@ const stripePayment = {
       success_url: `${process.env.FRONTEND_URL}/shop/checkout?id=${product.paymentId}&isSuccess=true`,
       cancel_url: `${process.env.FRONTEND_URL}/shop/checkout?id=${product.paymentId}&isSuccess=false`,
     });
-
     return session;
   },
 

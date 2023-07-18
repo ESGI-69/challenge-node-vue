@@ -101,6 +101,15 @@ const router = createRouter({
       ],
     },
     {
+      path: '/payments-history',
+      name: 'payments-history',
+      component: () => import('@/views/PaymentsHistory.vue'),
+      meta: {
+        displayName: 'Payments History',
+        authRequired: true,
+      },
+    },
+    {
       path: '/auth',
       name: 'auth',
       component: () => import('@/views/Auth.vue'),

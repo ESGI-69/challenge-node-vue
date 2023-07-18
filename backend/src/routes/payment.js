@@ -8,7 +8,8 @@ const router = Router();
 
 const upload = multer();
 
+router.get('/', isLogged, paymentController.cget);
 router.post('/', isLogged, upload.none(), paymentController.post);
-router.patch('/:id', isLogged, upload.none(), paymentController.patch);
+router.patch('/:id', isLogged, paymentController.patch);
 
 export default router;

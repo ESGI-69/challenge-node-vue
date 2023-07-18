@@ -6,6 +6,22 @@ import userService from '../services/user.js';
 
 export default {
   /**
+   * Express.js controller GET /payments
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  async cget(req, res, next) {
+    try {
+      const payments = await paymentService.findAll({ userId: req.user.id });
+      res.json(payments);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
    * Express.js controller POST /payment
    * @param {import('express').Request} req
    * @param {import('express').Response} res

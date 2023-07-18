@@ -28,7 +28,7 @@ export const usePaymentStore = defineStore('paymentStore', {
     async patchPayment(payload) {
       this.isPatchPaymentLoading = true;
       try {
-        await $API.patch(`/payments/${payload.id}/`, payload);
+        await $API.patch(`/payments/${payload.id}/`);
       }
       catch (err) {
         throw err.response.data;
