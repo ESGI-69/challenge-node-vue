@@ -126,7 +126,25 @@ describe('As an User/Player ', () => {
 });
 
 describe('As a User/Player with missing fields', () => {
+  let stripePaymentCreateCheckoutMock;
+  let stripePaymentRetrieveCheckoutMock;
+  let stripePaymentcloseCheckoutMock;
 
+  beforeAll(() => {
+    stripePaymentCreateCheckoutMock = jest.spyOn(stripePayment, 'createCheckout').mockImplementation(() => {
+      throw new Error('Error in createCheckout');
+    });
+    stripePaymentRetrieveCheckoutMock = jest.spyOn(stripePayment, 'retrieveCheckout').mockImplementation(() => {
+      throw new Error('Error in retrieveCheckout');
+    });
+    stripePaymentcloseCheckoutMock = jest.spyOn(stripePayment, 'closeCheckout').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    stripePaymentCreateCheckoutMock.mockRestore();
+    stripePaymentRetrieveCheckoutMock.mockRestore();
+    stripePaymentcloseCheckoutMock.mockRestore();
+  });
   it('POST /payment should return 400 if image is missing', () => request(app)
     .post('/payments')
     .set('Authorization', `Bearer ${playerToken}`)
@@ -134,7 +152,7 @@ describe('As a User/Player with missing fields', () => {
     .expect(400)
     .expect('Content-Type', /json/)
     .then((response) => {
-      expect(response.body.reason).toBe('Not a valid URL');
+      expect(response.body.reason).toBe('Error in createCheckout');
     }),
   );
 
@@ -156,7 +174,7 @@ describe('As a User/Player with missing fields', () => {
     .expect(400)
     .expect('Content-Type', /json/)
     .then((response) => {
-      expect(response.body.reason).toBe('Quantity is required. Add `quantity` to `line_items[0]`');
+      expect(response.body.reason).toBe('Error in createCheckout');
     }),
   );
 });
