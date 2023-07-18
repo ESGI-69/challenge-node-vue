@@ -13,6 +13,7 @@ import game from './models/Game.js';
 import product from './models/Product.js';
 import payment from './models/Payment.js';
 import deck from './models/Deck.js';
+import deck_Card from './models/DeckCard.js';
 
 /**
  * The domain name of the postgres database
@@ -56,6 +57,7 @@ const Game = game(connection);
 const Product = product(connection);
 const Payment = payment(connection);
 const Deck = deck(connection);
+const Deck_Card = deck_Card(connection);
 
 // Launch associations methods for relations between tables
 User.associate();
@@ -86,6 +88,7 @@ export {
   Pack,
   Pack_Card,
   User_Card,
+  Deck_Card,
   User,
   Game,
   Product,

@@ -10,5 +10,6 @@ router.get('/:id', isLogged, deckController.get);
 router.post('/', isLogged, deckController.post);
 router.patch('/:id', isLogged, deckController.patch);
 router.delete('/:id', isLogged, deckController.delete);
+router.post('/:id/cards', isLogged, deckController.addCard);
 
 export default router;
