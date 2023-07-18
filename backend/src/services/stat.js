@@ -58,26 +58,40 @@ export default {
   getNumberOfPackOpenByDay: function () {
     const count = Pack.mongoModel.aggregate([
       {
-        $match:
-          {
-            openedAt: {
-              $ne: null,
-            },
+        $match: {
+          openedAt: {
+            $ne: null,
           },
+        },
       },
       {
-        $group:
-          {
-            _id: {
-              $dateToString: {
-                format: '%Y-%m-%d',
-                date: '$openedAt',
-              },
-            },
-            packOpened: {
-              $sum: 1,
+        $addFields: {
+          openedAtDate: {
+            $dateFromParts: {
+              year: { $year: '$openedAt' },
+              month: { $month: '$openedAt' },
+              day: { $dayOfMonth: '$openedAt' },
+              hour: 0,
+              minute: 0,
+              second: 0,
+              millisecond: 0,
             },
           },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            // $dateToString: {
+            //   format: '%Y-%m-%d',
+            //   date: '$openedAt',
+            // },
+            $toLong: '$openedAtDate',
+          },
+          packOpened: {
+            $sum: 1,
+          },
+        },
       },
     ]);
     return count;
