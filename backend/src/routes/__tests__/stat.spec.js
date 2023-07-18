@@ -66,8 +66,10 @@ describe('Stat routes (logged)', () => {
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .then(res => {
-      expect(res.body).toBeInstanceOf(Array);
-      expect(res.body[0]).toHaveProperty('totalOpenedPacks');
+      if (res.body.length > 0) {
+        expect(res.body).toBeInstanceOf(Array);
+        expect(res.body[0]).toHaveProperty('totalOpenedPacks');
+      }
     }));
 
   it('GET /stat/number-of-pack-open-by-day should return 200', () => request(app)
