@@ -12,7 +12,6 @@ import packRouter from './routes/pack.js';
 import securityRouter from './routes/security.js';
 import userRouter from './routes/user.js';
 import gameRouter from './routes/game.js';
-import statRouter from './routes/stat.js';
 
 import { connection } from './db/index.js';
 import initSocket from './socket/index.js';
@@ -48,8 +47,6 @@ app.use('/collection', collectionRouter);
 app.use('/packs', packRouter);
 
 app.use('/game', gameRouter);
-
-app.use('/stat', statRouter);
 
 app.get('/health', async (req, res) => {
   try {
