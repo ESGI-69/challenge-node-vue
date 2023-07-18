@@ -118,6 +118,8 @@ Before launching the tests, you need to install the dependencies of the project 
 
 When you launching test **ensure that no frontend page is open**. This may interfere with the socket io tests.
 
+There is **mocks** for the **mailer** and the **payment** , so you don't have to set the `SENDINBLUE_KEY` neither the `STRIPE_SECRET` environments variables for launching the tests.
+
 - You can launch the tests with
   ```bash
   cd backend
