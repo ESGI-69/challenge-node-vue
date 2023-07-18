@@ -24,6 +24,7 @@
       }"
       item-key="id"
       class="card-hand"
+      animation="150"
       @remove="onRemove"
     >
       <template #item="{ element }">
