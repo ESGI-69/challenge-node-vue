@@ -14,6 +14,7 @@
         />
       </div>
       GAME : {{ gameId }}
+      <!-- draggable=".none" is for disabling the drag effect -->
       <draggable
         v-model="cardsOnBoard"
         :group="{
@@ -21,6 +22,7 @@
           pull: false,
         }"
         item-key="id"
+        draggable=".none"
         class="game__container__board"
         @add="onAdd"
       >
