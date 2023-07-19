@@ -6,7 +6,33 @@
         :cards-fixed-quantity="5"
         :is-enemy="true"
       />
+      <div class="game__container__board">
+        <card
+          v-for="card in enemyCardsOnBoard"
+          :key="card.id"
+          v-bind="card"
+        />
+      </div>
       GAME : {{ gameId }}
+      <!-- draggable=".none" is for disabling the drag effect -->
+      <draggable
+        v-model="cardsOnBoard"
+        :group="{
+          name: 'cards',
+          pull: false,
+        }"
+        item-key="id"
+        draggable=".none"
+        class="game__container__board"
+        @add="onAdd"
+      >
+        <template #item="{ element }">
+          <card
+            class="card-hand__card-wrapper__card"
+            v-bind="element"
+          />
+        </template>
+      </draggable>
       <card-hand
         class="game__container__player-hand"
         :cards="[
@@ -50,16 +76,6 @@
             attack: 4,
             health: 4,
           },
-          {
-            id: 5,
-            cost: 5,
-            name: 'Card 5',
-            rarity: 'common',
-            description: 'This is a card.',
-            type: 'minion',
-            attack: 5,
-            health: 5,
-          },
         ]"
       />
     </container>
@@ -84,6 +100,8 @@
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import Draggable from 'vuedraggable';
+import Card from '@/components/Card.vue';
 import CardHand from '@/components/games/CardHand.vue';
 import Container from '@/components/Container.vue';
 import PopUp from '@/components/PopUp.vue';
@@ -97,6 +115,8 @@ export default {
     CardHand,
     Container,
     PopUp,
+    Card,
+    Draggable,
   },
   setup() {
     const gameStore = useGameStore();
@@ -106,6 +126,32 @@ export default {
     const gameId = computed(() => gameStore.game.id?.toUpperCase());
 
     const isForfeitModalOpen = ref(false);
+
+    const cardsOnBoard = ref([
+      {
+        id: 5,
+        cost: 5,
+        name: 'Card 5',
+        rarity: 'common',
+        description: 'This is a card.',
+        type: 'minion',
+        attack: 5,
+        health: 5,
+      },
+    ]);
+
+    const enemyCardsOnBoard = ref([
+      {
+        id: 6,
+        cost: 6,
+        name: 'Card 6',
+        rarity: 'common',
+        description: 'This is a card.',
+        type: 'minion',
+        attack: 6,
+        health: 6,
+      },
+    ]);
 
     const goHome = () => {
       router.push({ name: 'home' });
@@ -124,10 +170,19 @@ export default {
       isForfeitModalOpen.value = true;
     });
 
+    const onAdd = () => {
+      // When a card is added to the board
+      // console.log('onAdd');
+      // console.log(event);
+    };
+
     return {
       gameId,
       goHome,
       isForfeitModalOpen,
+      cardsOnBoard,
+      enemyCardsOnBoard,
+      onAdd,
     };
   },
 };
@@ -155,6 +210,15 @@ export default {
     &__player-hand {
       position: absolute;
       bottom: -6rem;
+    }
+
+    &__board {
+      width: 100%;
+      border: 0.5rem solid black;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }
