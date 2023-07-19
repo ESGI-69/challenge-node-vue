@@ -38,9 +38,7 @@ export default {
     const profileStore = useProfileStore();
 
     try {
-      await paymentStore.patchPayment({
-        id: router.currentRoute.value.query.id,
-      });
+      await paymentStore.patchPayment(parseInt(router.currentRoute.value.query.id));
       if (isSuccess.value) {
         await profileStore.getProfile();
       }

@@ -21,8 +21,7 @@ export default {
    * @returns
    */
   create: async function (data) {
-    const payment = await Payment.create(data);
-    return this.findById(payment.id);
+    return this.findById((await Payment.create(data)).id);
   },
 
   /**

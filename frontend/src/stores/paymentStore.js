@@ -25,10 +25,14 @@ export const usePaymentStore = defineStore('paymentStore', {
       }
     },
 
-    async patchPayment(payload) {
+    /**
+     *
+     * @param {int} id The payment id
+     */
+    async patchPayment(id) {
       this.isPatchPaymentLoading = true;
       try {
-        await $API.patch(`/payments/${payload.id}/`);
+        await $API.patch(`/payments/${id}/`);
       }
       catch (err) {
         throw err.response.data;
