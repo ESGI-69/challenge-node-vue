@@ -114,9 +114,11 @@ For viewing the database content, you have 2 options:
 
 Theses tests are launched in the CI/CD pipeline, but you can launch them locally for ensuring that your code is clean.
 
-Before launching the tests, you need to install the dependencies of the project (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details). You also need to launch the docker containers (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details) and have an empty migrated database.
+Before launching the tests, you need to install the dependencies of the project (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details). You also need to launch the docker containers (see the [Set the project ready for development](#set-the-project-ready-for-development) section for more details) and **have a migrated and seeded database**.
 
 When you launching test **ensure that no frontend page is open**. This may interfere with the socket io tests.
+
+There is **mocks** for the **mailer** and the **payment** , so you don't have to set the `SENDINBLUE_KEY` neither the `STRIPE_SECRET` environments variables for launching the tests.
 
 - You can launch the tests with
   ```bash
@@ -172,3 +174,4 @@ Environment variables are used to configure the application. You can find the li
 | `SENDINBLUE_KEY` | The API key of the sendinblue (brevo) account for the mailer | |
 | `SENDINBLUE_EMAIL` | The email of the sender for the mailer | |
 | `SENDINBLUE_NAME` | The name of the sender for the mailer |  |
+| `STRIPE_SECRET` | The secret key of stripe, example : 'sk_test_abcde' for dev and 'sk_live_abcde' for prod | |

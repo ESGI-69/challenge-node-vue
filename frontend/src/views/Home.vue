@@ -30,6 +30,12 @@
         >
           My Packs
         </router-link>
+        <router-link
+          :to="{ name: 'shop' }"
+          class="nes-btn"
+        >
+          Shop
+        </router-link>
         <div class="nes-separator" />
         <router-link
           v-if="isAdmin"
@@ -49,6 +55,12 @@
           class="nes-btn"
         >
           Edit Profile
+        </router-link>
+        <router-link
+          :to="{ name: 'payments-history' }"
+          class="nes-btn"
+        >
+          Payments History
         </router-link>
         <button
           class="nes-btn is-error"

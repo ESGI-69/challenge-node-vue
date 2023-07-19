@@ -13,6 +13,8 @@ import securityRouter from './routes/security.js';
 import userRouter from './routes/user.js';
 import gameRouter from './routes/game.js';
 import statRouter from './routes/stat.js';
+import productRouter from './routes/product.js';
+import paymentRouter from './routes/payment.js';
 
 import { connection } from './db/index.js';
 import initSocket from './socket/index.js';
@@ -50,6 +52,10 @@ app.use('/packs', packRouter);
 app.use('/game', gameRouter);
 
 app.use('/stat', statRouter);
+
+app.use('/products', productRouter);
+
+app.use('/payments', paymentRouter);
 
 app.get('/health', async (req, res) => {
   try {

@@ -81,6 +81,35 @@ const router = createRouter({
       },
     },
     {
+      path: '/shop',
+      name: 'shop',
+      component: () => import('@/views/Shop.vue'),
+      meta: {
+        displayName: 'Shop',
+        authRequired: true,
+      },
+      children: [
+        {
+          path: 'checkout',
+          name: 'checkout',
+          component: () => import('@/views/shop/Checkout.vue'),
+          meta: {
+            displayName: 'Checkout',
+            authRequired: true,
+          },
+        },
+      ],
+    },
+    {
+      path: '/payments-history',
+      name: 'payments-history',
+      component: () => import('@/views/PaymentsHistory.vue'),
+      meta: {
+        displayName: 'Payments History',
+        authRequired: true,
+      },
+    },
+    {
       path: '/auth',
       name: 'auth',
       component: () => import('@/views/Auth.vue'),
