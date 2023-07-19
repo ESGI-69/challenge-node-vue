@@ -26,7 +26,7 @@ const updatedProduct = {
 };
 
 let newProductId;
-const playerToken = await getJwt('janedoe@example.com', '123456');
+const playerToken = await getJwt('usertest@example.com', '123456');
 const adminToken = await getJwt('admin@example.com', '123456');
 
 describe('As an User/Player ', () => {

@@ -4,9 +4,9 @@ import { app } from '../../index.js';
 import getJwt from '../../../tests/getJwt.js';
 import stripePayment from '../../utils/stripePayment.js';
 
-const playerToken = await getJwt('janedoe@example.com', '123456');
+const playerToken = await getJwt('usertest@example.com', '123456');
 
-const playerId = 2;
+const playerId = 5;
 let paymentID;
 
 const fakeCheckoutSession = {

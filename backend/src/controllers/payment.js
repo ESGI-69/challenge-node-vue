@@ -14,8 +14,7 @@ export default {
    */
   async cget(req, res, next) {
     try {
-      const payments = await paymentService.findAll({ userId: req.user.id });
-      res.json(payments);
+      res.json(await paymentService.findAll({ userId: req.user.id }));
     } catch (err) {
       next(err);
     }
@@ -36,7 +35,7 @@ export default {
 
       const product = await productService.findById(req.body.productId);
       if (!product) {
-        throw new Error('Product not found');
+        throw new Error('Product not found', { cause: 'Not Found' });
       }
 
       const paymentPayload = {
@@ -82,12 +81,12 @@ export default {
       let paymentStatus = 'CANCELED';
 
       if (!req.params.id || typeof req.params.id !== 'string') {
-        throw new Error('Payment not found');
+        throw new Error('Payment not found', { cause: 'Not Found' });
       }
 
       const payment = await paymentService.findByIdWithSessionId(req.params.id);
       if (!payment || payment.userId !== req.user.id) {
-        throw new Error('Payment not found');
+        throw new Error('Payment not found', { cause: 'Not Found' });
       }
 
       if (payment.isCredited) {

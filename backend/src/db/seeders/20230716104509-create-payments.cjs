@@ -86,6 +86,33 @@ module.exports = {
         checkoutUrl: 'test-checkout-url',
         createdAt: new Date(),
       },
+      {
+        userId: 5,
+        productId: 1,
+        status: 'CANCELED',
+        isCredited: false,
+        sessionId: 'test-session-id',
+        checkoutUrl: 'test-checkout-url',
+        createdAt: new Date(),
+      },
+      {
+        userId: 5,
+        productId: 2,
+        status: 'PAID',
+        isCredited: true,
+        sessionId: 'test-session-id',
+        checkoutUrl: 'test-checkout-url',
+        createdAt: new Date(),
+      },
+      {
+        userId: 5,
+        productId: 1,
+        status: 'PENDING',
+        isCredited: false,
+        sessionId: 'test-session-id',
+        checkoutUrl: 'test-checkout-url',
+        createdAt: new Date(),
+      },
     ]);
   },
 

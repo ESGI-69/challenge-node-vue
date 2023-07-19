@@ -10,8 +10,7 @@ export default {
    */
   async cget(req, res, next) {
     try {
-      const products = await productService.findAll();
-      res.json(products);
+      res.json(await productService.findAll());
     } catch (err) {
       next(err);
     }
@@ -26,7 +25,13 @@ export default {
    */
   async post(req, res, next) {
     try {
-      const product = await productService.create(req.body);
+      const { name, price, categorie, value } = req.body;
+      const product = await productService.create({
+        name,
+        price,
+        categorie,
+        value,
+      });
       res.status(201).json(product);
     } catch (err) {
       next(err);
@@ -42,8 +47,7 @@ export default {
    */
   async get(req, res, next) {
     try {
-      const product = await productService.findById(req.params.id);
-      res.json(product);
+      res.json(await productService.findById(req.params.id));
     } catch (err) {
       next(err);
     }
