@@ -103,6 +103,7 @@ export default {
   },
   start: async function (gameModel) {
     gameModel.startedAt = new Date();
+    gameModel.current_player = gameModel.first_player;
     await gameModel.save();
     return this.findById(gameModel.id);
   },
@@ -122,6 +123,10 @@ export default {
     gameModel.winner = user.id;
     gameModel.endedAt = new Date();
     gameModel.endType = reason;
+    return gameModel.save();
+  },
+  changePlayerTurn: function (gameModel) {
+    gameModel.current_player = gameModel.current_player === gameModel.first_player ? gameModel.second_player : gameModel.first_player;
     return gameModel.save();
   },
 };

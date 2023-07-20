@@ -21,6 +21,7 @@ export const useGameStore = defineStore('gameStore', {
      *  createdAt: string;
      *  updatedAt: string;
      *  endedAt: string;
+     *  current_player: number;
      * }}
      */
     game: {},
