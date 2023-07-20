@@ -45,7 +45,6 @@ export const useStatStore = defineStore('statStore', {
       this.isTotalXpLoading = true;
       try {
         const { data } = await $API.get('/stat/total-xp');
-        console.log(data);
         this.totalXp = data.xp;
       } catch (err) {
         throw err.response.data;

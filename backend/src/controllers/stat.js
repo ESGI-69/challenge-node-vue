@@ -52,7 +52,7 @@ export default {
     try {
       let totalXpValue = await statService.getTotalXp();
       let parsedValue = {
-        xp: totalXpValue[0]['xp']
+        xp: totalXpValue[0]['xp'],
       };
       res.json(parsedValue);
     } catch (err) {
