@@ -51,8 +51,8 @@ export const usePaymentStore = defineStore('paymentStore', {
     async getPayments(){
       this.isGetPaymentsLoading = true;
       try {
-        const payments = await $API.get('/payments/');
-        this.payments = payments.data;
+        const { data } = await $API.get('/payments/');
+        this.payments = data;
       }
       catch (err) {
         throw err.response.data;

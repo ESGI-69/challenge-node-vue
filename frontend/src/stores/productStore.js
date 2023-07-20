@@ -7,6 +7,7 @@ export const useProductStore = defineStore('productStore', {
     isProductsLoading: false,
     isProductLoading: false,
     products: [],
+    product: {},
   }),
 
   actions: {
@@ -35,7 +36,7 @@ export const useProductStore = defineStore('productStore', {
       this.isProductLoading = true;
       try {
         const { data } = await $API.get(`/products/${id}`);
-        return data;
+        this.product = data;
       } catch (err) {
         throw err.response.data;
       } finally {

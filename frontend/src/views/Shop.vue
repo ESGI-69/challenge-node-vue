@@ -61,8 +61,7 @@ export default {
     const isProductsLoading = computed(() => productStore.isProductsLoading);
     const isPaymentLoading = computed(() => paymentStore.isPostPaymentLoading);
 
-    await productStore.getProducts();
-
+    productStore.getProducts();
 
     return {
       products,

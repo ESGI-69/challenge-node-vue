@@ -23,6 +23,7 @@
               v-for="payment in payments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))"
               :key="payment.id"
               v-bind="payment"
+              :product="products.find((product) => product.id === payment.productId)"
             />
           </tbody>
         </table>
@@ -40,23 +41,28 @@ import { computed } from 'vue';
 import PaymentHistoryRow from '@/components/paymentsHistory/PaymentsHistoryRow.vue';
 
 import { usePaymentStore } from '@/stores/paymentStore';
+import { useProductStore } from '@/stores/productStore';
 
 export default {
   name: 'PaymentsHistoryView',
   components: {
     PaymentHistoryRow,
   },
-  async setup() {
+  setup() {
     const paymentStore = usePaymentStore();
+    const productStore = useProductStore();
 
-    await paymentStore.getPayments();
+    paymentStore.getPayments();
+    productStore.getProducts();
 
     const isPaymentsLoading = computed(() => paymentStore.isGetPaymentsLoading);
     const payments = computed(() => paymentStore.payments);
+    const products = computed(() => productStore.products);
 
     return {
       isPaymentsLoading,
       payments,
+      products,
     };
   },
 };

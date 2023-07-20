@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td>{{ id }}</td>
-    <td v-if="isPaymentLoading">
+    <td v-if="isProductsLoading">
       Loading...
     </td>
     <td v-else>
@@ -34,11 +34,11 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 import formatDate from '@/utils/formatDate.js';
 
-import { useProductStore }  from '@/stores/productStore';
+import { useProductStore } from '@/stores/productStore';
 
 export default {
   name: 'PaymentsHistoryRow',
@@ -63,17 +63,19 @@ export default {
       type: String,
       required: true,
     },
+    product: {
+      type: Object,
+      required: true,
+    },
   },
-  async setup(props) {
+  setup(props) {
     const productStore = useProductStore();
-    const product = ref(await productStore.getProduct(props.productId));
-    const isPaymentLoading = await computed(() => productStore.isProductLoading);
+    const isProductsLoading = computed(() => productStore.isProductsLoading);
 
     return {
       props,
       formatDate,
-      isPaymentLoading,
-      product,
+      isProductsLoading,
     };
   },
 };
