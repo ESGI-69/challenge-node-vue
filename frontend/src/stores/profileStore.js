@@ -28,6 +28,14 @@ export const useProfileStore = defineStore('profileStore', {
     isAdmin: false,
   }),
 
+  getters: {
+    /**
+     * @returns {string}
+     **/
+    getFullName: (state) => `${state.profile.firstname} ${state.profile.lastname}`,
+    getId: (state) => state.profile.id,
+  },
+
   actions: {
     async getProfile() {
       this.isProfileLoading = true;
