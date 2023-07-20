@@ -4,9 +4,11 @@ import $API from '@/plugins/axios';
 
 export const usePaymentStore = defineStore('paymentStore', {
   state: () => ({
+    isGetPaymentsLoading: false,
     isPostPaymentLoading: false,
     isPatchPaymentLoading: false,
     checkoutUrl: '',
+    payments: [],
   }),
 
   actions: {
@@ -39,6 +41,24 @@ export const usePaymentStore = defineStore('paymentStore', {
       }
       finally {
         this.isPatchPaymentLoading = false;
+      }
+    },
+
+    /**
+     * Get all payments
+     * @returns {Array} The payments
+     */
+    async getPayments(){
+      this.isGetPaymentsLoading = true;
+      try {
+        const { data } = await $API.get('/payments/');
+        this.payments = data;
+      }
+      catch (err) {
+        throw err.response.data;
+      }
+      finally {
+        this.isGetPaymentsLoading = false;
       }
     },
   },

@@ -18,7 +18,8 @@ html, body, #app {
 .nes-btn,
 .nes-select > select,
 .nes-container,
-.nes-container.is-rounded {
+.nes-container.is-rounded,
+.nes-table.is-bordered {
   border-image-repeat: unset;
 }
 
