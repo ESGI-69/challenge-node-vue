@@ -12,7 +12,11 @@ export default {
    */
   getCardsCount: async (req, res, next) => {
     try {
-      res.json(await statService.getCardCount());
+      let cardValue = await statService.getCardCount();
+      let parsedValue = {
+        count: cardValue[0]['count'],
+      };
+      res.json(parsedValue);
     } catch (err) {
       next(err);
     }
@@ -46,7 +50,11 @@ export default {
    */
   getTotalXp: async (req, res, next) => {
     try {
-      res.json(await statService.getTotalXp());
+      let totalXpValue = await statService.getTotalXp();
+      let parsedValue = {
+        xp: totalXpValue[0]['xp']
+      };
+      res.json(parsedValue);
     } catch (err) {
       next(err);
     }
@@ -63,7 +71,11 @@ export default {
    */
   getTotalPackOpen: async (req, res, next) => {
     try {
-      res.json(await statService.getTotalPackOpen());
+      let totalPackOpenValue = await statService.getTotalPackOpen();
+      let parsedValue = {
+        totalOpenedPacks: totalPackOpenValue[0]['totalOpenedPacks'],
+      };
+      res.json(parsedValue);
     } catch (err) {
       next(err);
     }

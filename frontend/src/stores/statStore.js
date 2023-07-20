@@ -21,7 +21,7 @@ export const useStatStore = defineStore('statStore', {
       this.isCardsCountLoading = true;
       try {
         const { data } = await $API.get('/stat/cards-count');
-        this.cardsCount = data[0].count;
+        this.cardsCount = data.count;
       } catch (err) {
         throw err.response.data;
       } finally {
@@ -45,7 +45,8 @@ export const useStatStore = defineStore('statStore', {
       this.isTotalXpLoading = true;
       try {
         const { data } = await $API.get('/stat/total-xp');
-        this.totalXp = data[0].xp;
+        console.log(data);
+        this.totalXp = data.xp;
       } catch (err) {
         throw err.response.data;
       } finally {
@@ -57,7 +58,7 @@ export const useStatStore = defineStore('statStore', {
       this.isTotalPackOpenLoading = true;
       try {
         const { data } = await $API.get('/stat/total-pack-open');
-        this.totalPackOpen = data[0].totalOpenedPacks;
+        this.totalPackOpen = data.totalOpenedPacks;
       } catch (err) {
         throw err.response.data;
       } finally {

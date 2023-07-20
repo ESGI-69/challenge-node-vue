@@ -3,7 +3,7 @@
     <div class="stats">
       <container class="stats__container">
         <h2>Cards count</h2>
-        <h3>{{ cardCount ?? "no cards" }}</h3>
+        <h3>{{ cardCount || "no cards" }}</h3>
         <h2>Cards count by type</h2>
         <v-chart
           class="chart"
@@ -13,7 +13,7 @@
       </container>
       <container class="stats__container">
         <h2>Pack opened</h2>
-        <h3>{{ totalPackOpen ?? "no pack opened" }}</h3>
+        <h3>{{ totalPackOpen || "no pack opened" }}</h3>
         <h2>Pack opened by day</h2>
         <v-chart
           class="chart"
@@ -25,7 +25,7 @@
     <div>
       <container class="stats__container solo_stat">
         <h2>Total players XP</h2>
-        <h3>{{ totalXp ?? "no xp" }}</h3>
+        <h3>{{ totalXp || "no xp" }}</h3>
       </container>
     </div>
   </div>
@@ -213,8 +213,8 @@ export default {
 
 <style scoped>
 .chart {
-  height: 40vh;
-  width: 40vw;
+  height: 500px;
+  width: 900px;
   /* margin: 0 auto; */
 }
 
