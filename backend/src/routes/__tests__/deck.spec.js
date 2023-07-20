@@ -8,28 +8,28 @@ import { app } from '../../index.js';
 // const adminJwt = await getJwt('admin@example.com', '123456');
 
 describe('Pack routes (no logged)', () => {
-  it('GET /deck/ should return 401', () => request(app)
-    .get('/deck/')
+  it('GET /decks/ should return 401', () => request(app)
+    .get('/decks/')
     .expect(401));
 
-  it('GET /deck/1 should return 401', () => request(app)
-    .get('/deck/1')
+  it('GET /decks/1 should return 401', () => request(app)
+    .get('/decks/1')
     .expect(401));
 
-  it('POST /deck/ should return 401', () => request(app)
-    .post('/deck/')
+  it('POST /decks/ should return 401', () => request(app)
+    .post('/decks/')
     .expect(401));
 
-  it('DELETE /deck/1 should return 401', () => request(app)
-    .delete('/deck/1')
+  it('DELETE /decks/1 should return 401', () => request(app)
+    .delete('/decks/1')
     .expect(401));
 
-  it('PATCH /deck/1 should return 401', () => request(app)
-    .patch('/deck/1')
+  it('PATCH /decks/1 should return 401', () => request(app)
+    .patch('/decks/1')
     .expect(401));
 
-  it('POST /deck/1/cards should return 401', () => request(app)
-    .post('/deck/1/cards')
+  it('POST /decks/1/cards should return 401', () => request(app)
+    .post('/decks/1/cards')
     .send({ cardId: 1 })
     .expect(401));
 });
