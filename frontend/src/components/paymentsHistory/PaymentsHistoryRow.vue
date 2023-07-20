@@ -69,10 +69,6 @@ export default {
     const product = ref(await productStore.getProduct(props.productId));
     const isPaymentLoading = await computed(() => productStore.isProductLoading);
 
-    // await productStore.getProduct(props.productId).then(result => {
-    //   product.value = result;
-    // });
-
     return {
       props,
       formatDate,
