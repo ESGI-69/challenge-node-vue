@@ -93,6 +93,11 @@ export default {
           },
         },
       },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
     ]);
     return count;
   },

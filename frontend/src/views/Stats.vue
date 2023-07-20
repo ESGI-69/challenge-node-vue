@@ -27,10 +27,9 @@
     <h3>{{ totalXp ?? "no xp" }}</h3>
   </container>
 </template>
-<!-- https://echarts.apache.org/examples/en/editor.html?c=line-simple -->
 
 <script>
-import { computed, ref, provide, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import Container from '@/components/Container.vue';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -43,7 +42,7 @@ import {
   GridComponent,
 
 } from 'echarts/components';
-import VChart, { THEME_KEY } from 'vue-echarts';
+import VChart from 'vue-echarts';
 import { useStatStore } from '@/stores/statStore';
 
 use([
@@ -56,7 +55,6 @@ use([
   LineChart,
 ]);
 
-provide(THEME_KEY, 'dark');
 
 const option = ref({
   title: {
@@ -97,7 +95,7 @@ const optionChart = ref({
   },
   tooltip: {
     trigger: 'item',
-    formatter: '{a} <br/>{b} : {c} ({d}%)',
+    formatter: '{c} openings',
   },
   xAxis :
     {
