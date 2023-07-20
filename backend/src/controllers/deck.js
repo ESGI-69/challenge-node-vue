@@ -95,6 +95,17 @@ export default {
       if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
       if (req.user.id !== deck.userId) return res.sendStatus(403);
 
+      if (req.user.idDeckFav === deck.id) {
+
+        await userService.update(
+          { id: parseInt(req.user.id) },
+          {
+            id: req.user.id,
+            idDeckFav: null,
+          },
+        );
+      }
+
       const nbRemoved = await deckService.remove({
         id: parseInt(req.params.id),
       });

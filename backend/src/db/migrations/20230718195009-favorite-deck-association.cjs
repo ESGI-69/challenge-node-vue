@@ -16,7 +16,6 @@ module.exports = {
         model: 'decks',
         key: 'id',
       },
-      onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
       allowNull: true,
     });
