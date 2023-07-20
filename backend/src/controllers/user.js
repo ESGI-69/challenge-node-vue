@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import userService from '../services/user.js';
 import cardService from '../services/card.js';
+import deckService from '../services/deck.js';
 import { Card, User } from '../db/index.js';
 
 export default {
@@ -391,6 +392,27 @@ export default {
       await userService.confirmEmail(req.body.mailToken);
       res.sendStatus(200);
     } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller for POST /users/choose-fav-deck/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  chooseFavDeck: async (req, res, next) => {
+    try {
+      const deck = await deckService.findById(req.params.id);
+      if (!deck) { return res.sendStatus(404); }
+      if (deck.userId !== req.user.id) { return res.sendStatus(403); }
+
+      const chooseFavDeck = await userService.chooseFavDeck(req.user, req.params.id);
+      res.json(chooseFavDeck);
+    } catch (err) {
+      console.error(err);
       next(err);
     }
   },

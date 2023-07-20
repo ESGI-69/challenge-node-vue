@@ -11,6 +11,7 @@ export default (connection) => {
     static associate() {
       this.belongsTo(User, { through: User, foreignKey: 'userId' });
       this.belongsToMany(Card, { through: Deck_Card, foreignKey: 'deckId' });
+      this.hasOne(User, { foreignKey: 'idDeckFav' });
     }
   }
 

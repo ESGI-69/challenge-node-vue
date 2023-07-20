@@ -40,7 +40,21 @@ export default {
    * @param {number} cardId
    * @returns
    */
-  addCard: function (deckModel, cardId) {
-    return deckModel.addCard(cardId);
+  addCard: async (deckModel, cardId) => {
+    await deckModel.addCard(cardId);
+    const cards = await deckModel.getCards({
+      raw: true,
+      nest: true,
+    });
+    return cards;
+  },
+  /**
+   * @param {import('../db/index.js').Deck} deckModel
+   * @param {number} cardId
+   * @returns
+   * */
+  removeCard: async (deckModel, cardId) => {
+    const removeCard = await deckModel.removeCard(cardId);
+    return removeCard;
   },
 };
