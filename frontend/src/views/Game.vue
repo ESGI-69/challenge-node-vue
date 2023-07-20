@@ -1,6 +1,12 @@
 <template>
-  <div class="game">
-    <container class="game__container">
+  <div
+    class="game"
+    @mouseup="mouseUp"
+  >
+    <container
+      class="game__container"
+      @mousemove="moveAttackLine"
+    >
       <card-hand
         class="game__container__enemy-hand"
         :cards-fixed-quantity="5"
@@ -10,10 +16,15 @@
         <card
           v-for="card in enemyCardsOnBoard"
           :key="card.id"
+          class="enemy-card"
           v-bind="card"
+          @mouseup="(event) => attackEnemy(card.id, event)"
+          @mouseover="mouseEnterEnemy"
+          @mouseleave="mouseLeaveEnemy"
         />
       </div>
       GAME : {{ gameId }}
+      IS PLAYER TURN : {{ isPlayerTurn }}
       <!-- draggable=".none" is for disabling the drag effect -->
       <draggable
         v-model="cardsOnBoard"
@@ -30,6 +41,8 @@
           <card
             class="card-hand__card-wrapper__card"
             v-bind="element"
+            @mousedown="(event) => startAttack(element.id, element.attack, event)"
+            @mouseup="cancelAttack"
           />
         </template>
       </draggable>
@@ -93,13 +106,19 @@
         <span>Nice</span>
       </template>
     </pop-up>
+    <attack-line
+      ref="attackLine"
+      :attack="attackDamage"
+      :is-valid="isHoveringEnemy"
+    />
   </div>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import AttackLine from '@/components/AttackLine.vue';
 import Draggable from 'vuedraggable';
 import Card from '@/components/Card.vue';
 import CardHand from '@/components/games/CardHand.vue';
@@ -107,11 +126,13 @@ import Container from '@/components/Container.vue';
 import PopUp from '@/components/PopUp.vue';
 
 import { useGameStore } from '@/stores/gameStore';
+import { useProfileStore } from '@/stores/profileStore';
 import { socket } from '@/socket';
 
 export default {
   name: 'Game',
   components: {
+    AttackLine,
     CardHand,
     Container,
     PopUp,
@@ -119,11 +140,15 @@ export default {
     Draggable,
   },
   setup() {
+    const attackLine = ref(null);
+
     const gameStore = useGameStore();
+    const profileStore = useProfileStore();
     const route = useRoute();
     const router = useRouter();
 
     const gameId = computed(() => gameStore.game.id?.toUpperCase());
+    const isPlayerTurn = computed(() => gameStore.game.current_player === profileStore.getId);
 
     const isForfeitModalOpen = ref(false);
 
@@ -176,13 +201,107 @@ export default {
       // console.log(event);
     };
 
+    let attack = reactive({
+      attacker: null,
+      target: null,
+    });
+    const attackDamage = ref(0);
+
+    const isHoveringEnemy = ref(false);
+
+    /**
+     * The user mousedown on his card to attack
+     * @param {number} cardId
+     * @param {MouseEvent} event
+     */
+    const startAttack = (cardId, cardDamage, event) => {
+      if (!isPlayerTurn.value) return;
+      attackLine.value.startDrawing(event);
+      attack.attacker = cardId;
+      attackDamage.value = cardDamage;
+    };
+
+    const cancelAttack = () => {
+      attackLine.value.resetLine();
+      isHoveringEnemy.value = false;
+      attack = {
+        attacker: null,
+        target: null,
+      };
+    };
+
+    /**
+     * @param {number} cardId
+     * @param {MouseEvent} event
+     */
+    const attackEnemy = (cardId) => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      attack.target = cardId;
+      sendAttack();
+    };
+
+    const sendAttack = () => {
+      if (!isPlayerTurn.value) return;
+      socket.emit('game:attack', {
+        gameId: gameStore.game.id,
+        attacker: attack.attacker,
+        target: attack.target,
+      });
+      cancelAttack();
+    };
+
+    /**
+     * @param {MouseEvent} event
+     */
+    const mouseUp = (event) => {
+      if (!event.target) return;
+      const isOnCard = event.target.classList.value.startsWith('card__');
+      if (!isOnCard) {
+        cancelAttack();
+      }
+    };
+
+    /**
+     * @param {MouseEvent} event
+     */
+    const moveAttackLine = (event) => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      attackLine.value.drawLine(event);
+    };
+
+    const mouseEnterEnemy = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      isHoveringEnemy.value = true;
+    };
+
+    const mouseLeaveEnemy = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      isHoveringEnemy.value = false;
+    };
+
     return {
+      isPlayerTurn,
+      attackEnemy,
+      startAttack,
+      mouseUp,
       gameId,
       goHome,
       isForfeitModalOpen,
       cardsOnBoard,
       enemyCardsOnBoard,
       onAdd,
+      cancelAttack,
+      attackLine,
+      moveAttackLine,
+      attack,
+      isHoveringEnemy,
+      mouseLeaveEnemy,
+      mouseEnterEnemy,
+      attackDamage,
     };
   },
 };
@@ -203,13 +322,13 @@ export default {
 
     &__enemy-hand {
       position: absolute;
-      top: -6rem;
+      top: -12rem;
       transform: rotate(180deg);
     }
 
     &__player-hand {
       position: absolute;
-      bottom: -6rem;
+      bottom: -12rem;
     }
 
     &__board {
