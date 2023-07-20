@@ -12,6 +12,7 @@ export default (connection) => {
       this.belongsTo(User, { through: User, foreignKey: 'first_player', as: 'firstPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'winner', as: 'winnerPlayer' });
+      this.belongsTo(User, { through: User, foreignKey: 'current_player', as: 'currentPlayer' });
     }
 
     /**

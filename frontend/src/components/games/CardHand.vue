@@ -121,7 +121,7 @@ export default {
 
     &:hover {
       .card-hand__card-wrapper__card {
-        transform: translateY(-175px) scale(1.5);
+        transform: translateY(-175px);
         transition-duration: 0ms;
         z-index: 5;
 
@@ -130,7 +130,7 @@ export default {
         }
       }
       &:after {
-        top: -275px;
+        top: -175px;
       }
     }
 
