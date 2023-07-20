@@ -55,4 +55,12 @@ export default {
   removeCard: function (deckModel, cardId) {
     return deckModel.removeCard(cardId);
   },
+  /**
+   * @param {import('../db/index.js').Deck} deckModel
+   * @param {number} cardId
+   * @returns
+   * */
+  hasCard: function (deckModel, cardId) {
+    return deckModel.hasCard(cardId);
+  },
 };

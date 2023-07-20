@@ -406,8 +406,8 @@ export default {
   chooseFavDeck: async (req, res, next) => {
     try {
       const deck = await deckService.findById(req.params.id);
-      if (!deck) { return res.sendStatus(404); }
-      if (deck.userId !== req.user.id) { return res.sendStatus(403); }
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
+      if (req.user.id !== deck.userId) throw new Error('You don\'t own this deck', { cause: 'Unauthorized' });
 
       const choosedFavDeck = await userService.chooseFavDeck(req.user, req.params.id);
       res.json(choosedFavDeck);
