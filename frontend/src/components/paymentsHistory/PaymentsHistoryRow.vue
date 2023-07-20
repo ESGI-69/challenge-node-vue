@@ -1,10 +1,7 @@
 <template>
   <tr>
     <td>{{ id }}</td>
-    <td v-if="isProductsLoading">
-      Loading...
-    </td>
-    <td v-else>
+    <td>
       {{ product.name }}
     </td>
     <td
@@ -34,11 +31,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-
 import formatDate from '@/utils/formatDate.js';
-
-import { useProductStore } from '@/stores/productStore';
 
 export default {
   name: 'PaymentsHistoryRow',
@@ -69,13 +62,10 @@ export default {
     },
   },
   setup(props) {
-    const productStore = useProductStore();
-    const isProductsLoading = computed(() => productStore.isProductsLoading);
 
     return {
       props,
       formatDate,
-      isProductsLoading,
     };
   },
 };
