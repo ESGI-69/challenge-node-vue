@@ -157,21 +157,21 @@ There is **mocks** for the **mailer** and the **payment** , so you don't have to
 
 Environment variables are used to configure the application. You can find the list of the environment variables used in the project below. You can set them in the `.env` file at the root of the project.
 
-| Variable name | Description | Default value |
-| --- | --- | --- |
-| `NODE_ENV` | The environment of the application | `development` |
-| `POSTGRES_USER` | The username of the postgres database | `root` |
-| `POSTGRES_PASSWORD` | The password of the postgres database | `password` |
-| `POSTGRES_DB` | The name of the postgres database | `app` |
-| `MONGO_ROOT_USER` | The username of the mongodb database | `root` |
-| `MONGO_ROOT_PASSWORD` | The password of the mongodb database | `password` |
-| `MONGO_DB` | The name of the mongodb database | `app` |
-| `JWT_SECRET` | The secret use for the JWT generation (please genereate a random >32 letter string) | |
-| `VITE_API` | The url that match the proxy in the frontend. For avoiding CORS issues | `/api` |
-| `VITE_API_TIMEOUT` | The timeout of the api calls, in milliseconds | `30000` |
-| `VITE_COOKIE_TOKEN_NAME` | The name of the cookie that contains the JWT token | `challenge-token` |
-| `FRONTEND_URL` | The url of the frontend | `http://localhost:8080` |
-| `SENDINBLUE_KEY` | The API key of the sendinblue (brevo) account for the mailer | |
-| `SENDINBLUE_EMAIL` | The email of the sender for the mailer | |
-| `SENDINBLUE_NAME` | The name of the sender for the mailer |  |
-| `STRIPE_SECRET` | The secret key of stripe, example : 'sk_test_abcde' for dev and 'sk_live_abcde' for prod | |
+| Variable name | service | Description | Default value |
+| --- | --- | --- | --- |
+| `NODE_ENV` | https://github.com/ESGI-69/challenge-node-vue/labels/frontend https://github.com/ESGI-69/challenge-node-vue/labels/backend | The environment of the application | `development` |
+| `POSTGRES_USER` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The username of the postgres database | `root` |
+| `POSTGRES_PASSWORD` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The password of the postgres database | `password` |
+| `POSTGRES_DB` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The name of the postgres database | `app` |
+| `MONGO_ROOT_USER` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The username of the mongodb database | `root` |
+| `MONGO_ROOT_PASSWORD` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The password of the mongodb database | `password` |
+| `MONGO_DB` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The name of the mongodb database | `app` |
+| `JWT_SECRET` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The secret use for the JWT generation (please genereate a random >32 letter string) | |
+| `VITE_API` | https://github.com/ESGI-69/challenge-node-vue/labels/frontend | The url that match the proxy in the frontend. For avoiding CORS issues | `/api` |
+| `VITE_API_TIMEOUT` | https://github.com/ESGI-69/challenge-node-vue/labels/frontend | The timeout of the api calls, in milliseconds | `30000` |
+| `VITE_COOKIE_TOKEN_NAME` | https://github.com/ESGI-69/challenge-node-vue/labels/frontend | The name of the cookie that contains the JWT token | `challenge-token` |
+| `FRONTEND_URL` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The url of the frontend | `http://localhost:8080` |
+| `SENDINBLUE_KEY` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The API key of the sendinblue (brevo) account for the mailer | |
+| `SENDINBLUE_EMAIL` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The email of the sender for the mailer | |
+| `SENDINBLUE_NAME` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The name of the sender for the mailer |  |
+| `STRIPE_SECRET` | https://github.com/ESGI-69/challenge-node-vue/labels/backend | The secret key of stripe, example : 'sk_test_abcde' for dev and 'sk_live_abcde' for prod | |
