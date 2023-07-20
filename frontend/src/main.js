@@ -27,3 +27,5 @@ const authStore = useAuthStore();
 authStore.init();
 
 app.mount('#app');
+
+app.config.devtools = process.env.NODE_ENV === 'development';
