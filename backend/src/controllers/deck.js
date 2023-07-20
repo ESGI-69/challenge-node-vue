@@ -14,14 +14,13 @@ export default {
    */
   cget: async (req, res, next) => {
     try {
-      const decks = await deckService.findAll();
-      res.json(decks);
+      res.json(await deckService.findAll());
     } catch (err) {
       next(err);
     }
   },
   /**
-   * Express.js controller for POST /deck
+   * Express.js controller for POST /decks
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
@@ -33,8 +32,7 @@ export default {
         name: req.body.name,
         userId: req.user.id,
       });
-      const createdDeck = await deckService.findById(deck.id);
-      res.status(201).json(createdDeck);
+      res.status(201).json(deck);
     } catch (err) {
       next(err);
     }
@@ -51,7 +49,7 @@ export default {
       const deck = await deckService.findById(parseInt(req.params.id), {
         include: Card,
       });
-      if (!deck) return res.sendStatus(404);
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
 
       res.json(deck);
     } catch (err) {
@@ -67,11 +65,16 @@ export default {
    */
   patch : async (req, res, next) => {
     try {
-      const [deck] = await deckService.update(
-        { id: parseInt(req.params.id) },
-        req.body,
+      const deck = await deckService.findById(parseInt(req.params.id));
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
+      if (req.user.id !== deck.userId) return res.sendStatus(403);
+
+      await deck.update(
+        {
+          id: parseInt(req.params.id),
+          name: req.body.name,
+        },
       );
-      if (!deck) return res.sendStatus(404);
       const updatedDeck = await deckService.findById(deck.id);
       res.json(updatedDeck);
     } catch (err) {
@@ -87,6 +90,11 @@ export default {
    */
   delete: async (req, res, next) => {
     try {
+      const deck = await deckService.findById(parseInt(req.params.id));
+
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
+      if (req.user.id !== deck.userId) return res.sendStatus(403);
+
       const nbRemoved = await deckService.remove({
         id: parseInt(req.params.id),
       });
@@ -107,13 +115,13 @@ export default {
       const deck = await deckService.findById(parseInt(req.params.id), {
         include: Card,
       });
-      if (!deck) return res.sendStatus(404);
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
       if (!req.user) return res.sendStatus(401);
       if (req.user.id !== deck.userId) return res.sendStatus(403);
       const user = await userService.findById(req.user.id);
       const cards = await user.getCards();
       const card = await cardService.findById(parseInt(req.body.cardId));
-      if (!card) return res.sendStatus(404);
+      if (!card) throw new Error('Card not found', { cause: 'Not Found' });
 
       let isOwned = false;
 
@@ -146,12 +154,12 @@ export default {
     try {
       if (!req.user) return res.sendStatus(401);
       const deck = await deckService.findById(parseInt(req.params.id));
-      if (!deck) return res.sendStatus(404);
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
       if (req.user.id !== deck.userId) return res.sendStatus(403);
       const user = await userService.findById(req.user.id);
       const cards = await user.getCards();
       const card = await cardService.findById(parseInt(req.body.cardId));
-      if (!card) return res.sendStatus(404);
+      if (!card) throw new Error('Card not found', { cause: 'Not Found' });
 
       let isOwned = false;
 

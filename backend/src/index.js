@@ -57,7 +57,7 @@ app.use('/stat', statRouter);
 app.use('/products', productRouter);
 
 app.use('/payments', paymentRouter);
-app.use('/deck', deckRouter);
+app.use('/decks', deckRouter);
 
 app.get('/health', async (req, res) => {
   try {

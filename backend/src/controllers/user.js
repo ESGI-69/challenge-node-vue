@@ -409,8 +409,8 @@ export default {
       if (!deck) { return res.sendStatus(404); }
       if (deck.userId !== req.user.id) { return res.sendStatus(403); }
 
-      const chooseFavDeck = await userService.chooseFavDeck(req.user, req.params.id);
-      res.json(chooseFavDeck);
+      const choosedFavDeck = await userService.chooseFavDeck(req.user, req.params.id);
+      res.json(choosedFavDeck);
     } catch (err) {
       console.error(err);
       next(err);
