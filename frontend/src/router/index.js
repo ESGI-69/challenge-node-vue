@@ -142,6 +142,16 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/stats',
+      name: 'stats',
+      // I'd like to import the component from echart vuejs wrapper
+      component: () => import('@/views/Stats.vue'),
+      meta: {
+        displayName: 'Stats',
+        authRequired: true,
+      },
+    },
   ],
 });
 
