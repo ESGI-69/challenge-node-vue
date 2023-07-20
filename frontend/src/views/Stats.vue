@@ -165,7 +165,7 @@ export default {
         try {
           await statStore.getCardsCountByType();
         } catch (error) {
-          console.log(error);
+          console.error(error);
         } finally {
           cardCountByType.value.forEach((cardType) => {
             option.value.series[0].data.push({
@@ -184,7 +184,7 @@ export default {
         try {
           await statStore.getNumberOfPackOpenByDay();
         } catch (error) {
-          console.log(error);
+          console.error(error);
         } finally {
           packOpenedByDay.value.forEach((pack) => {
             optionChart.value.xAxis.data.push(
