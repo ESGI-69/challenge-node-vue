@@ -1,31 +1,34 @@
 <template>
-  <div class="stats">
-    <container class="stats__container">
-      <h2>Cards count</h2>
-      <h3>{{ cardCount ?? "no cards" }}</h3>
-      <h2>Cards count by type</h2>
-      <v-chart
-        class="chart"
-        :option="option"
-        autoresize
-      />
-    </container>
-    <container class="stats__container">
-      <h2>Pack opened</h2>
-      <h3>{{ totalPackOpen ?? "no pack opened" }}</h3>
-      <h2>Pack opened by day</h2>
-      <v-chart
-        class="chart"
-        :option="optionChart"
-        autoresize
-      />
-    </container>
+  <div>
+    <div class="stats">
+      <container class="stats__container">
+        <h2>Cards count</h2>
+        <h3>{{ cardCount ?? "no cards" }}</h3>
+        <h2>Cards count by type</h2>
+        <v-chart
+          class="chart"
+          :option="option"
+          autoresize
+        />
+      </container>
+      <container class="stats__container">
+        <h2>Pack opened</h2>
+        <h3>{{ totalPackOpen ?? "no pack opened" }}</h3>
+        <h2>Pack opened by day</h2>
+        <v-chart
+          class="chart"
+          :option="optionChart"
+          autoresize
+        />
+      </container>
+    </div>
+    <div>
+      <container class="stats__container solo_stat">
+        <h2>Total players XP</h2>
+        <h3>{{ totalXp ?? "no xp" }}</h3>
+      </container>
+    </div>
   </div>
-
-  <container class="stats__container solo_stat">
-    <h2>Total players XP</h2>
-    <h3>{{ totalXp ?? "no xp" }}</h3>
-  </container>
 </template>
 
 <script>
@@ -144,57 +147,61 @@ export default {
     VChart,
   },
   setup() {
-    const isGetStatsLoading = ref(false);
     const statStore = useStatStore();
 
     const cardCount = computed(() => statStore.cardsCount);
     statStore.getCardsCount();
     const cardCountByType = computed(() => statStore.cardsCountByType);
-    statStore.getCardsCountByType();
     const totalPackOpen = computed(() => statStore.totalPackOpen);
     statStore.getTotalPackOpen();
     const packOpenedByDay = computed(() => statStore.numberOfPackOpenByDay);
     const totalXp = computed(() => statStore.totalXp);
     statStore.getTotalXp();
 
-    cardCountByType.value.forEach((cardType) => {
-      option.value.series[0].data.push({
-        name: cardType._id ?? 'no type',
-        value: cardType.count,
-      });
-    });
 
     onMounted(() => {
       option.value.series[0].data = [];
-      statStore.getCardsCount().then(() => {
-        cardCountByType.value.forEach((cardType) => {
-          option.value.series[0].data.push({
-            name: cardType._id ?? 'no type',
-            value: cardType.count,
+      const getCardsCountByType = async () => {
+        try {
+          await statStore.getCardsCountByType();
+        } catch (error) {
+          console.log(error);
+        } finally {
+          cardCountByType.value.forEach((cardType) => {
+            option.value.series[0].data.push({
+              name: cardType._id ?? 'no type',
+              value: cardType.count,
+            });
           });
-        });
-        // isGetStatsLoading.value = false;
-      });
+
+        }
+      };
+      getCardsCountByType();
 
       optionChart.value.series[0].data = [];
-      statStore.getNumberOfPackOpenByDay().then(() => {
-        packOpenedByDay.value.forEach((pack) => {
-          optionChart.value.xAxis.data.push(
-            pack._id,
-          );
-          optionChart.value.series[0].data.push(
-            pack.packOpened,
-          );
-        });
-        // isGetStatsLoading.value = false;
-      });
-
+      optionChart.value.xAxis.data = [];
+      const getNumberOfPackOpenByDay = async () => {
+        try {
+          await statStore.getNumberOfPackOpenByDay();
+        } catch (error) {
+          console.log(error);
+        } finally {
+          packOpenedByDay.value.forEach((pack) => {
+            optionChart.value.xAxis.data.push(
+              pack._id,
+            );
+            optionChart.value.series[0].data.push(
+              pack.packOpened,
+            );
+          });
+        }
+      };
+      getNumberOfPackOpenByDay();
     });
 
     return {
       option,
       optionChart,
-      isGetStatsLoading,
       cardCount,
       totalPackOpen,
       totalXp,
