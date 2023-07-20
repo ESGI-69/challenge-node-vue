@@ -216,6 +216,7 @@ export default {
 
 <style lang="scss" scoped>
 .card {
+  user-select: none;
   width: 17rem;
   height: 23rem;
   perspective: 27rem;
