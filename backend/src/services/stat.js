@@ -4,10 +4,8 @@ export default {
   getCardCount: function () {
     const count = Card.mongoModel.aggregate([
       {
-        $group: {
-          _id: null,
-          count: { $sum: 1 },
-        },
+        $count:
+          'count',
       },
     ]);
     return count;
@@ -40,16 +38,17 @@ export default {
   getTotalPackOpen: function () {
     const count = Pack.mongoModel.aggregate([
       {
-        $match:
-          {
-            openedAt: {
-              $ne: null,
-            },
+        $group: {
+          _id: null,
+          totalOpenedPacks: {
+            $sum: { $cond: [{ $eq: ['$openedAt', null] }, 0, 1] },
           },
+        },
       },
       {
-        $count:
-          'totalOpenedPacks',
+        $project: {
+          _id: 0,
+        },
       },
     ]);
     return count;
@@ -91,6 +90,11 @@ export default {
           packOpened: {
             $sum: 1,
           },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
         },
       },
     ]);

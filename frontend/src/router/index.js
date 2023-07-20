@@ -142,6 +142,15 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/stats',
+      name: 'stats',
+      component: () => import('@/views/Stats.vue'),
+      meta: {
+        displayName: 'Stats',
+        authRequired: true,
+      },
+    },
   ],
 });
 

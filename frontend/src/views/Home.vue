@@ -62,6 +62,12 @@
         >
           Payments History
         </router-link>
+        <router-link
+          :to="{ name: 'stats' }"
+          class="nes-btn"
+        >
+          Statistics
+        </router-link>
         <button
           class="nes-btn is-error"
           @click="logout"

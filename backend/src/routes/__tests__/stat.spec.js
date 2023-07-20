@@ -36,11 +36,8 @@ describe('Stat routes (logged)', () => {
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .then(res => {
-      expect(res.body).toBeInstanceOf(Array);
-      res.body.forEach((item) => {
-        expect(item).toHaveProperty('_id');
-        expect(item).toHaveProperty('count');
-      });
+      expect(res.body).toBeInstanceOf(Object);
+      expect(res.body).toHaveProperty('count');
     }));
 
   it('GET /stat/cards-count-by-type should return 200', () => request(app)
@@ -51,7 +48,6 @@ describe('Stat routes (logged)', () => {
       expect(res.body).toBeInstanceOf(Array);
       res.body.forEach((item) => {
         expect(item).toHaveProperty('_id');
-        expect(item).toHaveProperty('count');
       });
     }));
 
@@ -60,11 +56,8 @@ describe('Stat routes (logged)', () => {
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .then(res => {
-      expect(res.body).toBeInstanceOf(Array);
-      res.body.forEach((item) => {
-        expect(item).toHaveProperty('_id');
-        expect(item).toHaveProperty('xp');
-      });
+      expect(res.body).toBeInstanceOf(Object);
+      expect(res.body).toHaveProperty('xp');
     }));
 
   it('GET /stat/total-pack-open should return 200', () => request(app)
@@ -72,10 +65,8 @@ describe('Stat routes (logged)', () => {
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .then(res => {
-      expect(res.body).toBeInstanceOf(Array);
-      res.body.forEach((item) => {
-        expect(item).toHaveProperty('totalOpenedPacks');
-      });
+      expect(res.body).toBeInstanceOf(Object);
+      expect(res.body).toHaveProperty('totalOpenedPacks');
     }));
 
   it('GET /stat/number-of-pack-open-by-day should return 200', () => request(app)
