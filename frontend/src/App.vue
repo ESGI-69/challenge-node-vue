@@ -9,7 +9,9 @@
       >
         <suspense>
           <template #fallback>
-            <loading />
+            <component
+              :is="LoadingComponent"
+            />
           </template>
           <component
             :is="LayoutComponent"
@@ -24,12 +26,14 @@
 
 <script>
 import { computed } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { useAuthStore } from './stores/authStore';
 
 import Loading from './views/Loading.vue';
+import AdminLoading from './views/AdminLoading.vue';
 import LoggedLayout from '@/layouts/Logged.vue';
 import NotLoggedLayout from '@/layouts/NotLogged.vue';
+import AdminLayout from '@/layouts/Admin.vue';
 
 export default {
   name: 'App',
@@ -39,17 +43,29 @@ export default {
     Loading,
   },
   setup() {
+    const route = useRoute();
     const authStore = useAuthStore();
 
     const LayoutComponent = computed(() => {
       if (authStore.token) {
+        if (route.meta.layout === 'admin') {
+          return AdminLayout;
+        }
         return LoggedLayout;
       }
       return NotLoggedLayout;
     });
 
+    const LoadingComponent = computed(() => {
+      if (route.meta.layout === 'admin') {
+        return AdminLoading;
+      }
+      return Loading;
+    });
+
     return {
       LayoutComponent,
+      LoadingComponent,
     };
   },
 };
