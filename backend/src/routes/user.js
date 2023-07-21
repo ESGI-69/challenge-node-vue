@@ -38,7 +38,7 @@ router.get('/me', isLogged, userController.me);
 router.patch('/me', isLogged, profilePictureUpload.single('avatar'), (req, res, next) => { next(); }, addProfilePicture, userController.meUpdate);
 router.get('/me/avatar', isLogged, userController.meAvatar);
 router.get('/:id', isAdmin, userController.get);
-router.get('/:id/avatar', isLogged, userController.getAvatar);
+router.get('/:id/avatar', userController.getAvatar);
 router.put('/:id', isAdmin, userController.put);
 router.patch('/:id', isAdmin, userController.patch);
 router.patch('/:id/balance', isAdmin, userController.patchBalance);

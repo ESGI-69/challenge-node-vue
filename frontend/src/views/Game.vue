@@ -12,6 +12,15 @@
         :cards-fixed-quantity="5"
         :is-enemy="true"
       />
+      <player-avatar
+        :user-avatar="enemyAvatar"
+        :is-enemy="true"
+        class="avatar__container__enemy"
+        @mouseup="attackPlayer"
+        @mouseover="mouseEnterEnemy"
+        @mouseleave="mouseLeaveEnemy"
+      />
+
       <div class="game__container__board">
         <card
           v-for="card in enemyCardsOnBoard"
@@ -55,6 +64,11 @@
           />
         </template>
       </draggable>
+      <player-avatar
+        :user-avatar="avatarUrl"
+        :is-enemy="false"
+        class=""
+      />
       <card-hand
         class="game__container__player-hand"
         :is-player-turn="isPlayerTurn"
@@ -135,6 +149,7 @@ import Container from '@/components/Container.vue';
 import Draggable from 'vuedraggable';
 import PopUp from '@/components/PopUp.vue';
 import TurnBar from '@/components/games/TurnBar.vue';
+import PlayerAvatar from '@/components/games/PlayerAvatar.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
@@ -150,6 +165,7 @@ export default {
     Draggable,
     PopUp,
     TurnBar,
+    PlayerAvatar,
   },
   setup() {
     const attackLine = ref(null);
@@ -162,6 +178,12 @@ export default {
     const gameId = computed(() => gameStore.game.id?.toUpperCase());
     const isPlayerTurn = computed(() => gameStore.game.current_player === profileStore.getId);
     const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
+
+    const avatarUrl = computed(() => profileStore.avatarUrl);
+
+    const enemyId = computed(() => (gameStore.game.first_player === profileStore.getId) ? gameStore.game.second_player : gameStore.game.first_player);
+
+    const enemyAvatar = computed(() => `${import.meta.env.VITE_API}/users/${enemyId.value}/avatar`);
 
     const isForfeitModalOpen = ref(false);
 
@@ -260,6 +282,13 @@ export default {
       sendAttack();
     };
 
+    const attackPlayer = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      attack.target = 'player';
+      sendAttack();
+    };
+
     const sendAttack = () => {
       if (!isPlayerTurn.value) return;
       socket.emit('game:attack', {
@@ -322,6 +351,9 @@ export default {
       cardsOnBoard,
       enemyCardsOnBoard,
       endTurn,
+      attackPlayer,
+      startAttack,
+      mouseUp,
       gameId,
       goHome,
       isForfeitModalOpen,
@@ -329,11 +361,11 @@ export default {
       isPlayerTurn,
       mouseEnterEnemy,
       mouseLeaveEnemy,
-      mouseUp,
       moveAttackLine,
       onAdd,
-      startAttack,
       turnStartedAt,
+      avatarUrl,
+      enemyAvatar,
     };
   },
 };
