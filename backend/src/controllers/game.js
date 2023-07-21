@@ -214,7 +214,7 @@ export default {
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
       if (!game.isInProgress) throw new Error('Game is not in progress', { cause: 'Forbidden' });
       if (game.current_player !== req.user.id) throw new Error('It\'s not your turn', { cause: 'Forbidden' });
-      await gameService.changePlayerTurn(game);
+      await gameService.changePlayerTurn(game, true);
       res.sendStatus(200);
     } catch (err) {
       next(err);
