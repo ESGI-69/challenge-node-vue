@@ -433,7 +433,7 @@ describe('Game launch and forfeit', () => {
     }));
 
   it('The turn should be changed after 30 seconds', async () => {
-    jest.advanceTimersByTime(30100); // 100ms more let the time to the data to be saved in the database
+    jest.advanceTimersByTime(31000); // 1000ms more let the time to the data to be saved in the database
     expect(gameService.changePlayerTurn).toHaveBeenCalled();
 
     const game = await gameService.findById(gameId);
