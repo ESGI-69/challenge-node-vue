@@ -23,14 +23,20 @@
           @mouseleave="mouseLeaveEnemy"
         />
       </div>
-      GAME : {{ gameId }}
-      IS PLAYER TURN : {{ isPlayerTurn }}
+      <turn-bar
+        class="game__container__turn-bar"
+        :is-player-turn="isPlayerTurn"
+        :turn-started-at="turnStartedAt"
+        :turn-duration="30"
+        @end-turn="endTurn"
+      />
       <!-- draggable=".none" is for disabling the drag effect -->
       <draggable
         v-model="cardsOnBoard"
         :group="{
           name: 'cards',
           pull: false,
+          put: isPlayerTurn,
         }"
         item-key="id"
         draggable=".none"
@@ -40,6 +46,9 @@
         <template #item="{ element }">
           <card
             class="card-hand__card-wrapper__card"
+            :class="{
+              'nes-pointer': isPlayerTurn,
+            }"
             v-bind="element"
             @mousedown="(event) => startAttack(element.id, element.attack, event)"
             @mouseup="cancelAttack"
@@ -48,6 +57,7 @@
       </draggable>
       <card-hand
         class="game__container__player-hand"
+        :is-player-turn="isPlayerTurn"
         :cards="[
           {
             id: 1,
@@ -119,11 +129,12 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import AttackLine from '@/components/AttackLine.vue';
-import Draggable from 'vuedraggable';
 import Card from '@/components/Card.vue';
 import CardHand from '@/components/games/CardHand.vue';
 import Container from '@/components/Container.vue';
+import Draggable from 'vuedraggable';
 import PopUp from '@/components/PopUp.vue';
+import TurnBar from '@/components/games/TurnBar.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
@@ -133,11 +144,12 @@ export default {
   name: 'Game',
   components: {
     AttackLine,
+    Card,
     CardHand,
     Container,
-    PopUp,
-    Card,
     Draggable,
+    PopUp,
+    TurnBar,
   },
   setup() {
     const attackLine = ref(null);
@@ -149,6 +161,7 @@ export default {
 
     const gameId = computed(() => gameStore.game.id?.toUpperCase());
     const isPlayerTurn = computed(() => gameStore.game.current_player === profileStore.getId);
+    const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
 
     const isForfeitModalOpen = ref(false);
 
@@ -178,6 +191,10 @@ export default {
       },
     ]);
 
+    const endTurn = () => {
+      gameStore.endTurn();
+    };
+
     const goHome = () => {
       router.push({ name: 'home' });
     };
@@ -200,6 +217,8 @@ export default {
       // console.log('onAdd');
       // console.log(event);
     };
+
+    // Drag and drop attack logic
 
     let attack = reactive({
       attacker: null,
@@ -283,25 +302,38 @@ export default {
       isHoveringEnemy.value = false;
     };
 
+    // Turn logic
+
+    socket.on('game:turn:end', (game) => {
+      gameStore.setGame(game);
+      cancelAttack();
+    });
+
+    socket.on('game:turn:start', (game) => {
+      gameStore.setGame(game);
+    });
+
     return {
-      isPlayerTurn,
+      attack,
+      attackDamage,
       attackEnemy,
-      startAttack,
-      mouseUp,
+      attackLine,
+      cancelAttack,
+      cardsOnBoard,
+      enemyCardsOnBoard,
+      endTurn,
       gameId,
       goHome,
       isForfeitModalOpen,
-      cardsOnBoard,
-      enemyCardsOnBoard,
-      onAdd,
-      cancelAttack,
-      attackLine,
-      moveAttackLine,
-      attack,
       isHoveringEnemy,
-      mouseLeaveEnemy,
+      isPlayerTurn,
       mouseEnterEnemy,
-      attackDamage,
+      mouseLeaveEnemy,
+      mouseUp,
+      moveAttackLine,
+      onAdd,
+      startAttack,
+      turnStartedAt,
     };
   },
 };
@@ -314,6 +346,7 @@ export default {
   &__container {
     position: relative;
     display: flex;
+    gap: 0.5rem;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -333,7 +366,7 @@ export default {
 
     &__board {
       width: 100%;
-      border: 0.5rem solid black;
+      border: 0.25rem solid black;
       height: 400px;
       display: flex;
       justify-content: center;

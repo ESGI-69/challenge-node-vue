@@ -20,8 +20,10 @@ export const useGameStore = defineStore('gameStore', {
      *  winner: number;
      *  createdAt: string;
      *  updatedAt: string;
+     *  startedAt: string;
      *  endedAt: string;
      *  current_player: number;
+     *  turnStartedAt: string;
      * }}
      */
     game: {},
@@ -118,6 +120,14 @@ export const useGameStore = defineStore('gameStore', {
     async start() {
       try {
         await $API.post('/game/start');
+      } catch (error) {
+        throw error.response;
+      }
+    },
+
+    async endTurn() {
+      try {
+        await $API.post('/game/end-turn');
       } catch (error) {
         throw error.response;
       }

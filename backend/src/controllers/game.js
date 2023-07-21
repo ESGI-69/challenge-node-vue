@@ -99,7 +99,7 @@ export default {
        * Game ID
        * @type {string}
        */
-      const gameId = req.body.id;
+      const gameId = req.body.id?.toLowerCase();
       if (gameId.length !== 6) throw new Error('Invalid game id');
       const game = await gameService.findById(gameId);
       if (!game) throw new Error('Game not found', { cause: 'Not Found' });
@@ -191,9 +191,31 @@ export default {
       if (game.isInProgress) throw new Error('Game already started');
       const startedGame = await gameService.start(game);
       io.to(game.id).emit('game:started', startedGame);
+      gameService.startTimer(startedGame);
       res.sendStatus(200);
       // eslint-disable-next-line no-console
       console.log(`[Game ${game.id}] Started`);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller for POST /games/end-turn
+   * End the turn of the current player if the user is the current player of the game, the game is in progress & this is the turn of the user
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   **/
+  endTurn: async (req, res, next) => {
+    try {
+      const game = await gameService.findCurrentGameByUser(req.user);
+      if (!game) throw new Error('Game not found', { cause: 'Not Found' });
+      if (!game.isInProgress) throw new Error('Game is not in progress', { cause: 'Forbidden' });
+      if (game.current_player !== req.user.id) throw new Error('It\'s not your turn', { cause: 'Forbidden' });
+      await gameService.changePlayerTurn(game, true);
+      res.sendStatus(200);
     } catch (err) {
       next(err);
     }

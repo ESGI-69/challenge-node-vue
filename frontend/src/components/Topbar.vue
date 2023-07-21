@@ -35,6 +35,16 @@
         </button>
       </transition>
     </div>
+    <div class="topbar__center">
+      <game-time
+        v-if="isInGame && gameStartTime"
+        :start-time="gameStartTime"
+      />
+      <game-id
+        v-if="isInGame && gameId"
+        :id="gameId"
+      />
+    </div>
     <user-info class="topbar__user-info" />
     <modal
       v-model:isOpen="isForfeitModalOpen"
@@ -71,6 +81,8 @@
 import { computed, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
+import GameTime from './games/GameTime.vue';
+import GameId from './games/GameId.vue';
 import Modal from './Modal.vue';
 import UserInfo from './UserInfo.vue';
 
@@ -83,6 +95,8 @@ export default {
   components: {
     UserInfo,
     Modal,
+    GameId,
+    GameTime,
   },
   setup() {
     const router = useRouter();
@@ -91,6 +105,8 @@ export default {
 
     const game = computed(() => gameStore.game);
     const iAmGameOwner = computed(() => gameStore.iAmGameOwner);
+    const gameId = computed(() => gameStore.game.id?.toUpperCase());
+    const gameStartTime = computed(() => gameStore.game.startedAt);
 
     const goToHome = () => {
       router.push({ name: 'home' });
@@ -132,6 +148,8 @@ export default {
       isInLobby,
       leaveLobby,
       logo,
+      gameId,
+      gameStartTime,
     };
   },
 };
@@ -140,7 +158,7 @@ export default {
 <style lang="scss" scoped>
 .topbar {
   display: grid;
-  grid-template-areas: "left none user-info";
+  grid-template-areas: "left center user-info";
   grid-template-columns: auto 1fr 300px;
 
   &__left {
@@ -151,6 +169,16 @@ export default {
     &__menu-button {
       font-size: 0.75rem;
     }
+  }
+
+  &__center {
+    grid-area: center;
+    justify-self: center;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
   }
 
   &__user-info {

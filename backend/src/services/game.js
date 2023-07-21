@@ -1,5 +1,13 @@
 import { Game, User } from '../db/index.js';
 import { Op } from 'sequelize';
+import { users as userSockets } from '../socket/index.js';
+
+/**
+ * Key is the id of the game
+ * Value is the timeout
+ * @type {Record<string, NodeJS.Timeout>}
+ */
+const gameTurnsTimeout = {};
 
 export default {
   /**
@@ -120,13 +128,37 @@ export default {
    * @param {'surrender' | 'disconnect' | 'health'} reason The reason why the game ended
    */
   end: function (gameModel, user, reason = 'health') {
+    clearTimeout(gameTurnsTimeout[gameModel.id]);
     gameModel.winner = user.id;
     gameModel.endedAt = new Date();
     gameModel.endType = reason;
     return gameModel.save();
   },
-  changePlayerTurn: function (gameModel) {
+  /**
+   * Start the timer for the current player
+   * @param {import('../db/index.js').Game} gameModel
+   */
+  startTimer: function (gameModel) {
+    gameTurnsTimeout[gameModel.id] = setTimeout(() => this.changePlayerTurn(gameModel), 30000);
+  },
+  /**
+   * Switch the current player turn
+   * @param {import('../db/index.js').Game} gameModel
+   * @param {boolean} forced If the turn change asked by the user
+   * @returns {Promise<import('../db/index.js').Game>}
+   */
+  changePlayerTurn: async function (gameModel, forced = false) {
+    await gameModel.reload(); // Reload the game to get the updated current_player and ensure the game is still in progress
+    if (!gameModel.isInProgress) return;
+    const oldPlayerId = gameModel.current_player;
     gameModel.current_player = gameModel.current_player === gameModel.first_player ? gameModel.second_player : gameModel.first_player;
-    return gameModel.save();
+    await gameModel.save();
+    if (oldPlayerId) userSockets[oldPlayerId].emit('game:turn:end', gameModel);
+    userSockets[gameModel.current_player].emit('game:turn:start', gameModel);
+    if (forced) clearTimeout(gameTurnsTimeout[gameModel.id]);
+    gameTurnsTimeout[gameModel.id] = setTimeout(() => this.changePlayerTurn(gameModel), 30000);
+    // eslint-disable-next-line no-console
+    console.log(`[Game ${gameModel.id}] Turn changed to ${gameModel.current_player} at ${new Date().toLocaleTimeString()} ${forced ? '(asked by the user)' : ''}`);
+    return gameModel;
   },
 };

@@ -63,6 +63,14 @@ export default (connection) => {
           notEmpty: true,
         },
       },
+      turnStartedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+        validate: {
+          notEmpty: true,
+        },
+      },
     },
     {
       sequelize: connection,
@@ -84,6 +92,14 @@ export default (connection) => {
         },
         hasTwoPlayers() {
           return this.first_player !== null && this.second_player !== null;
+        },
+      },
+      hooks: {
+        // On turn change set turnStartedAt to current date
+        beforeUpdate: (game) => {
+          if (game.changed('current_player')) {
+            game.turnStartedAt = new Date();
+          }
         },
       },
     },
