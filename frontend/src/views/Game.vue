@@ -361,12 +361,9 @@ export default {
       isPlayerTurn,
       mouseEnterEnemy,
       mouseLeaveEnemy,
-      mouseUp,
       moveAttackLine,
       onAdd,
-      startAttack,
       turnStartedAt,
-      attackDamage,
       avatarUrl,
       enemyAvatar,
     };
