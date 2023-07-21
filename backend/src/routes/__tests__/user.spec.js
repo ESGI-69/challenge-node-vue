@@ -257,6 +257,16 @@ describe('User Balance Update (Admin)', () => {
 });
 
 describe('User updating his profile', () => {
+  let mailerSendMailMock;
+
+  beforeAll(() => {
+    mailerSendMailMock = jest.spyOn(mailer, 'sendMail').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    mailerSendMailMock.mockRestore();
+  });
+
   it('PATCH /users/me should update the user', (done) => {
     request(app)
       .patch('/users/me')
