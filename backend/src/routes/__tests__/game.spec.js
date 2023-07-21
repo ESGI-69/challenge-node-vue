@@ -4,6 +4,7 @@ import {
   describe,
   expect,
   it,
+  jest,
 } from '@jest/globals';
 import request from 'supertest';
 import { io as Client } from 'socket.io-client';
@@ -124,7 +125,7 @@ describe('Game routes (logged)', () => {
     .set('Authorization', `Bearer ${jwt}`)
     .expect(400));
 
-  it(`GET /game/${gameId} should return the game`, () => request(app)
+  it('GET /game/:id should return the game', () => request(app)
     .get(`/game/${gameId}`)
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
@@ -340,6 +341,9 @@ describe('Game launch and forfeit', () => {
     .expect(400));
 
   it('POST /game/start should return 200 and send game:started to the socket room', (done) => {
+    jest.useFakeTimers();
+    jest.spyOn(global, 'setTimeout');
+    jest.spyOn(gameService, 'changePlayerTurn');
     let successCount = 0;
 
     const success = () => {
@@ -349,11 +353,61 @@ describe('Game launch and forfeit', () => {
       }
     };
 
-    firstPlayerSocket.on('game:started', () => {
+    firstPlayerSocket.on('game:started', (game) => {
+      expect(game).toHaveProperty('id');
+      expect(game.id).toBe(gameId);
+      expect(game).toHaveProperty('startedAt');
+      expect(game.startedAt).not.toBeNull();
+      expect(game).toHaveProperty('endedAt');
+      expect(game.endedAt).toBeNull();
+      expect(game).toHaveProperty('endType');
+      expect(game.endType).toBeNull();
+      expect(game).toHaveProperty('winner');
+      expect(game.winner).toBeNull();
+      expect(game).toHaveProperty('first_player');
+      expect(typeof game.first_player).toBe('number');
+      expect(game).toHaveProperty('firstPlayer');
+      expect(game.firstPlayer).toHaveProperty('id');
+      expect(game.firstPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('second_player');
+      expect(typeof game.second_player).toBe('number');
+      expect(game).toHaveProperty('secondPlayer');
+      expect(game.secondPlayer).toHaveProperty('id');
+      expect(game.secondPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('current_player');
+      expect(typeof game.current_player).toBe('number');
+      expect(game.current_player).toBe(game.first_player);
+      expect(game).toHaveProperty('turnStartedAt');
+      expect(game.turnStartedAt).toBeDefined();
       success();
     });
 
-    secondPlayerSocket.on('game:started', () => {
+    secondPlayerSocket.on('game:started', (game) => {
+      expect(game).toHaveProperty('id');
+      expect(game.id).toBe(gameId);
+      expect(game).toHaveProperty('startedAt');
+      expect(game.startedAt).not.toBeNull();
+      expect(game).toHaveProperty('endedAt');
+      expect(game.endedAt).toBeNull();
+      expect(game).toHaveProperty('endType');
+      expect(game.endType).toBeNull();
+      expect(game).toHaveProperty('winner');
+      expect(game.winner).toBeNull();
+      expect(game).toHaveProperty('first_player');
+      expect(typeof game.first_player).toBe('number');
+      expect(game).toHaveProperty('firstPlayer');
+      expect(game.firstPlayer).toHaveProperty('id');
+      expect(game.firstPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('second_player');
+      expect(typeof game.second_player).toBe('number');
+      expect(game).toHaveProperty('secondPlayer');
+      expect(game.secondPlayer).toHaveProperty('id');
+      expect(game.secondPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('current_player');
+      expect(typeof game.current_player).toBe('number');
+      expect(game.current_player).toBe(game.first_player);
+      expect(game).toHaveProperty('turnStartedAt');
+      expect(game.turnStartedAt).toBeDefined();
       success();
     });
 
@@ -361,7 +415,11 @@ describe('Game launch and forfeit', () => {
       .post('/game/start')
       .set('Authorization', `Bearer ${jwt}`)
       .expect(200)
-      .then(success);
+      .then(() => {
+        // Check if the gameService.changePlayerTurn is called after 30 seconds
+        expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 30000);
+        success();
+      });
   });
 
   it('The game should be started', () => gameService.findById(gameId)
@@ -374,7 +432,102 @@ describe('Game launch and forfeit', () => {
       expect(game.endType).toBeNull();
     }));
 
+  it('The turn should be changed after 30 seconds', async () => {
+    jest.advanceTimersByTime(30100); // 100ms more let the time to the data to be saved in the database
+    expect(gameService.changePlayerTurn).toHaveBeenCalled();
+
+    const game = await gameService.findById(gameId);
+    expect(game).toHaveProperty('current_player');
+    expect(typeof game.current_player).toBe('number');
+    expect(game.current_player).toBe(game.second_player);
+  });
+
   let userBalance, userXp;
+
+  it('The current player manualy change the turn', (done) => {
+    let successCount = 0;
+
+    const success = () => {
+      successCount += 1;
+      if (successCount === 3) {
+        done();
+      }
+    };
+
+    firstPlayerSocket.on('game:turn:start', (game) => {
+      expect(game).toHaveProperty('id');
+      expect(game.id).toBe(gameId);
+      expect(game).toHaveProperty('startedAt');
+      expect(game.startedAt).not.toBeNull();
+      expect(game).toHaveProperty('endedAt');
+      expect(game.endedAt).toBeNull();
+      expect(game).toHaveProperty('endType');
+      expect(game.endType).toBeNull();
+      expect(game).toHaveProperty('winner');
+      expect(game.winner).toBeNull();
+      expect(game).toHaveProperty('first_player');
+      expect(typeof game.first_player).toBe('number');
+      expect(game).toHaveProperty('firstPlayer');
+      expect(game.firstPlayer).toHaveProperty('id');
+      expect(game.firstPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('second_player');
+      expect(typeof game.second_player).toBe('number');
+      expect(game).toHaveProperty('secondPlayer');
+      expect(game.secondPlayer).toHaveProperty('id');
+      expect(game.secondPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('current_player');
+      expect(typeof game.current_player).toBe('number');
+      expect(game.current_player).toBe(game.first_player);
+      expect(game).toHaveProperty('turnStartedAt');
+      expect(game.turnStartedAt).toBeDefined();
+      success();
+    });
+
+    secondPlayerSocket.on('game:turn:end', (game) => {
+      expect(game).toHaveProperty('id');
+      expect(game.id).toBe(gameId);
+      expect(game).toHaveProperty('startedAt');
+      expect(game.startedAt).not.toBeNull();
+      expect(game).toHaveProperty('endedAt');
+      expect(game.endedAt).toBeNull();
+      expect(game).toHaveProperty('endType');
+      expect(game.endType).toBeNull();
+      expect(game).toHaveProperty('winner');
+      expect(game.winner).toBeNull();
+      expect(game).toHaveProperty('first_player');
+      expect(typeof game.first_player).toBe('number');
+      expect(game).toHaveProperty('firstPlayer');
+      expect(game.firstPlayer).toHaveProperty('id');
+      expect(game.firstPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('second_player');
+      expect(typeof game.second_player).toBe('number');
+      expect(game).toHaveProperty('secondPlayer');
+      expect(game.secondPlayer).toHaveProperty('id');
+      expect(game.secondPlayer).toHaveProperty('firstname');
+      expect(game).toHaveProperty('current_player');
+      expect(typeof game.current_player).toBe('number');
+      expect(game.current_player).toBe(game.first_player);
+      expect(game).toHaveProperty('turnStartedAt');
+      expect(game.turnStartedAt).toBeDefined();
+      success();
+    });
+
+    request(app)
+      .post('/game/end-turn')
+      .set('Authorization', `Bearer ${secondJwt}`)
+      .expect(200)
+      .then(success());
+  });
+
+  it('The turn should not be changed before 30 seconds', () => {
+    jest.advanceTimersByTime(20000);
+    expect(gameService.changePlayerTurn).toHaveBeenCalledTimes(2);
+  });
+
+  it('The turn should be changed after 30 seconds', () => {
+    jest.advanceTimersByTime(10000);
+    expect(gameService.changePlayerTurn).toHaveBeenCalledTimes(3);
+  });
 
   it('... fetching future winner balance & xp', async () => {
     const user = await userService.findById(2);
