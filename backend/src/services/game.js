@@ -135,6 +135,13 @@ export default {
     return gameModel.save();
   },
   /**
+   * Start the timer for the current player
+   * @param {import('../db/index.js').Game} gameModel
+   */
+  startTimer: function (gameModel) {
+    gameTurnsTimeout[gameModel.id] = setTimeout(() => this.changePlayerTurn(gameModel), 30000);
+  },
+  /**
    * Switch the current player turn
    * @param {import('../db/index.js').Game} gameModel
    * @param {boolean} forced If the turn change asked by the user

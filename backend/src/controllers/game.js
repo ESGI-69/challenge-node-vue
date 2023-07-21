@@ -191,7 +191,7 @@ export default {
       if (game.isInProgress) throw new Error('Game already started');
       const startedGame = await gameService.start(game);
       io.to(game.id).emit('game:started', startedGame);
-      setTimeout(() => gameService.changePlayerTurn(startedGame), 30000);
+      gameService.startTimer(startedGame);
       res.sendStatus(200);
       // eslint-disable-next-line no-console
       console.log(`[Game ${game.id}] Started`);
