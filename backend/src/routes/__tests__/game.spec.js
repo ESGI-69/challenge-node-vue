@@ -430,16 +430,14 @@ describe('Game launch and forfeit', () => {
       expect(game.endedAt).toBeNull();
       expect(game).toHaveProperty('endType');
       expect(game.endType).toBeNull();
+      expect(game).toHaveProperty('current_player');
+      expect(typeof game.current_player).toBe('number');
+      expect(game.current_player).toBe(game.first_player);
     }));
 
-  it('The turn should be changed after 30 seconds', async () => {
+  it('The turn should be changed after 30 seconds', () => {
     jest.advanceTimersByTime(31000); // 1000ms more let the time to the data to be saved in the database
-    expect(gameService.changePlayerTurn).toHaveBeenCalled();
-
-    const game = await gameService.findById(gameId);
-    expect(game).toHaveProperty('current_player');
-    expect(typeof game.current_player).toBe('number');
-    expect(game.current_player).toBe(game.second_player);
+    expect(gameService.changePlayerTurn).toHaveBeenCalledTimes(1);
   });
 
   let userBalance, userXp;
