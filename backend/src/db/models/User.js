@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import mailer from '../../utils/mailer.js';
 
-import { Card, User_Card } from '../index.js';
+import { Card, Deck, User_Card } from '../index.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
@@ -14,6 +14,7 @@ export default (connection) => {
   class User extends Model {
     static associate() {
       this.belongsToMany(Card, { through: User_Card, foreignKey: 'userId' });
+      this.belongsTo(Deck, { foreignKey: 'idDeckFav' });
     }
 
     /**

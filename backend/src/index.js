@@ -15,6 +15,7 @@ import gameRouter from './routes/game.js';
 import statRouter from './routes/stat.js';
 import productRouter from './routes/product.js';
 import paymentRouter from './routes/payment.js';
+import deckRouter from './routes/deck.js';
 
 import { connection } from './db/index.js';
 import initSocket from './socket/index.js';
@@ -56,6 +57,7 @@ app.use('/stat', statRouter);
 app.use('/products', productRouter);
 
 app.use('/payments', paymentRouter);
+app.use('/decks', deckRouter);
 
 app.get('/health', async (req, res) => {
   try {

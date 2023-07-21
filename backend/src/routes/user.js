@@ -44,5 +44,6 @@ router.patch('/:id', isAdmin, userController.patch);
 router.patch('/:id/balance', isAdmin, userController.patchBalance);
 router.delete('/:id', isAdmin, userController.delete);
 router.post('/confirm-email', userController.confirmEmail);
+router.post('/choose-fav-deck/:id', isLogged, userController.chooseFavDeck);
 
 export default router;

@@ -140,4 +140,14 @@ export default {
     if (!user) throw new Error('User not found', { cause: 'Not Found' });
     return { emailToken: user.mailToken };
   },
+  /**
+   * Set the user favorite deck
+   * @param {import('../db/index.js').User} userModel
+   * @param {number} deckId
+   *  */
+  chooseFavDeck: async function (userModel, deckId) {
+    userModel.idDeckFav = deckId;
+    await userModel.save();
+    return this.findById(userModel.id);
+  },
 };
