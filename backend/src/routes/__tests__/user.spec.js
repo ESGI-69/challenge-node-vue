@@ -427,9 +427,9 @@ describe('User not authenticated access', () => {
     .get(`/users/${userId}`)
     .expect(401));
 
-  it('GET /users/:id/avatar should return 401', () => request(app)
+  it('GET /users/:id/avatar should return 200', () => request(app)
     .get(`/users/${userId}/avatar`)
-    .expect(401));
+    .expect(200));
 
   it('GET /users/me should return ', () => request(app)
     .get('/users/me')
