@@ -16,7 +16,7 @@
         :user-avatar="enemyAvatar"
         :is-enemy="true"
         class="avatar__container__enemy"
-        @mouseup="(event) => attackPlayer(event)"
+        @mouseup="attackPlayer"
         @mouseover="mouseEnterEnemy"
         @mouseleave="mouseLeaveEnemy"
       />
@@ -181,12 +181,7 @@ export default {
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
 
-    const enemyId = computed(() => {
-      if (gameStore.game.first_player === profileStore.getId) {
-        return gameStore.game.second_player;
-      }
-      return gameStore.game.first_player;
-    });
+    const enemyId = computed(() => (gameStore.game.first_player === profileStore.getId) ? gameStore.game.second_player : gameStore.game.first_player);
 
     const enemyAvatar = computed(() => `${import.meta.env.VITE_API}/users/${enemyId.value}/avatar`);
 
