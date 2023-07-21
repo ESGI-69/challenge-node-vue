@@ -8,6 +8,7 @@
         type="text"
         class="nes-input"
         maxlength="6"
+        @keyup.enter="joinGame"
       >
       <button
         class="nes-btn"

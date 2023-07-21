@@ -1,5 +1,6 @@
 import { Game, User } from '../db/index.js';
 import { Op } from 'sequelize';
+import { users as userSockets } from '../socket/index.js';
 
 export default {
   /**
@@ -125,8 +126,22 @@ export default {
     gameModel.endType = reason;
     return gameModel.save();
   },
-  changePlayerTurn: function (gameModel) {
+  /**
+   * Switch the current player turn
+   * @param {import('../db/index.js').Game} gameModel
+   * @returns {Promise<import('../db/index.js').Game>}
+   */
+  changePlayerTurn: async function (gameModel) {
+    await gameModel.reload(); // Reload the game to get the updated current_player and ensure the game is still in progress
+    if (!gameModel.isInProgress) return;
+    const oldPlayerId = gameModel.current_player;
     gameModel.current_player = gameModel.current_player === gameModel.first_player ? gameModel.second_player : gameModel.first_player;
-    return gameModel.save();
+    await gameModel.save();
+    if (oldPlayerId) userSockets[oldPlayerId].emit('game:turn:end', gameModel);
+    userSockets[gameModel.current_player].emit('game:turn:start', gameModel);
+    setTimeout(() => this.changePlayerTurn(gameModel), 30000);
+    // eslint-disable-next-line no-console
+    console.log(`[Game ${gameModel.id}] Turn changed to ${gameModel.current_player} at ${new Date().toLocaleTimeString()}`);
+    return gameModel;
   },
 };

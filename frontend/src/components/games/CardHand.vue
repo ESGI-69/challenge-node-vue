@@ -25,11 +25,15 @@
       item-key="id"
       class="card-hand"
       animation="150"
+      :disabled="!isPlayerTurn"
       @remove="onRemove"
     >
       <template #item="{ element }">
         <div
-          class="card-hand__card-wrapper nes-pointer"
+          class="card-hand__card-wrapper"
+          :class="{
+            'nes-pointer': isPlayerTurn,
+          }"
         >
           <card
             class="card-hand__card-wrapper__card"
@@ -63,6 +67,10 @@ export default {
       default: 0,
     },
     isEnemy: {
+      type: Boolean,
+      default: false,
+    },
+    isPlayerTurn: {
       type: Boolean,
       default: false,
     },

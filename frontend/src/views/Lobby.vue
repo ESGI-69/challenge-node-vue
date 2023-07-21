@@ -11,9 +11,10 @@
         <h2>Game not found</h2>
       </div>
       <div v-else>
-        <p v-if="actualGame.id">
-          Game ID : {{ actualGame.id }}
-        </p>
+        <game-id
+          v-if="actualGame.id"
+          :id="actualGame.id"
+        />
         <ul>
           <li v-if="iAmGameOwner">
             {{ profile.firstname }} (you)
@@ -71,6 +72,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 import Container from '@/components/Container.vue';
 import PopUp from '@/components/PopUp.vue';
+import GameId from '@/components/games/GameId.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
@@ -79,6 +81,7 @@ import { socket } from '@/socket';
 export default {
   name: 'GameView',
   components: {
+    GameId,
     Container,
     PopUp,
   },

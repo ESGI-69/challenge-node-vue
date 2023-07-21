@@ -11,6 +11,7 @@ router.post('/', isLogged, gameController.post);
 router.post('/leave', isLogged, gameController.leave);
 router.post('/join', isLogged, gameController.join);
 router.post('/start', isLogged, gameController.start);
+router.post('/end-turn', isLogged, gameController.endTurn);
 router.delete('/', isLogged, gameController.delete);
 
 export default router;
