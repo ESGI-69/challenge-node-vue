@@ -177,7 +177,7 @@ export default {
    */
   getAvatar: async (req, res, next) => {
     try {
-      const user = await userService.findById(parseInt(req.params.id));
+      const user = await userService.findByIdAvatar(parseInt(req.params.id));
       if (!user) return res.sendStatus(404);
       res.sendFile(user.avatar, {
         root: 'public/profile-pictures',

@@ -13,9 +13,10 @@
         :is-enemy="true"
       />
       <player-avatar
-        :user-avatar="avatarUrl"
+        :user-avatar="enemyAvatar"
         :is-enemy="true"
         class="avatar__container__enemy"
+        @mouseup="(event) => attackPlayer(event)"
         @mouseover="mouseEnterEnemy"
         @mouseleave="mouseLeaveEnemy"
       />
@@ -65,6 +66,7 @@
       </draggable>
       <player-avatar
         :user-avatar="avatarUrl"
+        :is-enemy="false"
         class=""
       />
       <card-hand
@@ -178,6 +180,16 @@ export default {
     const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
+
+    const enemyId = computed(() => {
+      if (gameStore.game.first_player === profileStore.getId) {
+        return gameStore.game.second_player;
+      }
+      return gameStore.game.first_player;
+    });
+
+    const enemyAvatar = computed(() => `${import.meta.env.VITE_API}/users/${enemyId.value}/avatar`);
+
     const isForfeitModalOpen = ref(false);
 
     const cardsOnBoard = ref([
@@ -275,6 +287,13 @@ export default {
       sendAttack();
     };
 
+    const attackPlayer = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      attack.target = 'player';
+      sendAttack();
+    };
+
     const sendAttack = () => {
       if (!isPlayerTurn.value) return;
       socket.emit('game:attack', {
@@ -337,6 +356,9 @@ export default {
       cardsOnBoard,
       enemyCardsOnBoard,
       endTurn,
+      attackPlayer,
+      startAttack,
+      mouseUp,
       gameId,
       goHome,
       isForfeitModalOpen,
@@ -351,6 +373,7 @@ export default {
       turnStartedAt,
       attackDamage,
       avatarUrl,
+      enemyAvatar,
     };
   },
 };

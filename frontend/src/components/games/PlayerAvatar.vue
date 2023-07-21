@@ -58,6 +58,7 @@ export default {
     /* transform: rotate(180deg); */
 }
 .circle {
+    color:white;
     position: absolute;
     top: -10px;
     right: -10px;
