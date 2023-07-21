@@ -12,6 +12,14 @@
         :cards-fixed-quantity="5"
         :is-enemy="true"
       />
+      <player-avatar
+        :user-avatar="avatarUrl"
+        :is-enemy="true"
+        class="avatar__container__enemy"
+        @mouseover="mouseEnterEnemy"
+        @mouseleave="mouseLeaveEnemy"
+      />
+
       <div class="game__container__board">
         <card
           v-for="card in enemyCardsOnBoard"
@@ -55,6 +63,10 @@
           />
         </template>
       </draggable>
+      <player-avatar
+        :user-avatar="avatarUrl"
+        class=""
+      />
       <card-hand
         class="game__container__player-hand"
         :is-player-turn="isPlayerTurn"
@@ -135,6 +147,7 @@ import Container from '@/components/Container.vue';
 import Draggable from 'vuedraggable';
 import PopUp from '@/components/PopUp.vue';
 import TurnBar from '@/components/games/TurnBar.vue';
+import PlayerAvatar from '@/components/games/PlayerAvatar.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
@@ -150,6 +163,7 @@ export default {
     Draggable,
     PopUp,
     TurnBar,
+    PlayerAvatar,
   },
   setup() {
     const attackLine = ref(null);
@@ -163,6 +177,7 @@ export default {
     const isPlayerTurn = computed(() => gameStore.game.current_player === profileStore.getId);
     const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
 
+    const avatarUrl = computed(() => profileStore.avatarUrl);
     const isForfeitModalOpen = ref(false);
 
     const cardsOnBoard = ref([
@@ -334,6 +349,8 @@ export default {
       onAdd,
       startAttack,
       turnStartedAt,
+      attackDamage,
+      avatarUrl,
     };
   },
 };
