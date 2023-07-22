@@ -35,8 +35,7 @@ export default (connection) => {
         unique: true,
         validate: {
           notEmpty: true,
-          max: 6,
-          min: 6,
+          len: [6, 6],
         },
       },
       endedAt: {
