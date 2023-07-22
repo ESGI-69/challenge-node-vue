@@ -379,6 +379,10 @@ describe('Game launch and forfeit', () => {
       expect(game.current_player).toBe(game.first_player);
       expect(game).toHaveProperty('turnStartedAt');
       expect(game.turnStartedAt).toBeDefined();
+      expect(game.current_player).toBe(game.first_player);
+      expect(game.turn_count).toBe(1);
+      expect(game.first_player_mana).toBe(1);
+      expect(game.second_player_mana).toBe(1);
       success();
     });
 
@@ -408,6 +412,10 @@ describe('Game launch and forfeit', () => {
       expect(game.current_player).toBe(game.first_player);
       expect(game).toHaveProperty('turnStartedAt');
       expect(game.turnStartedAt).toBeDefined();
+      expect(game.current_player).toBe(game.first_player);
+      expect(game.turn_count).toBe(1);
+      expect(game.first_player_mana).toBe(1);
+      expect(game.second_player_mana).toBe(1);
       success();
     });
 
@@ -443,78 +451,92 @@ describe('Game launch and forfeit', () => {
   let userBalance, userXp;
 
   it('The current player manualy change the turn', (done) => {
-    let successCount = 0;
+    gameService.findById(gameId).then((oldGame) => {
+      let successCount = 0;
 
-    const success = () => {
-      successCount += 1;
-      if (successCount === 3) {
-        done();
-      }
-    };
+      const success = () => {
+        successCount += 1;
+        if (successCount === 3) {
+          done();
+        }
+      };
 
-    firstPlayerSocket.on('game:turn:start', (game) => {
-      expect(game).toHaveProperty('id');
-      expect(game.id).toBe(gameId);
-      expect(game).toHaveProperty('startedAt');
-      expect(game.startedAt).not.toBeNull();
-      expect(game).toHaveProperty('endedAt');
-      expect(game.endedAt).toBeNull();
-      expect(game).toHaveProperty('endType');
-      expect(game.endType).toBeNull();
-      expect(game).toHaveProperty('winner');
-      expect(game.winner).toBeNull();
-      expect(game).toHaveProperty('first_player');
-      expect(typeof game.first_player).toBe('number');
-      expect(game).toHaveProperty('firstPlayer');
-      expect(game.firstPlayer).toHaveProperty('id');
-      expect(game.firstPlayer).toHaveProperty('firstname');
-      expect(game).toHaveProperty('second_player');
-      expect(typeof game.second_player).toBe('number');
-      expect(game).toHaveProperty('secondPlayer');
-      expect(game.secondPlayer).toHaveProperty('id');
-      expect(game.secondPlayer).toHaveProperty('firstname');
-      expect(game).toHaveProperty('current_player');
-      expect(typeof game.current_player).toBe('number');
-      expect(game.current_player).toBe(game.first_player);
-      expect(game).toHaveProperty('turnStartedAt');
-      expect(game.turnStartedAt).toBeDefined();
-      success();
+      firstPlayerSocket.on('game:turn:start', (game) => {
+        expect(game).toHaveProperty('id');
+        expect(game.id).toBe(gameId);
+        expect(game).toHaveProperty('startedAt');
+        expect(game.startedAt).not.toBeNull();
+        expect(game).toHaveProperty('endedAt');
+        expect(game.endedAt).toBeNull();
+        expect(game).toHaveProperty('endType');
+        expect(game.endType).toBeNull();
+        expect(game).toHaveProperty('winner');
+        expect(game.winner).toBeNull();
+        expect(game).toHaveProperty('first_player');
+        expect(typeof game.first_player).toBe('number');
+        expect(game).toHaveProperty('firstPlayer');
+        expect(game.firstPlayer).toHaveProperty('id');
+        expect(game.firstPlayer).toHaveProperty('firstname');
+        expect(game).toHaveProperty('second_player');
+        expect(typeof game.second_player).toBe('number');
+        expect(game).toHaveProperty('secondPlayer');
+        expect(game.secondPlayer).toHaveProperty('id');
+        expect(game.secondPlayer).toHaveProperty('firstname');
+        expect(game).toHaveProperty('current_player');
+        expect(typeof game.current_player).toBe('number');
+        expect(game.current_player).toBe(game.first_player);
+        expect(game).toHaveProperty('turnStartedAt');
+        expect(game.turnStartedAt).toBeDefined();
+        expect(game.current_player).not.toBe(oldGame.current_player);
+        expect(game.turn_count).toBe(oldGame.turn_count + 1);
+        const firstPlayerMana = oldGame.current_player === game.first_player ? 2 : 1;
+        const secondPlayerMana = oldGame.current_player === game.second_player ? 2 : 1;
+        expect(game.first_player_mana).toBe(firstPlayerMana);
+        expect(game.second_player_mana).toBe(secondPlayerMana);
+        success();
+      });
+
+      secondPlayerSocket.on('game:turn:end', (game) => {
+        expect(game).toHaveProperty('id');
+        expect(game.id).toBe(gameId);
+        expect(game).toHaveProperty('startedAt');
+        expect(game.startedAt).not.toBeNull();
+        expect(game).toHaveProperty('endedAt');
+        expect(game.endedAt).toBeNull();
+        expect(game).toHaveProperty('endType');
+        expect(game.endType).toBeNull();
+        expect(game).toHaveProperty('winner');
+        expect(game.winner).toBeNull();
+        expect(game).toHaveProperty('first_player');
+        expect(typeof game.first_player).toBe('number');
+        expect(game).toHaveProperty('firstPlayer');
+        expect(game.firstPlayer).toHaveProperty('id');
+        expect(game.firstPlayer).toHaveProperty('firstname');
+        expect(game).toHaveProperty('second_player');
+        expect(typeof game.second_player).toBe('number');
+        expect(game).toHaveProperty('secondPlayer');
+        expect(game.secondPlayer).toHaveProperty('id');
+        expect(game.secondPlayer).toHaveProperty('firstname');
+        expect(game).toHaveProperty('current_player');
+        expect(typeof game.current_player).toBe('number');
+        expect(game.current_player).toBe(game.first_player);
+        expect(game).toHaveProperty('turnStartedAt');
+        expect(game.turnStartedAt).toBeDefined();
+        expect(game.current_player).not.toBe(oldGame.current_player);
+        expect(game.turn_count).toBe(oldGame.turn_count + 1);
+        const firstPlayerMana = oldGame.current_player === game.first_player ? 2 : 1;
+        const secondPlayerMana = oldGame.current_player === game.second_player ? 2 : 1;
+        expect(game.first_player_mana).toBe(firstPlayerMana);
+        expect(game.second_player_mana).toBe(secondPlayerMana);
+        success();
+      });
+
+      request(app)
+        .post('/game/end-turn')
+        .set('Authorization', `Bearer ${secondJwt}`)
+        .expect(200)
+        .then(success);
     });
-
-    secondPlayerSocket.on('game:turn:end', (game) => {
-      expect(game).toHaveProperty('id');
-      expect(game.id).toBe(gameId);
-      expect(game).toHaveProperty('startedAt');
-      expect(game.startedAt).not.toBeNull();
-      expect(game).toHaveProperty('endedAt');
-      expect(game.endedAt).toBeNull();
-      expect(game).toHaveProperty('endType');
-      expect(game.endType).toBeNull();
-      expect(game).toHaveProperty('winner');
-      expect(game.winner).toBeNull();
-      expect(game).toHaveProperty('first_player');
-      expect(typeof game.first_player).toBe('number');
-      expect(game).toHaveProperty('firstPlayer');
-      expect(game.firstPlayer).toHaveProperty('id');
-      expect(game.firstPlayer).toHaveProperty('firstname');
-      expect(game).toHaveProperty('second_player');
-      expect(typeof game.second_player).toBe('number');
-      expect(game).toHaveProperty('secondPlayer');
-      expect(game.secondPlayer).toHaveProperty('id');
-      expect(game.secondPlayer).toHaveProperty('firstname');
-      expect(game).toHaveProperty('current_player');
-      expect(typeof game.current_player).toBe('number');
-      expect(game.current_player).toBe(game.first_player);
-      expect(game).toHaveProperty('turnStartedAt');
-      expect(game.turnStartedAt).toBeDefined();
-      success();
-    });
-
-    request(app)
-      .post('/game/end-turn')
-      .set('Authorization', `Bearer ${secondJwt}`)
-      .expect(200)
-      .then(success());
   });
 
   it('The turn should not be changed before 30 seconds', () => {
