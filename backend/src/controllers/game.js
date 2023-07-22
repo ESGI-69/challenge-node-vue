@@ -220,5 +220,31 @@ export default {
       next(err);
     }
   },
+
+  /**
+   * Express.js controller for GET /games/history
+   * Get the game history of the user
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   **/
+  getHistory: async (req, res, next) => {
+    try {
+      const games = await gameService.getHistory(req.user);
+
+      // if games is empty, return 204, else return 200 with the games (clean the user model)
+      if (games.length === 0) {
+        res.sendStatus(204);
+      }
+      else {
+        res.json(games);
+      }
+
+    } catch (err) {
+      next(err);
+    }
+  },
+
 };
 

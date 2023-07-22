@@ -161,4 +161,36 @@ export default {
     console.log(`[Game ${gameModel.id}] Turn changed to ${gameModel.current_player} at ${new Date().toLocaleTimeString()} ${forced ? '(asked by the user)' : ''}`);
     return gameModel;
   },
+
+  /**
+   * Get the game history of the user
+   * @param {typeof import('../db/index.js').User} userModel
+   * @returns {Promise<import('../db/index.js').Game[]>}
+   */
+  getHistory: async function (userModel) {
+    const games = await Game.findAll({
+      where: {
+        [Op.or]: [
+          { first_player: userModel.id },
+          { second_player: userModel.id },
+        ],
+        endedAt: {
+          [Op.ne]: null,
+        },
+      },
+      include: [
+        {
+          model: User,
+          as: 'firstPlayer',
+          attributes: { exclude: ['email', 'password', 'role', 'avatar', 'balance', 'mailToken', 'xp', 'createdAt', 'updatedAt'] },
+        },
+        {
+          model: User,
+          as: 'secondPlayer',
+          attributes: { exclude: ['email', 'password', 'role', 'avatar', 'balance', 'mailToken', 'xp', 'createdAt', 'updatedAt'] },
+        },
+      ],
+    });
+    return games;
+  },
 };

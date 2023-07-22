@@ -81,6 +81,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/game-history',
+      name: 'game-history',
+      component: () => import('@/views/GameHistory.vue'),
+      meta: {
+        displayName: 'Game History',
+        authRequired: true,
+      },
+    },
+    {
       path: '/shop',
       name: 'shop',
       component: () => import('@/views/Shop.vue'),

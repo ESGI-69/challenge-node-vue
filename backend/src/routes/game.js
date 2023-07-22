@@ -6,6 +6,7 @@ import { isLogged } from '../middleware.js';
 
 const router = Router();
 
+router.get('/history', isLogged, gameController.getHistory);
 router.get('/:id', isLogged, gameController.get);
 router.post('/', isLogged, gameController.post);
 router.post('/leave', isLogged, gameController.leave);

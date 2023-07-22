@@ -6,6 +6,8 @@ const createObjectURL = (window.URL || window.webkitURL).createObjectURL || wind
 export const useProfileStore = defineStore('profileStore', {
   state: () => ({
     isProfileLoading: false,
+    isGameHistoryLoading: false,
+    gameHistory : [],
     /**
      * @type {{
      *  id: number;
@@ -66,6 +68,18 @@ export const useProfileStore = defineStore('profileStore', {
         this.profile.balance += amount;
       } catch (err) {
         throw err.response.data;
+      }
+    },
+
+    async getGameHistory() {
+      this.isGameHistoryLoading = true;
+      try {
+        const { data } = await $API.get('/game/history');
+        this.gameHistory = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isGameHistoryLoading = false;
       }
     },
   },
