@@ -1,16 +1,16 @@
-import game from '../services/game.js';
-
 /**
  * Generate a unique 6 characters long string with random letters and numbers.
  * Used to generate a game code.
  * @returns {Promise<string>}
  */
-export default async () => {
-  const allGamesCodes = await game.findAllIds();
-  let code = '';
-  do {
-    code = Math.random().toString(36).split('').filter((value) => /[a-z]/.test(value)).join('').substr(0, 6);
+export default () => {
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let uniqueID = '';
+
+  for (let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    uniqueID += characters.charAt(randomIndex);
   }
-  while (allGamesCodes.includes(code) && code.length === 6);
-  return code;
+
+  return uniqueID;
 };
