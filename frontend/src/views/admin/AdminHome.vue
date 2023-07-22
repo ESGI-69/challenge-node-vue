@@ -1,9 +1,9 @@
 <template>
-  <p>View</p>
+  <p>SubView</p>
 </template>
 
 <script>
 export default {
-  name: 'AdminHomeView',
+  name: 'AdminHome',
 };
 </script>

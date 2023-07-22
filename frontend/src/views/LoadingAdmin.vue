@@ -1,13 +1,12 @@
 <template>
-  <div class="admin-panel">
-    <p>Layout</p>
-    <slot />
+  <div>
+    <p>Loading... ADMIN...</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AdminLayout',
+  name: 'LoadingAdmin',
   setup() {
     return {};
   },

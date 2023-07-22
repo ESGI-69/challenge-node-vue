@@ -30,7 +30,7 @@ import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { useAuthStore } from './stores/authStore';
 
 import Loading from './views/Loading.vue';
-import AdminLoading from './views/AdminLoading.vue';
+import LoadingAdmin from './views/LoadingAdmin.vue';
 import LoggedLayout from '@/layouts/Logged.vue';
 import NotLoggedLayout from '@/layouts/NotLogged.vue';
 import AdminLayout from '@/layouts/Admin.vue';
@@ -58,7 +58,7 @@ export default {
 
     const LoadingComponent = computed(() => {
       if (route.meta.layout === 'admin') {
-        return AdminLoading;
+        return LoadingAdmin;
       }
       return Loading;
     });

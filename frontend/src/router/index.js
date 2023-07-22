@@ -30,8 +30,8 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'admin',
-      component: () => import('@/views/AdminHome.vue'),
-      //Redirect home
+      component: () => import('@/views/Admin.vue'),
+      redirect: { name: 'adminHome' },
       beforeEnter: isAdmin,
       meta: {
         displayName: 'AdminHome',
@@ -39,7 +39,28 @@ const router = createRouter({
         layout: 'admin',
         // adminRequired: true,
       },
-      //children: [{ home, etc}],
+      children: [
+        {
+          path: '/admin',
+          name: 'adminHome',
+          component: () => import('@/views/admin/AdminHome.vue'),
+          meta: {
+            displayName: 'AdminHome',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
+        {
+          path: 'test',
+          name: 'test',
+          component: () => import('@/views/admin/Test.vue'),
+          meta: {
+            displayName: 'Test',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
+      ],
     },
     {
       path: '/',

@@ -1,12 +1,10 @@
 <template>
-  <div>
-    <p>Loading... ADMIN...</p>
-  </div>
+  <p>Test</p>
 </template>
 
 <script>
 export default {
-  name: 'AdminLoadingView',
+  name: 'Test',
   setup() {
     return {};
   },
