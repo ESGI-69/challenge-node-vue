@@ -26,6 +26,10 @@ export default {
     });
     return games.map((code) => code.id);
   },
+  /**
+   * @param {string} id Game id
+   * @returns {Promise<import('../db/index.js').Game>}
+   */
   findById: function (id) {
     return Game.findByPk(id, {
       include: [

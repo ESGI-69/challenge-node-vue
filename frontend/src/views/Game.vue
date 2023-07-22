@@ -4,6 +4,7 @@
     @mouseup="mouseUp"
   >
     <container
+      v-if="gameId"
       class="game__container"
       @mousemove="moveAttackLine"
     >
@@ -119,6 +120,14 @@
           },
         ]"
       />
+      <mana-bar
+        class="game__container__mana-bar game__container__mana-bar--player"
+        :mana="playerMana"
+      />
+      <mana-bar
+        class="game__container__mana-bar game__container__mana-bar--enemy"
+        :mana="opponentMana"
+      />
     </container>
     <pop-up
       v-model:isOpen="isForfeitModalOpen"
@@ -154,6 +163,7 @@ import Draggable from 'vuedraggable';
 import PopUp from '@/components/PopUp.vue';
 import TurnBar from '@/components/games/TurnBar.vue';
 import PlayerAvatar from '@/components/games/PlayerAvatar.vue';
+import ManaBar from '@/components/games/ManaBar.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
@@ -170,6 +180,7 @@ export default {
     PopUp,
     TurnBar,
     PlayerAvatar,
+    ManaBar,
   },
   setup() {
     const attackLine = ref(null);
@@ -189,9 +200,11 @@ export default {
     const route = useRoute();
     const router = useRouter();
 
-    const gameId = computed(() => gameStore.game.id?.toUpperCase());
+    const gameId = computed(() => gameStore.game.id);
     const isPlayerTurn = computed(() => gameStore.game.current_player === profileStore.getId);
     const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
+    const playerMana = computed(() => gameStore.playerMana);
+    const opponentMana = computed(() => gameStore.opponentMana);
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
 
@@ -414,6 +427,8 @@ export default {
       enemyHp,
       setCardRef,
       setCardPlayerRef,
+      playerMana,
+      opponentMana,
     };
   },
 };
@@ -451,6 +466,20 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    &__mana-bar {
+      position: absolute;
+      right: 0;
+      z-index: 20;
+
+      &--player {
+        top: 0;
+      }
+
+      &--enemy {
+        bottom: 0;
+      }
     }
   }
 }

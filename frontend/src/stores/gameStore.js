@@ -26,6 +26,9 @@ export const useGameStore = defineStore('gameStore', {
      *  endedAt: string;
      *  current_player: number;
      *  turnStartedAt: string;
+     *  first_player_mana: number;
+     *  second_player_mana: number;
+     *  turn_count: number;
      * }}
      */
     game: {},
@@ -33,6 +36,8 @@ export const useGameStore = defineStore('gameStore', {
 
   getters: {
     iAmGameOwner: (state) => state.game.first_player === useProfileStore().profile.id,
+    playerMana: (state) => (state.game.first_player === useProfileStore().profile.id ? state.game.first_player_mana : state.game.second_player_mana),
+    opponentMana: (state) => (state.game.first_player === useProfileStore().profile.id ? state.game.second_player_mana : state.game.first_player_mana),
   },
 
   actions: {
@@ -43,8 +48,8 @@ export const useGameStore = defineStore('gameStore', {
     async getGame(id) {
       this.isGameLoading = true;
       try {
-        const { data } = await $API.get(`/game/${id}`);
-        this.game = data;
+        const { data } = await $API.get(`/game/${id.toLowerCase()}`);
+        this.setGame(data);
       } catch (error) {
         return error.response;
       } finally {
@@ -68,6 +73,7 @@ export const useGameStore = defineStore('gameStore', {
     },
 
     setGame(game) {
+      game.id = game.id.toUpperCase();
       this.game = game;
     },
 

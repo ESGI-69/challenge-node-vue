@@ -38,6 +38,35 @@ export default (connection) => {
           len: [6, 6],
         },
       },
+      first_player_mana: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: {
+          notEmpty: true,
+          min: 1,
+          max: 10,
+        },
+      },
+      second_player_mana: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: {
+          notEmpty: true,
+          min: 1,
+          max: 10,
+        },
+      },
+      turn_count: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          notEmpty: true,
+          min: 0,
+        },
+      },
       endedAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -108,6 +137,18 @@ export default (connection) => {
         beforeUpdate: (game) => {
           if (game.changed('current_player')) {
             game.turnStartedAt = new Date();
+            game.turn_count += 1;
+            if (game.turn_count > 2) {
+              if (game.turn_count % 2 === 0) {
+                if (game.first_player_mana < 10) {
+                  game.first_player_mana += 1;
+                }
+              } else {
+                if (game.second_player_mana < 10) {
+                  game.second_player_mana += 1;
+                }
+              }
+            }
           }
         },
       },

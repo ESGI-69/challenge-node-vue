@@ -10,7 +10,7 @@
           :key="cost"
           :cost="cost"
           :is-clickable="true"
-          :is-selected="costFilter === cost"
+          :is-empty="costFilter !== cost"
           @click="setCostFilter"
         />
       </div>
