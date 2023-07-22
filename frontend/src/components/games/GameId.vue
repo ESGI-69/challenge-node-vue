@@ -20,5 +20,9 @@ export default {
 <style lang="scss" scoped>
 .game-id {
   width: 250px;
+
+  .is-primary {
+    user-select: text;
+  }
 }
 </style>
