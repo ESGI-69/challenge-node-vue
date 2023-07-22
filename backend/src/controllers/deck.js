@@ -122,6 +122,7 @@ export default {
    * */
   addCard: async (req, res, next) => {
     try {
+
       const deck = await deckService.findById(parseInt(req.params.id), {
         include: Card,
       });
@@ -130,9 +131,10 @@ export default {
       const card = await cardService.findById(parseInt(req.body.cardId));
       if (!card) throw new Error('Card not found', { cause: 'Not Found' });
 
-      if (!await userService.hasCard(req.user, req.body.idCard)) throw new Error('You don\'t have this card', { cause: 'Unauthorized' });
+      if (!await userService.hasCard(req.user, req.body.cardId)) throw new Error('You don\'t have this card', { cause: 'Unauthorized' });
 
       await deckService.addCard(deck, parseInt(req.body.cardId));
+
       const updatedDeck = await deckService.findById(deck.id, {
         include: Card,
       });
@@ -157,7 +159,7 @@ export default {
       const card = await cardService.findById(parseInt(req.body.cardId));
       if (!card) throw new Error('Card not found', { cause: 'Not Found' });
 
-      if (!await userService.hasCard(req.user, req.body.idCard)) throw new Error('You don\'t have this card', { cause: 'Unauthorized' });
+      if (!await userService.hasCard(req.user, req.body.cardId)) throw new Error('You don\'t have this card', { cause: 'Unauthorized' });
       if (!await deckService.hasCard(deck, req.body.cardId)) throw new Error('This card is not in this deck', { cause: 'Unauthorized' });
 
       await deckService.removeCard(deck, parseInt(req.body.cardId));

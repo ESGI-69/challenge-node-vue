@@ -12,7 +12,6 @@ const adminJwt = await getJwt('admin@example.com', '123456');
 const deck = {
   name: 'testCreate',
 };
-// let deckId;
 
 const generateDecks = [];
 let notOwnedDeckId;
@@ -98,7 +97,6 @@ describe('Create deck (logged)', () => {
     .then(res => {
       const deckCreated = res.body;
       expect(typeof res.body.id).toBe('number');
-      // deckId = res.body.id;
       expect(deckCreated).toHaveProperty('name');
       expect(res.body.name).toBe(deck.name);
       expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
@@ -138,25 +136,80 @@ describe('Update deck (empty name)', () => {
     .expect(422));
 });
 
-// describe('Add card to deck (logged)', () => {
-//   it('POST /deck/1/cards should return 200 and add card to deck', () => request(app)
-//     .post('/deck/1/cards')
-//     .set('Authorization', `Bearer ${jwt}`)
-//     .send({ cardId: 1 })
-//     .expect(200)
-//     .expect('Content-Type', /json/)
-//     .then(res => {
-//       expect(res.body).toBeInstanceOf(Object);
-//     }));
-// });
+describe('Add card to deck (logged)', () => {
+  it('POST /decks/1/cards should return 200 and add card to deck', () => request(app)
+    .post('/decks/1/cards')
+    .set('Authorization', `Bearer ${jwt}`)
+    .send({
+      cardId: 3,
+    })
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(res => {
+      expect(res.body).toBeInstanceOf(Object);
+    }));
+});
 
-// describe('Delete deck (logged)', () => {
-//   it('DELETE /deck/1 should return 200 and delete deck', () => request(app)
-//     .delete('/deck/1')
-//     .set('Authorization', `Bearer ${jwt}`)
-//     .expect(200)
-//     .expect('Content-Type', /json/)
-//     .then(res => {
-//       expect(res.body).toBeInstanceOf(Object);
-//     }));
-// });
+describe('Add card to deck (not owner of deck)', () => {
+  it('POST /decks/2/cards should return 403', () => request(app)
+    .post('/decks/2/cards')
+    .set('Authorization', `Bearer ${jwt}`)
+    .send({
+      cardId: 3,
+    })
+    .expect(403));
+});
+
+describe('Add card to deck (not owner of card)', () => {
+  it('POST /decks/1/cards should return 403', () => request(app)
+    .post('/decks/1/cards')
+    .set('Authorization', `Bearer ${jwt}`)
+    .send({
+      cardId: 1,
+    })
+    .expect(403));
+});
+
+describe('Remove card from deck (logged)', () => {
+  it('DELETE /decks/1/cards should return 204', () => request(app)
+    .delete('/decks/1/cards')
+    .set('Authorization', `Bearer ${jwt}`)
+    .send({
+      cardId: 3,
+    })
+    .expect(204));
+});
+
+describe('Remove card from deck (not owner of deck)', () => {
+  it('DELETE /decks/2/cards should return 204', () => request(app)
+    .delete('/decks/2/cards')
+    .set('Authorization', `Bearer ${jwt}`)
+    .send({
+      cardId: 3,
+    })
+    .expect(403));
+});
+
+describe('Remove card from deck (not owner of card)', () => {
+  it('DELETE /decks/1/cards should return 204', () => request(app)
+    .delete('/decks/1/cards')
+    .set('Authorization', `Bearer ${jwt}`)
+    .send({
+      cardId: 1,
+    })
+    .expect(403));
+});
+
+describe('Delete deck (not owner)', () => {
+  it('DELETE /decks/1 should return 403', () => request(app)
+    .delete('/decks/2')
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(403));
+});
+
+describe('Delete deck (logged)', () => {
+  it('DELETE /decks/1 should return 204', () => request(app)
+    .delete('/decks/1')
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(204));
+});
