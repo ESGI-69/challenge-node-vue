@@ -15,6 +15,7 @@
       <player-avatar
         :user-avatar="enemyAvatar"
         :is-enemy="true"
+        :hp-count="enemyHp"
         class="avatar__container__enemy"
         @mouseup="attackPlayer"
         @mouseover="mouseEnterEnemy"
@@ -67,6 +68,7 @@
       <player-avatar
         :user-avatar="avatarUrl"
         :is-enemy="false"
+        :hp-count="myHp"
         class=""
       />
       <card-hand
@@ -184,6 +186,9 @@ export default {
     const enemyId = computed(() => (gameStore.game.first_player === profileStore.getId) ? gameStore.game.second_player : gameStore.game.first_player);
 
     const enemyAvatar = computed(() => `${import.meta.env.VITE_API}/users/${enemyId.value}/avatar`);
+
+    const myHp = computed(() => gameStore.game.first_player === profileStore.getId ? gameStore.game.first_player_hp : gameStore.game.second_player_hp);
+    const enemyHp = computed(() => gameStore.game.first_player === profileStore.getId ? gameStore.game.second_player_hp : gameStore.game.first_player_hp);
 
     const isForfeitModalOpen = ref(false);
 
@@ -366,6 +371,8 @@ export default {
       turnStartedAt,
       avatarUrl,
       enemyAvatar,
+      myHp,
+      enemyHp,
     };
   },
 };
