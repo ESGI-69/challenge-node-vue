@@ -57,6 +57,24 @@ export default {
     }
   },
   /**
+   * Express.js controller for GET /decks/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   * */
+  getMyDecks: async (req, res, next) => {
+    try {
+
+      const decks = await deckService.findByIdUser(parseInt(req.user.id), {
+        include: Card,
+      });
+      res.json(decks);
+    } catch (err) {
+      next(err);
+    }
+  },
+  /**
    * Express.js controller for patch /decks/:id
    * @param {import('express').Request} req
    * @param {import('express').Response} res

@@ -6,6 +6,7 @@ import { isAdmin, isLogged } from '../middleware.js';
 const router = Router();
 
 router.get('/', isAdmin, deckController.cget);
+router.get('/my-decks', isLogged, deckController.getMyDecks);
 router.get('/:id', isLogged, deckController.get);
 router.post('/', isLogged, deckController.post);
 router.patch('/:id', isLogged, deckController.patch);

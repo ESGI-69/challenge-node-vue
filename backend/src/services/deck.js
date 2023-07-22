@@ -16,6 +16,15 @@ export default {
   findById: function (id, options = {}) {
     return Deck.findByPk(id, options);
   },
+  /**
+   * Find all decks associated with a specific user ID
+   * @param {number} userId
+   * @param {import('sequelize').FindOptions} options
+   * @returns {Promise<Deck[]>}
+   */
+  findByIdUser: function (userId, options = {}) {
+    return Deck.findAll({ ...options, where: { userId } });
+  },
   create: function (data) {
     return Deck.create(data);
   },
