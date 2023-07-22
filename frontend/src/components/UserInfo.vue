@@ -6,12 +6,7 @@
       :alt="username"
     >
     <div class="user-info__username">
-      <router-link
-        to="/game-history"
-        class="nes-text is-primary"
-      >
-        <a>{{ username }}</a>
-      </router-link>
+      {{ username }}
     </div>
     <div class="user-info__balance">
       <span class="nes-text is-primary">
@@ -90,13 +85,6 @@ export default {
     grid-area: username;
     align-self: top;
     font-size: 1.25rem;
-    a{
-      color: black;
-    }
-    a:hover {
-      text-decoration: none;
-    }
-
   }
 
   &__balance {
