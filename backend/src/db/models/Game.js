@@ -70,6 +70,16 @@ export default (connection) => {
           notEmpty: true,
         },
       },
+      first_player_hp: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 20,
+      },
+      second_player_hp: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 20,
+      },
     },
     {
       sequelize: connection,

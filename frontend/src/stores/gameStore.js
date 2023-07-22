@@ -17,6 +17,8 @@ export const useGameStore = defineStore('gameStore', {
      *  first_player: number;
      *  secondPlayer: Object;
      *  second_player: number;
+     *  first_player_hp: number;
+     *  second_player_hp: number;
      *  winner: number;
      *  createdAt: string;
      *  updatedAt: string;

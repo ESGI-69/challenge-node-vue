@@ -3,7 +3,7 @@
     <div :class="isEnemy ? 'circle circle__enemy' : 'circle'">
       <div class="circle__inner">
         <div class="circle__inner__text">
-          1
+          {{ hpCount }}
         </div>
       </div>
     </div>
@@ -25,6 +25,10 @@ export default {
     },
     isEnemy: {
       type: Boolean,
+      required: true,
+    },
+    hpCount: {
+      type: Number,
       required: true,
     },
   },
