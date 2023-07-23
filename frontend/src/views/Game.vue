@@ -26,6 +26,7 @@
         <card
           v-for="card in enemyCardsOnBoard"
           :key="card.id"
+          :ref="setCardRef(card.id)"
           class="enemy-card"
           v-bind="card"
           @mouseup="(event) => attackEnemy(card.id, event)"
@@ -55,11 +56,12 @@
       >
         <template #item="{ element }">
           <card
+            v-bind="element"
+            :ref="setCardPlayerRef(element.id)"
             class="card-hand__card-wrapper__card"
             :class="{
               'nes-pointer': isPlayerTurn,
             }"
-            v-bind="element"
             @mousedown="(event) => startAttack(element.id, element.attack, event)"
             @mouseup="cancelAttack"
           />
@@ -172,6 +174,16 @@ export default {
   setup() {
     const attackLine = ref(null);
 
+    let cardsEnemyRef = [];
+    let cardPlayerRef = [];
+    const setCardRef = (cardId) => (el) => {
+      cardsEnemyRef[cardId] = el;
+    };
+    const setCardPlayerRef = (cardId) => (el) => {
+      cardPlayerRef[cardId] = el;
+    };
+
+
     const gameStore = useGameStore();
     const profileStore = useProfileStore();
     const route = useRoute();
@@ -250,6 +262,8 @@ export default {
     let attack = reactive({
       attacker: null,
       target: null,
+      attackerRef: null,
+      targetRef: null,
     });
     const attackDamage = ref(0);
 
@@ -264,6 +278,7 @@ export default {
       if (!isPlayerTurn.value) return;
       attackLine.value.startDrawing(event);
       attack.attacker = cardId;
+      attack.attackerRef = cardPlayerRef[cardId];
       attackDamage.value = cardDamage;
     };
 
@@ -280,11 +295,47 @@ export default {
      * @param {number} cardId
      * @param {MouseEvent} event
      */
-    const attackEnemy = (cardId) => {
+    const attackEnemy = (cardId, event) => {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = cardId;
+
+      let targetPosition = cardsEnemyRef[cardId].$el.getBoundingClientRect();
+      let attackerPosition = cardPlayerRef[attack.attacker].$el.getBoundingClientRect();
+      console.log(targetPosition);
+      console.log(attackerPosition);
+      // targetPosition = {
+      //   left: targetPosition.left + targetPosition.width / 2,
+      //   top: targetPosition.top + targetPosition.height / 2,
+      // };
+      // attackerPosition = {
+      //   left: attackerPosition.left + attackerPosition.width / 2,
+      //   top: attackerPosition.top + attackerPosition.height / 2,
+      // };
+      moveElement(cardPlayerRef[attack.attacker].$el, cardsEnemyRef[cardId].$el);
+
       sendAttack();
+    };
+
+    const moveElement = (element, targetPosition) => {
+
+      // console.log(targetPosition, element);
+      element.style.boxShadow = '0 0 10px 0 rgba(0, 0, 0, 0.5)';
+      element.style.transition = '1s';
+      // element.style.transform = 'translate(0, -50%)';
+
+      const distanceX = targetPosition.getBoundingClientRect().left - element.getBoundingClientRect().left;
+      const distanceY = targetPosition.getBoundingClientRect().top - element.getBoundingClientRect().top;
+      console.log(distanceX, distanceY);
+
+      element.style.transform = `translate(${distanceX}px, ${distanceY}px)`;
+
+      setTimeout(() => {
+        element.style.boxShadow = 'none';
+        element.style.transform = 'translate(0, 0)';
+      }, 2000);
+
+
     };
 
     const attackPlayer = () => {
@@ -373,6 +424,8 @@ export default {
       enemyAvatar,
       myHp,
       enemyHp,
+      setCardRef,
+      setCardPlayerRef,
     };
   },
 };
