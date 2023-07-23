@@ -295,23 +295,11 @@ export default {
      * @param {number} cardId
      * @param {MouseEvent} event
      */
-    const attackEnemy = (cardId, event) => {
+    const attackEnemy = (cardId) => {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = cardId;
 
-      let targetPosition = cardsEnemyRef[cardId].$el.getBoundingClientRect();
-      let attackerPosition = cardPlayerRef[attack.attacker].$el.getBoundingClientRect();
-      console.log(targetPosition);
-      console.log(attackerPosition);
-      // targetPosition = {
-      //   left: targetPosition.left + targetPosition.width / 2,
-      //   top: targetPosition.top + targetPosition.height / 2,
-      // };
-      // attackerPosition = {
-      //   left: attackerPosition.left + attackerPosition.width / 2,
-      //   top: attackerPosition.top + attackerPosition.height / 2,
-      // };
       moveElement(cardPlayerRef[attack.attacker].$el, cardsEnemyRef[cardId].$el);
 
       sendAttack();
@@ -319,22 +307,22 @@ export default {
 
     const moveElement = (element, targetPosition) => {
 
-      // console.log(targetPosition, element);
-      element.style.boxShadow = '0 0 10px 0 rgba(0, 0, 0, 0.5)';
-      element.style.transition = '1s';
-      // element.style.transform = 'translate(0, -50%)';
+      element.style.transition = '0.35s ease-out';
 
       const distanceX = targetPosition.getBoundingClientRect().left - element.getBoundingClientRect().left;
-      const distanceY = targetPosition.getBoundingClientRect().top - element.getBoundingClientRect().top;
-      console.log(distanceX, distanceY);
+      const distanceY = (targetPosition.getBoundingClientRect().top - element.getBoundingClientRect().top) + ((element.getBoundingClientRect().height) / 2)  ;
 
-      element.style.transform = `translate(${distanceX}px, ${distanceY}px)`;
+      const angle = Math.atan2(element.getBoundingClientRect().left - targetPosition.getBoundingClientRect().left, element.getBoundingClientRect().top - targetPosition.getBoundingClientRect().top);
+      const rotation = angle * (180 / Math.PI) * -1;
+
+      element.style.transform = `translate(${distanceX}px, ${distanceY}px) rotate(${rotation}deg)`;
+      element.children[0].classList.add('card_animation');
 
       setTimeout(() => {
         element.style.boxShadow = 'none';
         element.style.transform = 'translate(0, 0)';
-      }, 2000);
-
+        element.children[0].classList.remove('card_animation');
+      }, 1300);
 
     };
 
