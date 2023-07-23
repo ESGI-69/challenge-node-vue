@@ -7,46 +7,33 @@
     @select="handleSelect"
   >
     <el-menu-item index="0">
-      LOGO
+      <router-link to="/">
+        <el-icon><back /></el-icon>
+        Back
+      </router-link>
+    </el-menu-item>
+    <el-menu-item index="1">
+      <router-link :to="{ name : 'adminHome'}">
+        Admin Panel
+      </router-link>
     </el-menu-item>
     <div class="flex-grow" />
-    <el-menu-item index="1">
-      Processing Center
+    <el-menu-item index="2">
+      <router-link :to="{ name: 'adminPayments' }">
+        Payments
+      </router-link>
     </el-menu-item>
-    <el-sub-menu index="2">
-      <template #title>
-        Workspace
-      </template>
-      <el-menu-item index="2-1">
-        item one
-      </el-menu-item>
-      <el-menu-item index="2-2">
-        item two
-      </el-menu-item>
-      <el-menu-item index="2-3">
-        item three
-      </el-menu-item>
-      <el-sub-menu index="2-4">
-        <template #title>
-          item four
-        </template>
-        <el-menu-item index="2-4-1">
-          item one
-        </el-menu-item>
-        <el-menu-item index="2-4-2">
-          item two
-        </el-menu-item>
-        <el-menu-item index="2-4-3">
-          item three
-        </el-menu-item>
-      </el-sub-menu>
-    </el-sub-menu>
+    <el-menu-item>
+      Moderation
+    </el-menu-item>
   </el-menu>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { ElMenu, ElMenuItem } from 'element-plus';
+
 
 export default {
   name: 'Topbar',
@@ -55,11 +42,17 @@ export default {
     ElMenuItem,
   },
   setup() {
-    const activeIndex = ref('1');
-
-    // const handleSelect = (index) => {
-    //   console.log(index);
-    // };
+    const router = useRouter();
+    const activeIndex =  computed(() => {
+      switch (router.currentRoute.value.name) {
+        case 'adminHome':
+          return '1';
+        case 'adminPayments':
+          return '2';
+        default:
+          return '1';
+      }
+    });
 
     const handleSelect = (key, keyPath) => {
       console.log(key, keyPath);
@@ -73,7 +66,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .flex-grow {
   flex-grow: 1;
 }

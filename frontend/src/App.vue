@@ -1,5 +1,10 @@
 <template>
-  <div class="app">
+  <div
+    class="app"
+    :class="{
+      'app-admin': $route.meta.layout === 'admin',
+    }"
+  >
     <router-view
       v-slot="{ Component }"
     >

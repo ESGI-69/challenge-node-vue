@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore --fix"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "@types/js-cookie": "^3.0.3",
     "axios": "^1.4.0",
     "echarts": "^5.4.3",

@@ -1,5 +1,5 @@
 <template>
-  <p>SubView</p>
+  <p>Stats ?</p>
 </template>
 
 <script>

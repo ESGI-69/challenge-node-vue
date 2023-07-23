@@ -34,7 +34,7 @@ const router = createRouter({
       redirect: { name: 'adminHome' },
       beforeEnter: isAdmin,
       meta: {
-        displayName: 'AdminHome',
+        displayName: 'Admin Panel',
         authRequired: true,
         layout: 'admin',
         // adminRequired: true,
@@ -45,17 +45,17 @@ const router = createRouter({
           name: 'adminHome',
           component: () => import('@/views/admin/AdminHome.vue'),
           meta: {
-            displayName: 'AdminHome',
+            displayName: 'Admin Panel',
             authRequired: true,
             layout: 'admin',
           },
         },
         {
-          path: 'test',
-          name: 'test',
-          component: () => import('@/views/admin/Test.vue'),
+          path: '/payments',
+          name: 'adminPayments',
+          component: () => import('@/views/admin/AdminPayments.vue'),
           meta: {
-            displayName: 'Test',
+            displayName: 'Payments management',
             authRequired: true,
             layout: 'admin',
           },

@@ -28,6 +28,14 @@ html, body, #app {
   height: 4px;
 }
 
-.admin-panel * {
+.app-admin * {
   font-family: Arial, Helvetica, sans-serif;
+  cursor: default;
+  a {
+    cursor: pointer;
+  }
 }
+
+.el-popper * {
+  font-family: Arial, Helvetica, sans-serif;
+}  

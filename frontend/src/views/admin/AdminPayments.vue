@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'Test',
+  name: 'AdminPayments',
   setup() {
     return {};
   },
