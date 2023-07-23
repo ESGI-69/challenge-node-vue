@@ -57,6 +57,12 @@
           Edit Profile
         </router-link>
         <router-link
+          :to="{ name: 'game-history' }"
+          class="nes-btn"
+        >
+          Games History
+        </router-link>
+        <router-link
           :to="{ name: 'payments-history' }"
           class="nes-btn"
         >
