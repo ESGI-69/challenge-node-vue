@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Cookies from 'js-cookie';
 import { useAuthStore } from '@/stores/authStore';
+import jwtDecode from 'jwt-decode';
 
 const isNotLogged = (to, from, next) => {
   const authStore = useAuthStore();
@@ -14,9 +15,53 @@ const isNotLogged = (to, from, next) => {
   return next({ name: 'home' });
 };
 
+const isAdmin = async (to, from, next) => {
+  const token = Cookies.get(import.meta.env.VITE_COOKIE_TOKEN_NAME);
+  const { role } = jwtDecode(token);
+  if (role === 'ADMIN') {
+    return next();
+  }
+  return next({ name: 'home' });
+};
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('@/views/Admin.vue'),
+      redirect: { name: 'adminHome' },
+      beforeEnter: isAdmin,
+      meta: {
+        displayName: 'Admin Panel',
+        authRequired: true,
+        layout: 'admin',
+        // adminRequired: true,
+      },
+      children: [
+        {
+          path: '/admin',
+          name: 'adminHome',
+          component: () => import('@/views/admin/AdminHome.vue'),
+          meta: {
+            displayName: 'Admin Panel',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
+        {
+          path: 'payments',
+          name: 'adminPayments',
+          component: () => import('@/views/admin/AdminPayments.vue'),
+          meta: {
+            displayName: 'Payments management',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
+      ],
+    },
     {
       path: '/',
       name: 'home',

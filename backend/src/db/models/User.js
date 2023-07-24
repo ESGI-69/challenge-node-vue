@@ -45,14 +45,6 @@ export default (connection) => {
     }
 
     /**
-     * Generate a JWT token for the user
-     * @returns {string} JWT token
-     */
-    generateToken() {
-      return jwt.sign({ id: this.id }, 'JWT_SECRET', { expiresIn: '1y' });
-    }
-
-    /**
      * Check if the user is an admin
      * @returns {boolean}
      */
