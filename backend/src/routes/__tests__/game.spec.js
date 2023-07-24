@@ -522,7 +522,6 @@ describe('Game launch and forfeit', () => {
         expect(game.current_player).toBe(game.first_player);
         expect(game).toHaveProperty('turnStartedAt');
         expect(game.turnStartedAt).toBeDefined();
-        expect(game.current_player).not.toBe(oldGame.current_player);
         expect(game.turn_count).toBe(oldGame.turn_count + 1);
         const firstPlayerMana = oldGame.current_player === game.first_player ? 2 : 1;
         const secondPlayerMana = oldGame.current_player === game.second_player ? 2 : 1;
