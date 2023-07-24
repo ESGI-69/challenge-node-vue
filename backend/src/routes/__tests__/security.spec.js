@@ -80,7 +80,7 @@ describe('Login userflow', () => {
         delete decoded.iat;
         delete decoded.exp;
         user.id = decoded.id;
-        expect(Object.keys(decoded)).toEqual(['id']);
+        expect(Object.keys(decoded)).toEqual(['id', 'role']);
         done();
       })
       .catch(done);
