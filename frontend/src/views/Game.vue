@@ -26,6 +26,7 @@
         <card
           v-for="card in enemyCardsOnBoard"
           :key="card.id"
+          :ref="setCardRef(card.id)"
           class="enemy-card"
           v-bind="card"
           @mouseup="(event) => attackEnemy(card.id, event)"
@@ -55,11 +56,12 @@
       >
         <template #item="{ element }">
           <card
+            v-bind="element"
+            :ref="setCardPlayerRef(element.id)"
             class="card-hand__card-wrapper__card"
             :class="{
               'nes-pointer': isPlayerTurn,
             }"
-            v-bind="element"
             @mousedown="(event) => startAttack(element.id, element.attack, event)"
             @mouseup="cancelAttack"
           />
@@ -172,6 +174,16 @@ export default {
   setup() {
     const attackLine = ref(null);
 
+    let cardsEnemyRef = [];
+    let cardPlayerRef = [];
+    const setCardRef = (cardId) => (el) => {
+      cardsEnemyRef[cardId] = el;
+    };
+    const setCardPlayerRef = (cardId) => (el) => {
+      cardPlayerRef[cardId] = el;
+    };
+
+
     const gameStore = useGameStore();
     const profileStore = useProfileStore();
     const route = useRoute();
@@ -250,6 +262,8 @@ export default {
     let attack = reactive({
       attacker: null,
       target: null,
+      attackerRef: null,
+      targetRef: null,
     });
     const attackDamage = ref(0);
 
@@ -264,6 +278,7 @@ export default {
       if (!isPlayerTurn.value) return;
       attackLine.value.startDrawing(event);
       attack.attacker = cardId;
+      attack.attackerRef = cardPlayerRef[cardId];
       attackDamage.value = cardDamage;
     };
 
@@ -284,7 +299,31 @@ export default {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = cardId;
+
+      moveElement(cardPlayerRef[attack.attacker].$el, cardsEnemyRef[cardId].$el);
+
       sendAttack();
+    };
+
+    const moveElement = (element, targetPosition) => {
+
+      element.style.transition = '0.35s ease-out';
+
+      const distanceX = targetPosition.getBoundingClientRect().left - element.getBoundingClientRect().left;
+      const distanceY = (targetPosition.getBoundingClientRect().top - element.getBoundingClientRect().top) + ((element.getBoundingClientRect().height) / 2)  ;
+
+      const angle = Math.atan2(element.getBoundingClientRect().left - targetPosition.getBoundingClientRect().left, element.getBoundingClientRect().top - targetPosition.getBoundingClientRect().top);
+      const rotation = angle * (180 / Math.PI) * -1;
+
+      element.style.transform = `translate(${distanceX}px, ${distanceY}px) rotate(${rotation}deg)`;
+      element.children[0].classList.add('card_animation');
+
+      setTimeout(() => {
+        element.style.boxShadow = 'none';
+        element.style.transform = 'translate(0, 0)';
+        element.children[0].classList.remove('card_animation');
+      }, 1300);
+
     };
 
     const attackPlayer = () => {
@@ -373,6 +412,8 @@ export default {
       enemyAvatar,
       myHp,
       enemyHp,
+      setCardRef,
+      setCardPlayerRef,
     };
   },
 };

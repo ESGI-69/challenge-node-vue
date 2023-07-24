@@ -393,4 +393,27 @@ export default {
     }
   }
 }
+
+.card_animation {
+  animation: rotate 2s;
+}
+
+  @keyframes rotate { // Le balancement de la carte
+    0% {
+      transform: rotateX(0deg);
+      box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);
+    }
+    7% {
+      transform: rotateX(-5deg);
+      box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 20px 12px rgba(0,0,0,0.22);
+    }
+    25% {
+      transform: rotateX(10deg);
+      box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 -20px 12px rgba(0,0,0,0.22);
+    }
+    100% {
+      transform: rotateX(0deg);
+      box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);
+    }
+  }
 </style>
