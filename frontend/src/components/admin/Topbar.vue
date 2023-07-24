@@ -54,9 +54,7 @@ export default {
       }
     });
 
-    const handleSelect = (key, keyPath) => {
-      console.log(key, keyPath);
-    };
+    const handleSelect = (key, keyPath) => `${ key } & ${ keyPath }`;
 
     return {
       activeIndex,
