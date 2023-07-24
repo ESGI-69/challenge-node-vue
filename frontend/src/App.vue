@@ -14,9 +14,7 @@
       >
         <suspense>
           <template #fallback>
-            <component
-              :is="LoadingComponent"
-            />
+            <loading />
           </template>
           <component
             :is="LayoutComponent"
@@ -35,7 +33,6 @@ import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { useAuthStore } from './stores/authStore';
 
 import Loading from './views/Loading.vue';
-import LoadingAdmin from './views/LoadingAdmin.vue';
 import LoggedLayout from '@/layouts/Logged.vue';
 import NotLoggedLayout from '@/layouts/NotLogged.vue';
 import AdminLayout from '@/layouts/Admin.vue';
@@ -61,16 +58,8 @@ export default {
       return NotLoggedLayout;
     });
 
-    const LoadingComponent = computed(() => {
-      if (route.meta.layout === 'admin') {
-        return LoadingAdmin;
-      }
-      return Loading;
-    });
-
     return {
       LayoutComponent,
-      LoadingComponent,
     };
   },
 };
