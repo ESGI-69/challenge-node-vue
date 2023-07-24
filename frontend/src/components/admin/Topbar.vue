@@ -32,6 +32,11 @@
         Payments
       </router-link>
     </el-menu-item>
+    <el-menu-item index="3">
+      <router-link :to="{ name: 'adminUsers' }">
+        Users
+      </router-link>
+    </el-menu-item>
     <el-menu-item>
       Moderation
     </el-menu-item>

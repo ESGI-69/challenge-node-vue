@@ -46,18 +46,15 @@ export const useUserStore = defineStore('userStore', {
     },
 
     /**
-     * Get all user as admin
+     * Get All users
      * @returns {Array} The users
      */
     async getUsers() {
-      this.isUsersLoading = true;
       try {
         const { data } = await $API.get('/users/');
         this.users = data;
       } catch (err) {
         throw err.response.data;
-      } finally {
-        this.isUsersLoading = false;
       }
     },
   },

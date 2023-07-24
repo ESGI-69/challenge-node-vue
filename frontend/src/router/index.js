@@ -60,6 +60,16 @@ const router = createRouter({
             layout: 'admin',
           },
         },
+        {
+          path: 'users',
+          name: 'adminUsers',
+          component: () => import('@/views/admin/AdminUsers.vue'),
+          meta: {
+            displayName: 'Users management',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
       ],
     },
     {
