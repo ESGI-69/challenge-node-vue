@@ -70,6 +70,26 @@ const router = createRouter({
         displayName: 'Home',
         authRequired: true,
       },
+      children: [
+        {
+          path: 'history-stats',
+          name: 'home-history-stats',
+          component: () => import('@/views/Menu/HistoryStats.vue'),
+          meta: {
+            displayName: 'History & Stats',
+            authRequired: true,
+          },
+        },
+        {
+          path: 'packs-cards',
+          name: 'home-packs-cards',
+          component: () => import('@/views/Menu/PacksCards.vue'),
+          meta: {
+            displayName: 'Packs & Cards',
+            authRequired: true,
+          },
+        },
+      ],
     },
     {
       path: '/cards',

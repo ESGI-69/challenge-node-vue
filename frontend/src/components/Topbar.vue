@@ -117,7 +117,7 @@ export default {
       router.push({ name: 'home' });
     };
 
-    const isHome = computed(() => route.name === 'home');
+    const isHome = computed(() => route.name === 'home' || route.name.startsWith('home-'));
     const isInGame = computed(() => route.name === 'game');
     const isInLobby = computed(() => route.name === 'lobby');
 
