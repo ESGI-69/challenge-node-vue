@@ -1,4 +1,4 @@
-import { Payment } from './../db/index.js';
+import { Payment, Product, User } from './../db/index.js';
 
 export default {
   /**
@@ -12,6 +12,10 @@ export default {
       where: criteria,
       ...options,
       order: Object.entries(options.order || {}),
+      include: [{
+        model: Product,
+        as: 'product',
+      }],
     });
   },
 
@@ -65,6 +69,16 @@ export default {
       where: criteria,
       ...options,
       order: Object.entries(options.order || {}),
+      include: [
+        {
+          model: Product,
+          as: 'product',
+        },
+        {
+          model: User,
+          as: 'user',
+        },
+      ],
     });
   },
 };

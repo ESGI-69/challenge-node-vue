@@ -8,6 +8,8 @@ export const useUserStore = defineStore('userStore', {
     isUpdateLoading: false,
     isEmailUpdated: false,
     isPasswordUpdated: false,
+    isUsersLoading: false,
+    users: [],
   }),
 
   actions: {
@@ -40,6 +42,22 @@ export const useUserStore = defineStore('userStore', {
         throw err.response.data;
       } finally {
         this.isUpdateLoading = false;
+      }
+    },
+
+    /**
+     * Get all user as admin
+     * @returns {Array} The users
+     */
+    async getUsers() {
+      this.isUsersLoading = true;
+      try {
+        const { data } = await $API.get('/users/');
+        this.users = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUsersLoading = false;
       }
     },
   },

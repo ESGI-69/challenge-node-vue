@@ -7,19 +7,28 @@
     @select="handleSelect"
   >
     <el-menu-item index="0">
-      <router-link to="/">
+      <router-link
+        class="topbar-link"
+        to="/"
+      >
         <el-icon><back /></el-icon>
         Back
       </router-link>
     </el-menu-item>
     <el-menu-item index="1">
-      <router-link :to="{ name : 'adminHome'}">
+      <router-link
+        class="topbar-link"
+        :to="{ name : 'adminHome'}"
+      >
         Admin Panel
       </router-link>
     </el-menu-item>
     <div class="flex-grow" />
     <el-menu-item index="2">
-      <router-link :to="{ name: 'adminPayments' }">
+      <router-link
+        class="topbar-link"
+        :to="{ name: 'adminPayments' }"
+      >
         Payments
       </router-link>
     </el-menu-item>
@@ -67,5 +76,8 @@ export default {
 <style lang="scss" scoped>
 .flex-grow {
   flex-grow: 1;
+}
+.topbar-link {
+  text-decoration: none;
 }
 </style>

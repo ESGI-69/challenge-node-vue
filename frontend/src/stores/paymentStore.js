@@ -7,8 +7,10 @@ export const usePaymentStore = defineStore('paymentStore', {
     isGetPaymentsLoading: false,
     isPostPaymentLoading: false,
     isPatchPaymentLoading: false,
+    isGetPaymentsAdminLoading: false,
     checkoutUrl: '',
     payments: [],
+    paymentsAdmin: [],
   }),
 
   actions: {
@@ -59,6 +61,24 @@ export const usePaymentStore = defineStore('paymentStore', {
       }
       finally {
         this.isGetPaymentsLoading = false;
+      }
+    },
+
+    /**
+     * Get All payments as Admin
+     * @returns {Array} The payments
+     */
+    async getPaymentsAdmin(){
+      this.isGetPaymentsAdminLoading = true;
+      try {
+        const { data } = await $API.get('/payments/admin/');
+        this.paymentsAdmin = data;
+      }
+      catch (err) {
+        throw err.response.data;
+      }
+      finally {
+        this.isGetPaymentsAdminLoading = false;
       }
     },
   },

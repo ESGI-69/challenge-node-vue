@@ -137,7 +137,7 @@ export default {
         throw new Error('Forbidden');
       }
 
-      res.json(await paymentService.findAll({}));
+      res.json(await paymentService.findAllWithSessionId({}));
     } catch (err) {
       next(err);
     }
