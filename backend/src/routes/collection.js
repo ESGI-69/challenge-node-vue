@@ -5,6 +5,8 @@ const router = Router();
 
 router.get('/', isLogged, userControler.getCards);
 router.get('/all-ids', isLogged, userControler.getAllCardIds);
+router.get('/all-decks-ids', isLogged, userControler.getAllDeckIds);
+
 // router.get('/:id', isLogged, userControler.getCard);
 
 export default router;

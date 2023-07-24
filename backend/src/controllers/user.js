@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import userService from '../services/user.js';
 import cardService from '../services/card.js';
 import deckService from '../services/deck.js';
-import { Card, User } from '../db/index.js';
+import { Card, Deck, User } from '../db/index.js';
 
 export default {
   /**
@@ -413,6 +413,28 @@ export default {
       res.json(choosedFavDeck);
     } catch (err) {
       console.error(err);
+      next(err);
+    }
+  },
+  /**
+   * Express.js controller for Get /collection/all-decks-ids
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  getAllDeckIds: async (req, res, next) => {
+    try {
+      const options = {
+        where: { userId: req.user.id },
+        attributes: ['id'],
+      };
+
+      let decks = await deckService.findAll(options);
+      decks = decks.map((deck) => {
+        return deck.id;
+      });
+      res.json(decks);
+    } catch (err) {
       next(err);
     }
   },

@@ -1,8 +1,9 @@
 import deckService from '../services/deck.js';
 import userService from '../services/user.js';
 import cardService from '../services/card.js';
+import { Op } from 'sequelize';
 
-import { Card } from '../db/index.js';
+import { Card, Deck } from '../db/index.js';
 
 export default {
   /**
@@ -28,8 +29,9 @@ export default {
    */
   post: async (req, res, next) => {
     try {
+      const { name } = req.body.params;
       const deck = await deckService.create({
-        name: req.body.name,
+        name: name,
         userId: req.user.id,
       });
       res.status(201).json(deck);
@@ -65,11 +67,58 @@ export default {
    * */
   getMyDecks: async (req, res, next) => {
     try {
-
-      const decks = await deckService.findByIdUser(parseInt(req.user.id), {
+      res.json(await deckService.findByIdUser(parseInt(req.user.id), {
         include: Card,
+      }));
+    } catch (err) {
+      next(err);
+    }
+  },
+  /**
+   * Express.js controller for GET /decks/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   * */
+  getSearchMyDecks: async (req, res, next) => {
+    try {
+      const { order, limit, offset, name } = req.query;
+
+      const orderDirection = order ? order.startsWith('-') ? 'DESC' : 'ASC' : null;
+      const orderField = order ? order.replace('-', '') : null;
+      const formatedOrder = orderField ? [[orderField, orderDirection]] : null;
+
+      if (order && !Object.keys(Card.getAttributes()).includes(orderField)) {
+        throw new Error(`Invalid order field, ${order.replace('-', '')} is not a valid field`);
+      }
+
+      if (name === null) {
+        throw new Error(`Invalid name, ${name} is not a valid name`);
+      }
+
+      let where = {
+        userId: req.user.id,
+        name: { [Op.iLike]: `${name}%` },
+      };
+
+      const options = {
+        where: where,
+        limit: limit || null,
+        offset: offset || null,
+        order: formatedOrder,
+      };
+
+      const count = await deckService.count(options);
+      const decks = await deckService.findAll(options);
+      const nextOffset = parseInt(options.offset) + parseInt(options.limit);
+
+      res.json({
+        count,
+        nextOffset,
+        decks,
       });
-      res.json(decks);
+
     } catch (err) {
       next(err);
     }
@@ -153,10 +202,9 @@ export default {
 
       await deckService.addCard(deck, parseInt(req.body.cardId));
 
-      const updatedDeck = await deckService.findById(deck.id, {
+      res.json(await deckService.findById(deck.id, {
         include: Card,
-      });
-      res.json(updatedDeck);
+      }));
 
     } catch (err) {
       next(err);
