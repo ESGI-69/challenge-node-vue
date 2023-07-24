@@ -123,4 +123,23 @@ export default {
       next(err);
     }
   },
+
+  /**
+   * Express.js controller GET /payments/admin
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  async cgetAdmin(req, res, next) {
+    try {
+      if (!req.user.isAdmin) {
+        throw new Error('Forbidden');
+      }
+
+      res.json(await paymentService.findAll({}));
+    } catch (err) {
+      next(err);
+    }
+  },
 };

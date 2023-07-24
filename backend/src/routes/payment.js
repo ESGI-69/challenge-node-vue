@@ -11,5 +11,6 @@ const upload = multer();
 router.get('/', isLogged, paymentController.cget);
 router.post('/', isLogged, upload.none(), paymentController.post);
 router.patch('/:id', isLogged, paymentController.patch);
+router.get('/admin', isLogged, paymentController.cgetAdmin);
 
 export default router;
