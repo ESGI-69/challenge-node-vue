@@ -113,8 +113,16 @@ export default {
     await gameModel.save();
     return this.findById(gameModel.id);
   },
-  start: async function (gameModel) {
+  /**
+   * @param {import('../db/index.js').Game} gameModel
+   * @param {import('../db/index.js').User} firstPlayerModel
+   * @param {import('../db/index.js').User} secondPlayerModel
+   * @returns {Promise<import('../db/index.js').Game>} The updated & stated game
+   */
+  start: async function (gameModel, firstPlayerModel, secondPlayerModel) {
     gameModel.startedAt = new Date();
+    gameModel.first_player_deck = firstPlayerModel.idDeckFav;
+    gameModel.second_player_deck = secondPlayerModel.idDeckFav;
     gameModel.current_player = gameModel.first_player;
     await gameModel.save();
     return this.findById(gameModel.id);

@@ -1,6 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 import mailer from '../../utils/mailer.js';
@@ -151,6 +150,11 @@ export default (connection) => {
         },
         withoutEmailToken: {
           attributes: { exclude: ['mailToken'] },
+        },
+      },
+      getterMethods: {
+        hasFavoriteDeck() {
+          return this.idDeckFav !== null;
         },
       },
     },

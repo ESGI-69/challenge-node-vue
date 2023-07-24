@@ -189,7 +189,12 @@ export default {
       if (game.first_player !== req.user.id) throw new Error('You are not the owner of this game', { cause: 'Forbidden' });
       if (!game.hasTwoPlayers) throw new Error('Game has only one player');
       if (game.isInProgress) throw new Error('Game already started');
-      const startedGame = await gameService.start(game);
+      // Check if the decks are set
+      const firstPlayer = await userService.findById(game.first_player);
+      const secondPlayer = await userService.findById(game.second_player);
+      if (!firstPlayer.hasFavoriteDeck || !secondPlayer.hasFavoriteDeck) throw new Error('One of the players has no favorite deck');
+
+      const startedGame = await gameService.start(game, firstPlayer, secondPlayer);
       io.to(game.id).emit('game:started', startedGame);
       gameService.startTimer(startedGame);
       res.sendStatus(200);
