@@ -3,7 +3,7 @@ import userService from '../services/user.js';
 import cardService from '../services/card.js';
 import { Op } from 'sequelize';
 
-import { Card, Deck } from '../db/index.js';
+import { Card } from '../db/index.js';
 
 export default {
   /**

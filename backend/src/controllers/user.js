@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import userService from '../services/user.js';
 import cardService from '../services/card.js';
 import deckService from '../services/deck.js';
-import { Card, Deck, User } from '../db/index.js';
+import { Card, User } from '../db/index.js';
 
 export default {
   /**
