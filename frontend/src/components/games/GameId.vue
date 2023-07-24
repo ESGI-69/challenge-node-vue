@@ -1,7 +1,7 @@
 <template>
   <div class="game-id nes-badge is-splited">
     <span class="is-dark">Game ID</span>
-    <span class="is-primary">{{ id.toUpperCase() }}</span>
+    <span class="is-primary">{{ id }}</span>
   </div>
 </template>
 
@@ -20,5 +20,9 @@ export default {
 <style lang="scss" scoped>
 .game-id {
   width: 250px;
+
+  .is-primary {
+    user-select: text;
+  }
 }
 </style>

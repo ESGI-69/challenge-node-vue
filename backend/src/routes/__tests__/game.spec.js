@@ -379,6 +379,10 @@ describe('Game launch and forfeit', () => {
       expect(game.current_player).toBe(game.first_player);
       expect(game).toHaveProperty('turnStartedAt');
       expect(game.turnStartedAt).toBeDefined();
+      expect(game.current_player).toBe(game.first_player);
+      expect(game.turn_count).toBe(1);
+      expect(game.first_player_mana).toBe(1);
+      expect(game.second_player_mana).toBe(1);
       success();
     });
 
@@ -408,6 +412,10 @@ describe('Game launch and forfeit', () => {
       expect(game.current_player).toBe(game.first_player);
       expect(game).toHaveProperty('turnStartedAt');
       expect(game.turnStartedAt).toBeDefined();
+      expect(game.current_player).toBe(game.first_player);
+      expect(game.turn_count).toBe(1);
+      expect(game.first_player_mana).toBe(1);
+      expect(game.second_player_mana).toBe(1);
       success();
     });
 
@@ -478,6 +486,10 @@ describe('Game launch and forfeit', () => {
       expect(game.current_player).toBe(game.first_player);
       expect(game).toHaveProperty('turnStartedAt');
       expect(game.turnStartedAt).toBeDefined();
+      expect(game.current_player).toBeDefined();
+      expect(game.turn_count).toBeDefined();
+      expect(game.first_player_mana).toBeDefined();
+      expect(game.second_player_mana).toBeDefined();
       success();
     });
 
@@ -507,6 +519,9 @@ describe('Game launch and forfeit', () => {
       expect(game.current_player).toBe(game.first_player);
       expect(game).toHaveProperty('turnStartedAt');
       expect(game.turnStartedAt).toBeDefined();
+      expect(game.turn_count).toBeDefined();
+      expect(game.first_player_mana).toBeDefined();
+      expect(game.second_player_mana).toBeDefined();
       success();
     });
 
@@ -514,7 +529,7 @@ describe('Game launch and forfeit', () => {
       .post('/game/end-turn')
       .set('Authorization', `Bearer ${secondJwt}`)
       .expect(200)
-      .then(success());
+      .then(success);
   });
 
   it('The turn should not be changed before 30 seconds', () => {

@@ -1,9 +1,10 @@
 <template>
   <div
     class="card-cost"
+    :style="`background-image: url(${ManaCrystal})`"
     :class="{
       'card-cost--is-clickable': isClickable,
-      'card-cost--is-selected': isSelected,
+      'card-cost--is-empty': isEmpty,
     }"
     @[clickEvent]="$emit('click', cost)"
   >
@@ -13,6 +14,9 @@
 
 <script>
 import { computed, toRefs } from 'vue';
+
+import ManaCrystal from '@/assets/mana-crystal.png';
+
 export default {
   name: 'CardCost',
   props: {
@@ -20,13 +24,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    isSelected: {
-      type: Boolean,
-      default: false,
-    },
     cost: {
       type: Number,
       required: true,
+    },
+    isEmpty: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: [ 'click' ],
@@ -36,6 +40,7 @@ export default {
     const clickEvent = computed(() => isClickable.value ? 'click' : null);
     return {
       clickEvent,
+      ManaCrystal,
     };
   },
 };
@@ -50,14 +55,15 @@ export default {
   width: 2rem;
   color: white;
   border-radius: 50%;
-  background-color: blue;
+  background-size: cover;
+  background-position: center;
 
   &--is-clickable {
     cursor: pointer;
   }
 
-  &--is-selected {
-    background-color: lightskyblue;
+  &--is-empty {
+    filter: brightness(0.5);
   }
 }
 </style>
