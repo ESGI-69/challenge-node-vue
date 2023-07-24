@@ -140,12 +140,12 @@ export default (connection) => {
             game.turn_count += 1;
             if (game.turn_count > 2) {
               if (game.turn_count % 2 === 0) {
-                if (game.first_player_mana < 10) {
-                  game.first_player_mana += 1;
-                }
-              } else {
                 if (game.second_player_mana < 10) {
                   game.second_player_mana += 1;
+                }
+              } else {
+                if (game.first_player_mana < 10) {
+                  game.first_player_mana += 1;
                 }
               }
             }

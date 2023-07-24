@@ -474,11 +474,11 @@ export default {
       z-index: 20;
 
       &--player {
-        top: 0;
+        bottom: 0;
       }
 
       &--enemy {
-        bottom: 0;
+        top: 0;
       }
     }
   }
