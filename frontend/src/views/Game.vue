@@ -77,6 +77,7 @@
       <card-hand
         class="game__container__player-hand"
         :is-player-turn="isPlayerTurn"
+        :player-mana="playerMana"
         :cards="[
           {
             id: 1,

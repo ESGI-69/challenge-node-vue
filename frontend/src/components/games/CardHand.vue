@@ -22,6 +22,7 @@
         name: 'cards',
         put: false,
       }"
+      draggable=".card-hand__card-wrapper__card--is-usable"
       item-key="id"
       class="card-hand"
       animation="150"
@@ -33,6 +34,7 @@
           class="card-hand__card-wrapper"
           :class="{
             'nes-pointer': isPlayerTurn,
+            'card-hand__card-wrapper__card--is-usable': playerMana >= element.cost,
           }"
         >
           <card
@@ -73,6 +75,10 @@ export default {
     isPlayerTurn: {
       type: Boolean,
       default: false,
+    },
+    playerMana: {
+      type: Number,
+      default: 0,
     },
   },
   setup(props) {
@@ -119,9 +125,9 @@ export default {
     &:after {
       bottom: 0;
       content: '';
-      left: -60px;
+      left: -30px;
       position: absolute;
-      right: -60px;
+      right: -30px;
       top: 0px;
       z-index: 10;
       // background-color: rgba($color: red, $alpha: 0.2);
