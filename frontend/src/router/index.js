@@ -74,7 +74,7 @@ const router = createRouter({
         {
           path: 'history-stats',
           name: 'home-history-stats',
-          component: () => import('@/views/Menu/HistoryStats.vue'),
+          component: () => import('@/views/menu/HistoryStats.vue'),
           meta: {
             displayName: 'History & Stats',
             authRequired: true,
@@ -83,7 +83,7 @@ const router = createRouter({
         {
           path: 'packs-cards',
           name: 'home-packs-cards',
-          component: () => import('@/views/Menu/PacksCards.vue'),
+          component: () => import('@/views/menu/PacksCards.vue'),
           meta: {
             displayName: 'Packs & Cards',
             authRequired: true,
