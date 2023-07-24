@@ -88,10 +88,9 @@
 
 <script>
 import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import Deck from '@/components/Deck.vue';
-import TablePagination from './TablePagination.vue';
+// import TablePagination from './TablePagination.vue';
 import Container from '@/components/Container.vue';
 import Modal from '@/components/Modal.vue';
 
@@ -103,7 +102,7 @@ export default {
     Deck,
     Modal,
     Container,
-    TablePagination,
+    // TablePagination,
   },
   setup() {
     const deckStore = useDeckStore();
