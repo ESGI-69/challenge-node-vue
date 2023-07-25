@@ -133,8 +133,6 @@ export default {
    */
   async cgetAdmin(req, res, next) {
     try {
-      if (!req.user.isAdmin) throw new Error('You\'r not admin', { cause: 'Forbidden' });
-
       res.json(await paymentService.findAllWithSessionId({}));
     } catch (err) {
       next(err);
