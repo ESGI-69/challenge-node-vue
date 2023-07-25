@@ -127,6 +127,11 @@ export default (connection) => {
         allowNull: false,
         defaultValue: 0,
       },
+      isBanned: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       sequelize: connection,

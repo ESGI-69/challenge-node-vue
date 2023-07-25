@@ -218,9 +218,6 @@ export default {
    */
   patch: async (req, res, next) => {
     try {
-      if (req.body.balance) {
-        delete req.body.balance;
-      }
       const user = await userService.update(
         { id: parseInt(req.params.id) },
         req.body,
@@ -250,6 +247,26 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for PATCH /users/:id/ban
+   * @param {import ('express').Request} req
+   * @param {import ('express').Response} res
+   * @param {import ('express').NextFunction} next
+   * @returns {Promise <void>}
+   */
+  patchBan: async (req, res, next) => {
+    try {
+      const user = await userService.update(
+        { id: parseInt(req.params.id) },
+        { isBanned: req.body.isBanned },
+      );
+      if (!user) return res.sendStatus(404);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  },
+
   /**
    * Express.js controller for DELETE /users/:id
    * @param {import('express').Request} req
