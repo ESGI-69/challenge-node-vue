@@ -8,6 +8,7 @@ export const useDeckStore = defineStore('deckStore', {
     isUserDecksLoading: false,
     isUserDeckLoading: false,
     isUserDeckIdsLoading: false,
+    msgError: '',
     userDecks: [],
     userDecksCount: 0,
     /**
@@ -115,8 +116,13 @@ export const useDeckStore = defineStore('deckStore', {
         });
 
         this.deck = data;
+        this.msgError = '';
       } catch (err) {
-        throw err.response.data;
+        if (err.response.status === 400 && err.response.data.reason==='Deck is full') {
+          this.msgError = err.response.data.reason;
+        } else {
+          throw err.response.data;
+        }
       } finally {
         this.isUserDeckIdsLoading = false;
       }
@@ -146,6 +152,9 @@ export const useDeckStore = defineStore('deckStore', {
       } finally {
         this.isUserDecksLoading = false;
       }
+    },
+    resetMsgError() {
+      this.msgError = '';
     },
   },
 });

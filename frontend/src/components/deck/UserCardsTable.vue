@@ -111,14 +111,28 @@
       <p>Loading...</p>
     </div>
   </div>
+  <modal-error
+    v-model:isOpen="isErrorModalOpen"
+    @cancel="closeModalError"
+  >
+    <template #header>
+      <h2>Error</h2>
+    </template>
+    <div class="nes-field">
+      <p>
+        {{ msgError }}
+      </p>
+    </div>
+  </modal-error>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Card from '@/components/Card.vue';
 import CardCost from '@/components/card/CardCost.vue';
+import ModalError from '@/components/ModalError.vue';
 
 import { useCardStore } from '@/stores/cardStore';
 import { useDeckStore } from '@/stores/deckStore';
@@ -128,6 +142,7 @@ export default {
   components: {
     Card,
     CardCost,
+    ModalError,
   },
   setup() {
     const cardStore = useCardStore();
@@ -142,6 +157,8 @@ export default {
     const isLoading = computed(() => cardStore.isUserCardsLoading);
     const deckCards = computed(() => deckStore.deck.Cards);
     const cards = computed(() => cardStore.userCards);
+    const msgError = computed(() => deckStore.msgError);
+    const isErrorModalOpen = ref(false);
 
     const filteredCards = computed(() => {
       if (deckCards.value.length === 0){
@@ -155,6 +172,15 @@ export default {
     const order = ref('cost');
     const costFilter = ref(null);
 
+    const closeModalError = () => {
+      isErrorModalOpen.value = false;
+      deckStore.resetMsgError();
+    };
+
+    watch(msgError, (newVal) => {
+      isErrorModalOpen.value = newVal !== '';
+    });
+
     const getCards = () => {
       const options = {
         order: order.value,
@@ -165,6 +191,10 @@ export default {
 
     const addCardFromDeck = (cardId) => {
       deckStore.addCardFromDeck(deckId, cardId);
+
+      // if (msgError.value !== '') {
+      //   isErrorModalOpen.value = true;
+      // }
     };
 
     // Load cards on created
@@ -188,11 +218,14 @@ export default {
       addCardFromDeck,
       cardPerRow,
       cards,
+      closeModalError,
       costFilter,
       deckCards,
+      isErrorModalOpen,
       filteredCards,
       getCards,
       isLoading,
+      msgError,
       order,
       resetCostFilter,
       setCostFilter,
