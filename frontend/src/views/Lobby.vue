@@ -122,8 +122,9 @@ export default {
       gameStore.setGame(game);
     });
 
-    socket.once('game:started', (game) => {
+    socket.once('game:started', async (game) => {
       gameStore.setGame(game);
+      await gameStore.getHand();
       router.push({ name: 'game', params: { id: game.id } });
     });
 

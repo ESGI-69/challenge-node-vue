@@ -32,6 +32,8 @@ export const useGameStore = defineStore('gameStore', {
      * }}
      */
     game: {},
+    isHandLoading: false,
+    hand: [],
   }),
 
   getters: {
@@ -139,6 +141,25 @@ export const useGameStore = defineStore('gameStore', {
       } catch (error) {
         throw error.response;
       }
+    },
+
+    async getHand() {
+      this.isHandLoading = true;
+      try {
+        const { data: { cards } } = await $API.get('/game/hand');
+        this.setHand(cards);
+      } catch (error) {
+        throw error.response;
+      } finally {
+        this.isHandLoading = false;
+      }
+    },
+
+    /**
+     * @param {{}[]} cardsInHand
+     */
+    setHand(cardsInHand) {
+      this.hand = cardsInHand;
     },
   },
 });

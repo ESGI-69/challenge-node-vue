@@ -27,6 +27,7 @@
       class="card-hand"
       animation="150"
       :disabled="!isPlayerTurn"
+      :sort="false"
       @remove="onRemove"
     >
       <template #item="{ element }">
@@ -48,7 +49,7 @@
 </template>
 
 <script>
-import { computed, toRefs, ref } from 'vue';
+import { computed, toRefs, ref, onMounted, onUpdated } from 'vue';
 
 import Draggable from 'vuedraggable';
 import Card from '@/components/Card.vue';
@@ -87,9 +88,27 @@ export default {
     const cardsQuantity = computed(() => isEnemy.value ? cardsFixedQuantity.value : cards.value.length);
 
     /**
-     * Computed with get set
+     * Reactive copy of the cards array to be able to drag and drop them
      */
-    const cardsDraggable = ref(cards.value);
+    const cardsDraggable = ref([]);
+
+    /**
+     * When the component is mounted, we copy the cards array to the reactive one
+     */
+    const updateCardsDraggable = () => {
+      cardsDraggable.value = cards.value;
+    };
+
+    onMounted(() => {
+      if (isEnemy.value) return;
+      updateCardsDraggable();
+    });
+
+    onUpdated(() => {
+      if (isEnemy.value) return;
+      updateCardsDraggable();
+    });
+
 
     const onRemove = () => {
       // When a card is removed from the hand of the player
