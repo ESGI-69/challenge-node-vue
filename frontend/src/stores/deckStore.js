@@ -77,6 +77,54 @@ export const useDeckStore = defineStore('deckStore', {
         throw err.response.data;
       }
     },
+    async getDeck(id) {
+      this.isUserDeckIdsLoading = true;
+      try {
+        const { data } = await $API.get(`/decks/${  id}`);
+
+        this.deck = data;
+
+        // console.log(this.deck);
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserDeckIdsLoading = false;
+      }
+    },
+    async removeCardFromDeck(idDeck, idCard) {
+      this.isUserDeckIdsLoading = true;
+      try {
+        await $API.delete(`/decks/${idDeck}/cards`, { params:{
+          cardId: idCard,
+        } });
+
+        const { data } = await $API.get(`/decks/${idDeck}`);
+
+        this.deck = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserDeckIdsLoading = false;
+      }
+    },
+    async addCardFromDeck(idDeck, idCard) {
+      this.isUserDeckIdsLoading = true;
+      try {
+        const { data } = await $API.post(`/decks/${idDeck}/cards`, {
+          cardId: idCard,
+        });
+
+        this.deck = data;
+
+        // const { data } = await $API.get(`/decks/${idDeck}`);
+
+        // this.deck = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserDeckIdsLoading = false;
+      }
+    },
   },
 });
 
