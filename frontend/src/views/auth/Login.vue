@@ -41,6 +41,49 @@
     >
       {{ errorMessage }}
     </span>
+    <section v-show="isUserBanned">
+      <dialog
+        id="dialog-banned"
+        class="nes-dialog"
+      >
+        <form method="dialog">
+          <p class="title">
+            Banned
+          </p>
+          <p>Your account is <span class="nes-text is-error">banned.</span></p>
+
+
+          <section class="nes-container">
+            <section class="message-list">
+              <section class="message -right message-fix">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  <p>Gunga Ginga Gunga Ginga Gunga Ginga Gunga Ginga.</p>
+                </div>
+                <i class="nes-bcrikko" />
+              </section>
+            </section>
+
+
+            <section class="message -left message-fix">
+              <i class="nes-octocat animate from-left" />
+
+              <div class="nes-balloon from-left">
+                <p>
+                  You've been banned
+                </p>
+              </div>
+            </section>
+          </section>
+
+          <menu class="dialog-menu">
+            <button class="nes-btn is-warning">
+              I understand
+            </button>
+          </menu>
+        </form>
+      </dialog>
+    </section>
     <span
       v-if="!isEmail"
       class="nes-text is-error"
@@ -75,6 +118,7 @@ export default {
     const password = ref('');
     const error = ref(false);
     const errorMessage = ref('');
+    const isUserBanned = ref(false);
     const authStore = useAuthStore();
     const router = useRouter();
 
@@ -94,6 +138,11 @@ export default {
       } catch (err) {
         errorMessage.value = err.response.data.message;
         error.value = true;
+        if (err.response.data.code === 'user_banned') {
+          isUserBanned.value = true;
+          // Methode pour show la model dans le style de nes.css
+          document.getElementById('dialog-banned').showModal();
+        }
       }
     };
 
@@ -104,6 +153,7 @@ export default {
       error,
       errorMessage,
       isEmail,
+      isUserBanned,
     };
   },
 };
@@ -119,5 +169,12 @@ export default {
     display: flex;
     flex-direction: column;
   }
+}
+
+.message-fix {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 30px;
 }
 </style>
