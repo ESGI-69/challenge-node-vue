@@ -12,9 +12,6 @@
 </template>
 
 <script>
-import { toRefs, ref, computed } from 'vue';
-
-
 export default {
   name: 'Card',
   components: {
@@ -96,7 +93,7 @@ export default {
       default: false,
     },
   },
-  setup(props) {
+  setup() {
     return {
     };
   },
