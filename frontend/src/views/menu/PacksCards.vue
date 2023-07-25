@@ -18,6 +18,12 @@
     >
       My Packs
     </router-link>
+    <router-link
+      :to="{ name: 'decks' }"
+      class="nes-btn"
+    >
+      My Decks
+    </router-link>
   </div>
 </template>
 
