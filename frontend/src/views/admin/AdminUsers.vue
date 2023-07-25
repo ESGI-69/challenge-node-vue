@@ -3,10 +3,19 @@
 
   <div>
     <el-table
+      v-loading="isUsersLoading"
       :row-class-name="tableRowClassName"
       :data="users"
       style="width: 100%"
+      :default-sort="{ prop: 'createdAt', order: 'descending' }"
     >
+      <el-table-column
+        prop="id"
+        label="ID"
+        width="80"
+        sortable
+      />
+
       <el-table-column
         prop="firstname"
         label="Firstname"
@@ -44,11 +53,13 @@
         prop="createdAt"
         label="Created At"
         :formatter="formatDate"
+        sortable
       />
       <el-table-column
         prop="updatedAt"
         label="Updated At"
         :formatter="formatDate"
+        sortable
       />
       <el-table-column label="Action">
         <template #default="scope">
@@ -105,6 +116,7 @@
           <el-button
             type="primary"
             native-type="submit"
+            :loading="isUserUpdateLoading"
           >
             Save
           </el-button>
@@ -124,6 +136,9 @@ export default {
 
     const userStore = useUserStore();
     userStore.getUsers();
+
+    const isUsersLoading = computed(() => userStore.isUsersLoading);
+    const isUserUpdateLoading = computed(() => userStore.isUserUpdateLoading);
 
 
     const tableRowClassName = ({ row }) => {
@@ -224,6 +239,8 @@ export default {
       tableRowClassName,
       handleBan,
       formatDate,
+      isUsersLoading,
+      isUserUpdateLoading,
     };
   },
 };

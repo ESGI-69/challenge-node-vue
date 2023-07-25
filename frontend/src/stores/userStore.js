@@ -52,10 +52,13 @@ export const useUserStore = defineStore('userStore', {
      */
     async getUsers() {
       try {
+        this.isUsersLoading = true;
         const { data } = await $API.get('/users/');
         this.users = data;
       } catch (err) {
         throw err.response.data;
+      } finally {
+        this.isUsersLoading = false;
       }
     },
 
