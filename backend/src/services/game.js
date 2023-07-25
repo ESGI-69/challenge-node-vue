@@ -127,9 +127,12 @@ export default {
     gameModel.second_player_deck = secondPlayerModel.idDeckFav;
     const firstPlayerDeck = await deckService.findById(gameModel.first_player_deck);
     const secondPlayerDeck = await deckService.findById(gameModel.second_player_deck);
-    const fisrtPayerHand = handService.create(gameModel, firstPlayerModel, firstPlayerDeck);
-    const secondPlayerHand = handService.create(gameModel, secondPlayerModel, secondPlayerDeck);
-    gameModel.first_player_hand = fisrtPayerHand.id;
+    const firstPayerHand = await handService.create(gameModel, firstPlayerModel, firstPlayerDeck);
+    const secondPlayerHand = await handService.create(gameModel, secondPlayerModel, secondPlayerDeck);
+
+    if (!firstPayerHand || !secondPlayerHand) throw new Error('Cannot create hand');
+
+    gameModel.first_player_hand = firstPayerHand.id;
     gameModel.second_player_hand = secondPlayerHand.id;
     gameModel.current_player = gameModel.first_player;
     await gameModel.save();
