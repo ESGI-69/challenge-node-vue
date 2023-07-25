@@ -1,4 +1,5 @@
 import gameService from '../services/game.js';
+import handService from '../services/hand.js';
 import generateGameCode from '../utils/generateGameCode.js';
 import { asignUserSocketToGameRoom, removeUserSocketFromGameRoom, users } from '../socket/index.js';
 import { io } from '../index.js';
@@ -227,6 +228,22 @@ export default {
       next(err);
     }
   },
-
+  /**
+   * Express.js controller for GET /games/hand
+   * Get the hand of the current player if the user is in a game in progress
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  getHand: async (req, res, next) => {
+    try {
+      const handId = req.game.first_player === req.user.id ? req.game.first_player_hand : req.game.second_player_hand;
+      const hand = await handService.findById(handId);
+      res.json(hand);
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 

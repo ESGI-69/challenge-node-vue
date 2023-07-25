@@ -1,4 +1,4 @@
-import { Hand } from '../db/index.js';
+import { Card, Hand } from '../db/index.js';
 
 export default {
   async create(GameModel, UserModel, DeckModel) {
@@ -9,5 +9,16 @@ export default {
     const deckCards = await DeckModel.getCards();
     await hand.addCards(deckCards);
     return hand;
+  },
+
+  findById(id) {
+    return Hand.findByPk(id, {
+      include: [
+        {
+          model: Card,
+          as: 'cards',
+        },
+      ],
+    });
   },
 };
