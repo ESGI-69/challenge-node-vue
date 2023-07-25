@@ -590,10 +590,6 @@ describe('Game launch and forfeit', () => {
     }));
 
   afterAll(async () => {
-    try {
-      await gameService.remove({ id: gameId });
-    } catch (error) {
-      console.log(error);
-    }
+    await gameService.remove({ id: gameId });
   });
 });

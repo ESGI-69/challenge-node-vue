@@ -22,9 +22,9 @@ module.exports = {
         references: {
           model: 'games',
           key: 'id',
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -61,9 +61,9 @@ module.exports = {
       references: {
         model: 'hands',
         key: 'id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
       },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
 
     await queryInterface.addColumn('games', 'second_player_hand', {
@@ -72,9 +72,9 @@ module.exports = {
       references: {
         model: 'hands',
         key: 'id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
       },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   },
 
