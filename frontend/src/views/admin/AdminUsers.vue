@@ -8,8 +8,12 @@
       style="width: 100%"
     >
       <el-table-column
+        prop="firstname"
+        label="Firstname"
+      />
+      <el-table-column
         prop="lastname"
-        label="Name"
+        label="Lastname"
       />
       <el-table-column
         prop="email"
@@ -19,14 +23,32 @@
         prop="role"
         label="Role"
         width="180"
-      />
+      >
+        <template #default="scope">
+          <el-popover
+            effect="light"
+            trigger="hover"
+            placement="top"
+            width="auto"
+          >
+            <template #default>
+              <div>role: {{ scope.row.role }}</div>
+            </template>
+            <template #reference>
+              <el-tag>{{ scope.row.role }}</el-tag>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="createdAt"
         label="Created At"
+        :formatter="formatDate"
       />
       <el-table-column
         prop="updatedAt"
         label="Updated At"
+        :formatter="formatDate"
       />
       <el-table-column label="Action">
         <template #default="scope">
@@ -57,7 +79,10 @@
         :model="selectedUser"
         @submit.prevent="handleSubmit"
       >
-        <el-form-item label="Name">
+        <el-form-item label="firstname">
+          <el-input v-model="selectedUser.firstname" />
+        </el-form-item>
+        <el-form-item label="lastname">
           <el-input v-model="selectedUser.lastname" />
         </el-form-item>
         <el-form-item label="Email">
@@ -124,6 +149,7 @@ export default {
 
     const handleEdit = (user) => {
       selectedUser.id = user.id;
+      selectedUser.firstname = user.firstname;
       selectedUser.lastname = user.lastname;
       selectedUser.email = user.email;
       selectedUser.role = user.role;
@@ -136,6 +162,7 @@ export default {
 
         await userStore.updateUser({
           id: selectedUser.id,
+          firstname: selectedUser.firstname,
           lastname: selectedUser.lastname,
           email: selectedUser.email,
           role: selectedUser.role,
@@ -182,6 +209,11 @@ export default {
       }
     };
 
+    const formatDate = (row, column) => {
+      const date = new Date(row[column.property]);
+      return `${date.toLocaleDateString()  } ${  date.toLocaleTimeString()}`;
+    };
+
     return {
       users,
       selectedUser,
@@ -191,6 +223,7 @@ export default {
       handleSubmit,
       tableRowClassName,
       handleBan,
+      formatDate,
     };
   },
 };
