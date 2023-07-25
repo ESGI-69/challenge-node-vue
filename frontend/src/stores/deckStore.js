@@ -116,11 +116,7 @@ export const useDeckStore = defineStore('deckStore', {
 
         this.deck = data;
       } catch (err) {
-        if (err.response.status === 400 && err.response.data.reason==='Deck is full') {
-          console.log('le zizi du caca du prout');
-        } else {
-          throw err.response.data;
-        }
+        throw err.response.data;
       } finally {
         this.isUserDeckIdsLoading = false;
       }
