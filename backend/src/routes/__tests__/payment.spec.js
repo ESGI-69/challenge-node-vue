@@ -153,7 +153,6 @@ describe('As an User/Player ', () => {
       expect(response.body).toStrictEqual({});
     }),
   );
-
 });
 
 describe('As a User/Player with missing fields', () => {
@@ -226,6 +225,16 @@ describe('As an Admin ', () => {
     stripePaymentRetrieveCheckoutMock.mockRestore();
     stripePaymentcloseCheckoutMock.mockRestore();
   });
+
+  it('GET /admin should return 200', () => request(app)
+    .get('/payments/admin')
+    .set('Authorization', `Bearer ${adminToken}`)
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then((response) => {
+      expect(response.body.length).toBeGreaterThanOrEqual(11);
+    }),
+  );
 
   it('PATCH /admin/:id should return 200', () => request(app)
     .patch(`/payments/admin/${paymentID}`)
