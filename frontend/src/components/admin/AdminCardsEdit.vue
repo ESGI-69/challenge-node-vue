@@ -4,6 +4,7 @@
       <el-aside width="300px">
         <card
           v-bind="form"
+          :image-edit-url="imageUrl"
           :edit-mode="true"
         />
       </el-aside>
@@ -82,12 +83,28 @@
             </el-button>
           </el-form-item>
 
-          <!-- <image-upload
-            v-model="avatar"
-            :no-file-selected-text="'Upload your avatar'"
-            :change-file-selected-text="'Change your avatar'"
-            :default-image-url="profileAvatar"
-          /> -->
+          <el-form-item>
+            <el-upload
+              class="upload-demo"
+              drag
+              :auto-upload="false"
+              :show-file-list="false"
+              :accept="'image/*'"
+              @change="selectImage"
+            >
+              <el-icon class="el-icon--upload">
+                <upload-filled />
+              </el-icon>
+              <div class="el-upload__text">
+                Drop file here or <em>click to upload</em>
+              </div>
+              <template #tip>
+                <div class="el-upload__tip">
+                  Image files with a size less than 10MB
+                </div>
+              </template>
+            </el-upload>
+          </el-form-item>
         </el-form>
       </el-main>
     </el-container>
@@ -95,18 +112,18 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { reactive, ref, computed } from 'vue';
 
 import Card from '../Card.vue';
-import ImageUpload from '@/views/ImageUpload.vue';
 
 export default {
   name: 'AdminCardsEdit',
   components: {
     Card,
-    ImageUpload,
   },
   setup() {
+    const image = ref(null);
+    const imageUrl = computed(() => image.value?.raw ? URL.createObjectURL(image.value.raw) : null);
     const form = reactive({
       cost: 0,
       name: '',
@@ -116,8 +133,11 @@ export default {
       attack: 1,
       health: 0,
     });
+    const selectImage = (file) => image.value = file;
     return {
       form,
+      selectImage,
+      imageUrl,
     };
   },
 };

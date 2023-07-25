@@ -200,17 +200,24 @@ export default {
       type: Boolean,
       default: false,
     },
+    /**
+     * The url image of the card. Used for back-office.
+     */
+    imageEditUrl: {
+      type: String,
+      default: null,
+    },
   },
   emits: [ 'flip' ],
   setup(props, { emit }) {
-    const { isFlippable, id } = toRefs(props);
+    const { isFlippable, id, imageEditUrl } = toRefs(props);
 
     const clickEvent = computed(() => isFlippable.value ? 'click' : null);
     const imageUrl = computed(() => {
       if (!props.editMode){
         return `${import.meta.env.VITE_API}/cards/${id.value}/image`;
       }
-      return null;
+      return imageEditUrl.value;
     });
     const isFaceDown = ref(props.isStartFaceDown);
 
@@ -235,12 +242,14 @@ export default {
 
 <style lang="scss" scoped>
 .card {
+  font-family: 'Press Start 2P', 'Prompt', sans-serif;
   user-select: none;
   width: 17rem;
   height: 23rem;
   perspective: 27rem;
 
   &__container {
+    font-family: inherit;
     position: relative;
     height: calc(100% - 2rem);
     transition: transform 1s;
@@ -257,6 +266,7 @@ export default {
     }
 
     &__front, &__back {
+      font-family: inherit;
       position: absolute;
       height: 100%;
       width: 100%;
@@ -272,6 +282,7 @@ export default {
       transition: transform 0.1s ease-in-out;
 
       &__refunded {
+        font-family: inherit;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -285,6 +296,7 @@ export default {
         user-select: none;
 
         .text {
+          font-family: inherit;
           color: red;
           border: 0.5rem solid red;
           padding: 0.5rem;
@@ -296,6 +308,7 @@ export default {
       }
 
       &__attack, &__health {
+        font-family: inherit;
         z-index: 1;
         position: absolute;
         height: 2rem;
@@ -308,6 +321,7 @@ export default {
       }
 
       &__cost {
+        font-family: inherit;
         top: -1rem;
         left: -1rem;
         z-index: 1;
@@ -327,6 +341,7 @@ export default {
       }
 
       &__header {
+        font-family: inherit;
         position: relative;
 
         &__image {
@@ -337,6 +352,7 @@ export default {
         }
 
         &__name {
+          font-family: inherit;
           box-sizing: border-box;
           width: calc(100% - 4rem);
           margin: 0 2rem;
@@ -351,6 +367,7 @@ export default {
         }
 
         &__rarity {
+          font-family: inherit;
           box-sizing: border-box;
           width: calc(100% - 8rem);
           margin: 0 4rem;
@@ -381,6 +398,7 @@ export default {
       }
 
       &__type {
+        font-family: inherit;
         box-sizing: border-box;
         width: 100%;
         margin: 0.5rem 0;
@@ -394,7 +412,9 @@ export default {
       }
 
       &__content {
+        font-family: inherit;
         &__description {
+          font-family: inherit;
           box-sizing: border-box;
           padding: 0.5rem;
           font-size: 0.75rem;
