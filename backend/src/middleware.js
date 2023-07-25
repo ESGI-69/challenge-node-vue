@@ -81,6 +81,12 @@ const hasPackBalance = (req, res, next) => {
   next();
 };
 
+/**
+ * Check if the user is connected to a socket. If not, return 401.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
 const isConnectedToSocket = (req, res, next) => {
   try {
     if (!users[req.user.id]) throw new Error('User not connected to socket', { cause: 'Unauthorized', code: 'not_connected_to_socket' });
@@ -90,6 +96,12 @@ const isConnectedToSocket = (req, res, next) => {
   }
 };
 
+/**
+ * Check if the user is in a game. If not, return 404.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
 const isInGame = async(req, res, next) => {
   try {
     const game = await gameService.findCurrentGameByUser(req.user);
@@ -101,6 +113,12 @@ const isInGame = async(req, res, next) => {
   }
 };
 
+/**
+ * Check if the user is not in a game. Else, return 403.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
 const isNotInGame = async(req, res, next) => {
   try {
     const game = await gameService.findCurrentGameByUser(req.user);
@@ -111,6 +129,12 @@ const isNotInGame = async(req, res, next) => {
   }
 };
 
+/**
+ * Check if the user is in a game in progress. If not, return 403.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
 const isInProgressGame = async (req, res, next) => {
   try {
     const game = await gameService.findCurrentGameByUser(req.user);
@@ -123,6 +147,12 @@ const isInProgressGame = async (req, res, next) => {
   }
 };
 
+/**
+ * Check if the user is the owner of the game. If not, return 403. Must be used after isInGame middleware.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
 const isGameOwner = (req, res, next) => {
   try {
     if (req.game.first_player !== req.user.id) throw new Error('You are not the owner of this game', { cause: 'Unauthorized' });
