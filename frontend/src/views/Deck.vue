@@ -27,6 +27,7 @@
           v-model="newDeckName"
           type="text"
           class="nes-input"
+          @keyup.enter="updateDeck"
         >
       </div>
       <template #confirm>
@@ -70,6 +71,7 @@ export default {
     const newDeckName = ref('');
 
     const updateDeck = () => {
+      if (!newDeckName.value || newDeckName.value === '') return;
       const options = {
         name: newDeckName.value,
       };
@@ -121,6 +123,7 @@ export default {
 
     &:hover{
       cursor: pointer;
+      filter: invert(0.5) sepia(1) saturate(3) hue-rotate(180deg);
     }
   }
 }
