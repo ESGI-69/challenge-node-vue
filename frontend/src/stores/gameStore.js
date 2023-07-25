@@ -32,6 +32,9 @@ export const useGameStore = defineStore('gameStore', {
      * }}
      */
     game: {},
+    isHandLoading: false,
+    hand: [],
+    opponentCardsCount: 0,
   }),
 
   getters: {
@@ -139,6 +142,45 @@ export const useGameStore = defineStore('gameStore', {
       } catch (error) {
         throw error.response;
       }
+    },
+
+    async getHand() {
+      this.isHandLoading = true;
+      try {
+        const { data: { cards } } = await $API.get('/game/hand');
+        this.setHand(cards);
+      } catch (error) {
+        throw error.response;
+      } finally {
+        this.isHandLoading = false;
+      }
+    },
+
+    /**
+     * @param {{}[]} cardsInHand
+     */
+    setHand(cardsInHand) {
+      this.hand = cardsInHand;
+    },
+
+    async getOpponentCardsCount() {
+      this.isOpponentCardsCountLoading = true;
+      try {
+        const { data: { count } } = await $API.get('/game/opponent-hand');
+        this.setOpponentCardCount(count);
+      } catch (error) {
+        throw error.response;
+      } finally {
+        this.isOpponentCardsCountLoading = false;
+      }
+    },
+
+
+    /**
+     * @param {number} cardCount
+     */
+    setOpponentCardCount(cardCount) {
+      this.opponentCardsCount = cardCount;
     },
   },
 });

@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 
-import { User } from '../index.js';
+import { Deck, Hand, User } from '../index.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
@@ -13,6 +13,10 @@ export default (connection) => {
       this.belongsTo(User, { through: User, foreignKey: 'second_player', as: 'secondPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'winner', as: 'winnerPlayer' });
       this.belongsTo(User, { through: User, foreignKey: 'current_player', as: 'currentPlayer' });
+      this.belongsTo(Deck, { through: Deck, foreignKey: 'first_player_deck', as: 'firstPlayerDeck' });
+      this.belongsTo(Deck, { through: Deck, foreignKey: 'second_player_deck', as: 'secondPlayerDeck' });
+      this.belongsTo(Hand, { through: Hand, foreignKey: 'first_player_hand', as: 'firstPlayerHand' });
+      this.belongsTo(Hand, { through: Hand, foreignKey: 'second_player_hand', as: 'secondPlayerHand' });
     }
 
     /**

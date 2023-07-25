@@ -22,7 +22,7 @@
       </div>
     </div>
     <div
-      v-if="!isLoading && decks.length === 0 && nameFilter === null"
+      v-if="!isLoading && decks.length === 0 && nameFilter === ''"
       class="decks-table__empty"
     >
       <p>
@@ -30,7 +30,7 @@
       </p>
     </div>
     <div
-      v-else-if="!isLoading && decks.length === 0 && nameFilter !== null"
+      v-else-if="!isLoading && decks.length === 0 && nameFilter !== ''"
       class="decks-table__empty"
     >
       <p>
@@ -121,7 +121,7 @@ export default {
     const newDeckName = ref('');
 
     const getDecks = () => {
-      if (nameFilter.value !== null) {
+      if (nameFilter.value !== '') {
 
         const options = {
           offset: (currentPage.value - 1) * 6,

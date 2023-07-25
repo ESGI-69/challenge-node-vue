@@ -10,7 +10,7 @@
     >
       <card-hand
         class="game__container__enemy-hand"
-        :cards-fixed-quantity="5"
+        :cards-fixed-quantity="opponentCardsCount"
         :is-enemy="true"
       />
       <player-avatar
@@ -78,48 +78,7 @@
         class="game__container__player-hand"
         :is-player-turn="isPlayerTurn"
         :player-mana="playerMana"
-        :cards="[
-          {
-            id: 1,
-            cost: 1,
-            name: 'Card 1',
-            rarity: 'common',
-            description: 'This is a card.',
-            type: 'minion',
-            attack: 1,
-            health: 1,
-          },
-          {
-            id: 2,
-            cost: 2,
-            name: 'Card 2',
-            rarity: 'common',
-            description: 'This is a card.',
-            type: 'minion',
-            attack: 2,
-            health: 2,
-          },
-          {
-            id: 3,
-            cost: 3,
-            name: 'Card 3',
-            rarity: 'common',
-            description: 'This is a card.',
-            type: 'minion',
-            attack: 3,
-            health: 3,
-          },
-          {
-            id: 4,
-            cost: 4,
-            name: 'Card 4',
-            rarity: 'common',
-            description: 'This is a card.',
-            type: 'minion',
-            attack: 4,
-            health: 4,
-          },
-        ]"
+        :cards="hand"
       />
       <mana-bar
         class="game__container__mana-bar game__container__mana-bar--player"
@@ -206,6 +165,8 @@ export default {
     const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
     const playerMana = computed(() => gameStore.playerMana);
     const opponentMana = computed(() => gameStore.opponentMana);
+    const hand = computed(() => gameStore.hand);
+    const opponentCardsCount = computed(() => gameStore.opponentCardsCount);
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
 
@@ -254,10 +215,12 @@ export default {
 
     if (Object.keys(gameStore.game).length === 0) {
       gameStore.getGame(route.params.id)
-        // eslint-disable-next-line promise/prefer-await-to-then
+      // eslint-disable-next-line promise/prefer-await-to-then
         .catch(() => {
           goHome();
         });
+      gameStore.getHand();
+      gameStore.getOpponentCardsCount();
     }
 
     socket.on('game:forfeited', (game) => {
@@ -430,6 +393,8 @@ export default {
       setCardPlayerRef,
       playerMana,
       opponentMana,
+      hand,
+      opponentCardsCount,
     };
   },
 };

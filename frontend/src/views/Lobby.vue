@@ -32,6 +32,12 @@
             Waiting for a second player ...
           </li>
         </ul>
+        <p
+          v-if="hasStartError"
+          class="game__container__error nes-text is-error"
+        >
+          {{ startErrorMessage }}
+        </p>
         <div class="game__container__buttons">
           <button
             v-if="iAmGameOwner"
@@ -100,6 +106,8 @@ export default {
 
     const isGameFound = ref(true);
     const isGameCanceled = ref(false);
+    const hasStartError = ref(false);
+    const startErrorMessage = ref('');
 
     const goToHome = () => {
       gameStore.$reset();
@@ -114,8 +122,10 @@ export default {
       gameStore.setGame(game);
     });
 
-    socket.once('game:started', (game) => {
+    socket.once('game:started', async (game, { cards }, opponentCardCount) => {
       gameStore.setGame(game);
+      gameStore.setHand(cards);
+      gameStore.setOpponentCardCount(opponentCardCount);
       router.push({ name: 'game', params: { id: game.id } });
     });
 
@@ -128,11 +138,14 @@ export default {
     });
 
     const startGame = async () => {
+      hasStartError.value = false;
       try {
         await gameStore.start();
       } catch (error) {
         console.error('Error while starting game');
         console.error(error);
+        hasStartError.value = true;
+        startErrorMessage.value = error.data.reason;
       }
     };
 
@@ -162,6 +175,8 @@ export default {
       isGameLoading,
       profile,
       startGame,
+      hasStartError,
+      startErrorMessage,
     };
   },
 };

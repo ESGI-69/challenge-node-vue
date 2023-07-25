@@ -75,7 +75,7 @@ describe('Decks list (logged as admin)', () => {
 
 describe('One Deck By Id (logged as owner)', () => {
   it('GET /decks/1 should return 200  and the deck', () => request(app)
-    .get('/decks/1')
+    .get(`/decks/${generateDecks[0]}`)
     .set('Authorization', `Bearer ${jwt}`)
     .expect(200)
     .expect('Content-Type', /json/)
@@ -110,7 +110,7 @@ describe('Create deck (logged)', () => {
 
 describe('Update deck (logged as owner)', () => {
   it('PATCH /decks/1 should return 200 and update deck', () => request(app)
-    .patch('/decks/1')
+    .patch(`/decks/${generateDecks[0]}`)
     .set('Authorization', `Bearer ${jwt}`)
     .send({ name: 'testUpdate' })
     .expect(200)
@@ -124,7 +124,7 @@ describe('Update deck (logged as owner)', () => {
 
 describe('Update deck (logged but not owner)', () => {
   it('PATCH /decks/1 should return 403', () => request(app)
-    .patch('/decks/1')
+    .patch(`/decks/${generateDecks[0]}`)
     .set('Authorization', `Bearer ${jwtNotOwner}`)
     .send({ name: 'testUpdate' })
     .expect(403));
@@ -132,7 +132,7 @@ describe('Update deck (logged but not owner)', () => {
 
 describe('Update deck (empty name)', () => {
   it('PATCH /decks/1 should return 422 and update deck', () => request(app)
-    .patch('/decks/1')
+    .patch(`/decks/${generateDecks[0]}`)
     .set('Authorization', `Bearer ${jwt}`)
     .send({ name: '' })
     .expect(422));
@@ -140,7 +140,7 @@ describe('Update deck (empty name)', () => {
 
 describe('Add card to deck (logged)', () => {
   it('POST /decks/1/cards should return 200 and add card to deck', () => request(app)
-    .post('/decks/1/cards')
+    .post(`/decks/${generateDecks[0]}/cards`)
     .set('Authorization', `Bearer ${jwt}`)
     .send({
       cardId: 3,
@@ -154,7 +154,7 @@ describe('Add card to deck (logged)', () => {
 
 describe('Add card to deck (not owner of deck)', () => {
   it('POST /decks/2/cards should return 403', () => request(app)
-    .post('/decks/2/cards')
+    .post(`/decks/${notOwnedDeckId}/cards`)
     .set('Authorization', `Bearer ${jwt}`)
     .send({
       cardId: 3,
@@ -164,7 +164,7 @@ describe('Add card to deck (not owner of deck)', () => {
 
 describe('Add card to deck (not owner of card)', () => {
   it('POST /decks/1/cards should return 403', () => request(app)
-    .post('/decks/1/cards')
+    .post(`/decks/${generateDecks[0]}/cards`)
     .set('Authorization', `Bearer ${jwt}`)
     .send({
       cardId: 1,
@@ -174,7 +174,7 @@ describe('Add card to deck (not owner of card)', () => {
 
 describe('Remove card from deck (logged)', () => {
   it('DELETE /decks/1/cards should return 204', () => request(app)
-    .delete('/decks/1/cards')
+    .delete(`/decks/${generateDecks[0]}/cards`)
     .set('Authorization', `Bearer ${jwt}`)
     .query({ cardId: 3 })
     .expect(204));
@@ -182,7 +182,7 @@ describe('Remove card from deck (logged)', () => {
 
 describe('Remove card from deck (not owner of deck)', () => {
   it('DELETE /decks/2/cards should return 204', () => request(app)
-    .delete('/decks/2/cards')
+    .delete(`/decks/${notOwnedDeckId}/cards`)
     .set('Authorization', `Bearer ${jwt}`)
     .query({ cardId: 1 })
     .expect(403));
@@ -190,7 +190,7 @@ describe('Remove card from deck (not owner of deck)', () => {
 
 describe('Remove card from deck (not owner of card)', () => {
   it('DELETE /decks/1/cards should return 204', () => request(app)
-    .delete('/decks/1/cards')
+    .delete(`/decks/${generateDecks[0]}/cards`)
     .set('Authorization', `Bearer ${jwt}`)
     .query({ cardId: 1 })
     .expect(403));
@@ -198,14 +198,14 @@ describe('Remove card from deck (not owner of card)', () => {
 
 describe('Delete deck (not owner)', () => {
   it('DELETE /decks/1 should return 403', () => request(app)
-    .delete('/decks/2')
+    .delete(`/decks/${notOwnedDeckId}`)
     .set('Authorization', `Bearer ${jwt}`)
     .expect(403));
 });
 
 describe('Delete deck (logged)', () => {
   it('DELETE /decks/1 should return 204', () => request(app)
-    .delete('/decks/1')
+    .delete(`/decks/${generateDecks[0]}`)
     .set('Authorization', `Bearer ${jwt}`)
     .expect(204));
 });
