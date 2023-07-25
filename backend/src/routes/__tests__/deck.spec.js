@@ -91,7 +91,9 @@ describe('Create deck (logged)', () => {
   it('POST /decks/ should return 201 and create deck', () => request(app)
     .post('/decks/')
     .set('Authorization', `Bearer ${jwt}`)
-    .send(deck)
+    .send({
+      params: deck,
+    })
     .expect(201)
     .expect('Content-Type', /json/)
     .then(res => {
@@ -174,9 +176,7 @@ describe('Remove card from deck (logged)', () => {
   it('DELETE /decks/1/cards should return 204', () => request(app)
     .delete('/decks/1/cards')
     .set('Authorization', `Bearer ${jwt}`)
-    .send({
-      cardId: 3,
-    })
+    .query({ cardId: 3 })
     .expect(204));
 });
 
@@ -184,9 +184,7 @@ describe('Remove card from deck (not owner of deck)', () => {
   it('DELETE /decks/2/cards should return 204', () => request(app)
     .delete('/decks/2/cards')
     .set('Authorization', `Bearer ${jwt}`)
-    .send({
-      cardId: 3,
-    })
+    .query({ cardId: 1 })
     .expect(403));
 });
 
@@ -194,9 +192,7 @@ describe('Remove card from deck (not owner of card)', () => {
   it('DELETE /decks/1/cards should return 204', () => request(app)
     .delete('/decks/1/cards')
     .set('Authorization', `Bearer ${jwt}`)
-    .send({
-      cardId: 1,
-    })
+    .query({ cardId: 1 })
     .expect(403));
 });
 
