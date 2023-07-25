@@ -1,5 +1,5 @@
 <template>
-  <div class="common-layout">
+  <div class="admin-layout">
     <topbar />
     <el-container class="admin-panel is-vertical">
       <slot />

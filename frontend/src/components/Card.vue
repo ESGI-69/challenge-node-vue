@@ -193,13 +193,25 @@ export default {
       type: Boolean,
       default: false,
     },
+    /**
+     * Edit mod for back-office
+     */
+    editMode: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: [ 'flip' ],
   setup(props, { emit }) {
     const { isFlippable, id } = toRefs(props);
 
     const clickEvent = computed(() => isFlippable.value ? 'click' : null);
-    const imageUrl = computed(() => `${import.meta.env.VITE_API}/cards/${id.value}/image`);
+    const imageUrl = computed(() => {
+      if (!props.editMode){
+        return `${import.meta.env.VITE_API}/cards/${id.value}/image`;
+      }
+      return null;
+    });
     const isFaceDown = ref(props.isStartFaceDown);
 
     const flipCard = () => {

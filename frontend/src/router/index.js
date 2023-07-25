@@ -70,6 +70,16 @@ const router = createRouter({
             layout: 'admin',
           },
         },
+        {
+          path: 'cards',
+          name: 'adminCards',
+          component: () => import('@/views/admin/AdminCards.vue'),
+          meta: {
+            displayName: 'Cards management',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
       ],
     },
     {
