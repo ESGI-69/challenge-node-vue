@@ -4,8 +4,8 @@ import { Product, User } from '../index.js';
 export default (connection) => {
   class Payment extends Model {
     static associate() {
-      this.belongsTo(User, { foreignKey: 'userId' });
-      this.belongsTo(Product, { foreignKey: 'productId' });
+      this.belongsTo(User, { through: User, foreignKey: 'userId', as: 'user' });
+      this.belongsTo(Product, { through: Product, foreignKey: 'productId', as: 'product' });
     }
   }
 

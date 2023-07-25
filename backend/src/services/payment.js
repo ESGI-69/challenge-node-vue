@@ -1,4 +1,4 @@
-import { Payment } from './../db/index.js';
+import { Payment, Product, User } from './../db/index.js';
 
 export default {
   /**
@@ -12,6 +12,10 @@ export default {
       where: criteria,
       ...options,
       order: Object.entries(options.order || {}),
+      include: [{
+        model: Product,
+        as: 'product',
+      }],
     });
   },
 
@@ -55,5 +59,26 @@ export default {
     });
     if (!payments.length) throw new Error('Payment not found', { cause: 'Not Found' });
     return this.findById(payments[0].id);
+  },
+
+  /**
+   * Find all payments matching the criteria with session id
+   */
+  findAllWithSessionId: function (criteria, options = {}) {
+    return Payment.scope('withSessionId').findAll({
+      where: criteria,
+      ...options,
+      order: Object.entries(options.order || {}),
+      include: [
+        {
+          model: Product,
+          as: 'product',
+        },
+        {
+          model: User,
+          as: 'user',
+        },
+      ],
+    });
   },
 };

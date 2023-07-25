@@ -31,11 +31,18 @@ html, body, #app {
 .app-admin * {
   font-family: Arial, Helvetica, sans-serif;
   cursor: default;
-  a {
+  a,
+  .el-button * {
     cursor: pointer;
   }
 }
 
 .el-popper * {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.el-table {
+  .is-sortable * {
+    cursor: pointer;
+  }
 }

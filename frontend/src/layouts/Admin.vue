@@ -9,7 +9,6 @@
 
 <script>
 import Topbar from '@/components/admin/Topbar.vue';
-
 export default {
   name: 'AdminLayout',
   components: {
