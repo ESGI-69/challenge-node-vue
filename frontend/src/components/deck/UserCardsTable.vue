@@ -155,7 +155,7 @@ export default {
     const cardPerRow = 4;
 
     const isLoading = computed(() => cardStore.isUserCardsLoading);
-    const deckCards = computed(() => deckStore.deck.Cards);
+    const deckCards = computed(() => deckStore.deck?.Cards);
     const cards = computed(() => cardStore.userCards);
     const msgError = computed(() => deckStore.msgError);
     const isErrorModalOpen = ref(false);
