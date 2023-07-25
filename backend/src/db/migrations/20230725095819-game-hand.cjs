@@ -22,6 +22,8 @@ module.exports = {
         references: {
           model: 'games',
           key: 'id',
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
         },
       },
       user_id: {
@@ -59,6 +61,8 @@ module.exports = {
       references: {
         model: 'hands',
         key: 'id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
 
@@ -68,6 +72,8 @@ module.exports = {
       references: {
         model: 'hands',
         key: 'id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
   },

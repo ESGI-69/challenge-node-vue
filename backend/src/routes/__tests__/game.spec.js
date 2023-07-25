@@ -120,10 +120,10 @@ describe('Game routes (logged)', () => {
       gameId = response.body.id;
     }));
 
-  it('POST /game should return 400 if player is allready in a game', () => request(app)
+  it('POST /game should return 403 if player is allready in a game', () => request(app)
     .post('/game')
     .set('Authorization', `Bearer ${jwt}`)
-    .expect(400));
+    .expect(403));
 
   it('GET /game/:id should return the game', () => request(app)
     .get(`/game/${gameId}`)
@@ -260,10 +260,10 @@ describe('Game routes (logged)', () => {
     .set('Authorization', `Bearer ${secondJwt}`)
     .expect(404));
 
-  it('DELETE /game should return 400 if the user don\'t own the game', () => request(app)
+  it('DELETE /game should return 403 if the user don\'t own the game', () => request(app)
     .delete('/game')
     .set('Authorization', `Bearer ${thirdJwt}`)
-    .expect(400));
+    .expect(403));
 
   it('DELETE /game sould send an game:removed to the socket room', (done) => {
     let successCount = 0;
@@ -335,10 +335,10 @@ describe('Game launch and forfeit', () => {
       .then(success);
   });
 
-  it('POST /game/start should return 400 if the user don\'t own the game', () => request(app)
+  it('POST /game/start should return 403 if the user don\'t own the game', () => request(app)
     .post('/game/start')
     .set('Authorization', `Bearer ${secondJwt}`)
-    .expect(400));
+    .expect(403));
 
   it('POST /game/start should return 200 and send game:started to the socket room', (done) => {
     jest.useFakeTimers();
@@ -590,6 +590,10 @@ describe('Game launch and forfeit', () => {
     }));
 
   afterAll(async () => {
-    await gameService.remove({ id: gameId });
+    try {
+      await gameService.remove({ id: gameId });
+    } catch (error) {
+      console.log(error);
+    }
   });
 });
