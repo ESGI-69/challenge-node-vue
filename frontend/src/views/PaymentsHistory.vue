@@ -3,10 +3,10 @@
     <h1>
       Payments History
     </h1>
-    <div v-if="!isPaymentsLoading && !isProductsLoading && payments.length === 0">
+    <div v-if="!isPaymentsLoading && payments.length === 0">
       <p>Your payment history is empty</p>
     </div>
-    <div v-else-if="!isPaymentsLoading && !isProductsLoading">
+    <div v-else-if="!isPaymentsLoading">
       <div class="nes-table-responsive">
         <table class="nes-table is-bordered is-centered">
           <thead>
@@ -23,7 +23,7 @@
               v-for="payment in payments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))"
               :key="payment.id"
               v-bind="payment"
-              :product="products.find((product) => product.id === payment.productId)"
+              :product="payment.product"
             />
           </tbody>
         </table>
@@ -41,7 +41,6 @@ import { computed } from 'vue';
 import PaymentHistoryRow from '@/components/paymentsHistory/PaymentsHistoryRow.vue';
 
 import { usePaymentStore } from '@/stores/paymentStore';
-import { useProductStore } from '@/stores/productStore';
 
 export default {
   name: 'PaymentsHistoryView',
@@ -50,21 +49,15 @@ export default {
   },
   setup() {
     const paymentStore = usePaymentStore();
-    const productStore = useProductStore();
 
     paymentStore.getPayments();
-    productStore.getProducts();
 
     const isPaymentsLoading = computed(() => paymentStore.isGetPaymentsLoading);
-    const isProductsLoading = computed(() => productStore.isProductsLoading);
     const payments = computed(() => paymentStore.payments);
-    const products = computed(() => productStore.products);
 
     return {
       isPaymentsLoading,
-      isProductsLoading,
       payments,
-      products,
     };
   },
 };
