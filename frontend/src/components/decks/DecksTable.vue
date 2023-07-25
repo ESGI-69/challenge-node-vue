@@ -165,16 +165,13 @@ export default {
     const deckStore = useDeckStore();
     const profileStore = useProfileStore();
 
-    const deckPerPage = 8;
-    const deckPerRow = deckPerPage / 2;
+    const deckPerRow = 4;
 
     const idDeckFav = computed(() => profileStore.profile.idDeckFav);
 
     const isLoading = computed(() => deckStore.isUserDecksLoading);
     const isCreateModalOpen = ref(false);
     const decks = computed(() => deckStore.decks);
-    const totalDecks = computed(() => deckStore.userDecksCount);
-    const totalPages = computed(() => Math.ceil(totalDecks.value / 6));
     const nameFilter = ref('');
     const newDeckName = ref('');
 
@@ -182,7 +179,6 @@ export default {
       if (nameFilter.value !== null) {
 
         const options = {
-          limit: deckPerPage,
           name: nameFilter.value,
         };
         deckStore.getUserDecks(options);
@@ -227,7 +223,6 @@ export default {
       isLoading,
       decks,
       getDecks,
-      totalPages,
       nameFilter,
       setNameFilter,
       resetNameFilter,

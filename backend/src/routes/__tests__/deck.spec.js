@@ -13,6 +13,14 @@ const deck = {
   name: 'testCreate',
 };
 
+const deckUpdate = {
+  name: 'testUpdate',
+};
+
+const deckNameEmpty = {
+  name: '',
+};
+
 const generateDecks = [];
 let notOwnedDeckId;
 
@@ -112,7 +120,9 @@ describe('Update deck (logged as owner)', () => {
   it('PATCH /decks/1 should return 200 and update deck', () => request(app)
     .patch('/decks/1')
     .set('Authorization', `Bearer ${jwt}`)
-    .send({ name: 'testUpdate' })
+    .send({
+      params: deckUpdate,
+    })
     .expect(200)
     .expect('Content-Type', /json/)
     .then(res => {
@@ -126,7 +136,9 @@ describe('Update deck (logged but not owner)', () => {
   it('PATCH /decks/1 should return 403', () => request(app)
     .patch('/decks/1')
     .set('Authorization', `Bearer ${jwtNotOwner}`)
-    .send({ name: 'testUpdate' })
+    .send({
+      params: deckUpdate,
+    })
     .expect(403));
 });
 
@@ -134,7 +146,9 @@ describe('Update deck (empty name)', () => {
   it('PATCH /decks/1 should return 422 and update deck', () => request(app)
     .patch('/decks/1')
     .set('Authorization', `Bearer ${jwt}`)
-    .send({ name: '' })
+    .send({
+      params: deckNameEmpty,
+    })
     .expect(422));
 });
 

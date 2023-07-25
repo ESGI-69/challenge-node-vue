@@ -1,5 +1,5 @@
 <template>
-  <container class="cards-table">
+  <div class="cards-table">
     <div class="cards-table__header">
       <div class="cards-table__header__filters">
         <span>
@@ -89,7 +89,7 @@
       class="cards-table__cards"
     >
       <span
-        v-for="card in cards"
+        v-for="card in filteredCards"
         :key="card.id"
         class="cards-table__cards__card"
       >
@@ -110,14 +110,7 @@
     >
       <p>Loading...</p>
     </div>
-    <transition name="fade">
-      <card-detail
-        v-if="!!selectedCard"
-        :card="selectedCard"
-        @close="selectedCard = null"
-      />
-    </transition>
-  </container>
+  </div>
 </template>
 
 <script>
@@ -125,9 +118,7 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Card from '@/components/Card.vue';
-import Container from '@/components/Container.vue';
 import CardCost from '@/components/card/CardCost.vue';
-import CardDetail from '@/components/CardDetail.vue';
 
 import { useCardStore } from '@/stores/cardStore';
 import { useDeckStore } from '@/stores/deckStore';
@@ -137,8 +128,6 @@ export default {
   components: {
     Card,
     CardCost,
-    CardDetail,
-    Container,
   },
   setup() {
     const cardStore = useCardStore();
@@ -151,18 +140,23 @@ export default {
     const cardPerRow = 4;
 
     const isLoading = computed(() => cardStore.isUserCardsLoading);
+    const deckCards = computed(() => deckStore.deck.Cards);
     const cards = computed(() => cardStore.userCards);
+
+    const filteredCards = computed(() => {
+      if (deckCards.value.length === 0){
+        return cards.value;
+      }
+      const deckCardIds = new Set(deckCards.value.map(card => card.id));
+      return cards.value.filter(card => !deckCardIds.has(card.id));
+    });
+
     const totalCards = computed(() => cardStore.userCardsCount);
-    const totalPages = computed(() => Math.ceil(totalCards.value / 6));
-    const currentPage = ref(1);
     const order = ref('cost');
     const costFilter = ref(null);
-    const selectedCard = ref(null);
 
     const getCards = () => {
       const options = {
-        offset: (currentPage.value - 1) * 6,
-        // limit: cardPerPage,
         order: order.value,
         cost: costFilter.value,
       };
@@ -175,26 +169,6 @@ export default {
 
     // Load cards on created
     getCards();
-
-    const changePage = (page) => {
-      if (page === currentPage.value) return;
-      currentPage.value = page;
-      getCards();
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value -= 1;
-        getCards();
-      }
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value += 1;
-        getCards();
-      }
-    };
 
     const setCostFilter = (cost) => {
       if (costFilter.value === cost) {
@@ -214,19 +188,15 @@ export default {
       addCardFromDeck,
       cardPerRow,
       cards,
-      changePage,
       costFilter,
-      currentPage,
+      deckCards,
+      filteredCards,
       getCards,
       isLoading,
-      nextPage,
       order,
-      previousPage,
       resetCostFilter,
-      selectedCard,
       setCostFilter,
       totalCards,
-      totalPages,
     };
   },
 };
@@ -237,6 +207,9 @@ export default {
   display: flex;
   flex-direction: column;
   width: 75%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
   &__header {
     display: flex;
     justify-content: space-between;
@@ -275,6 +248,7 @@ export default {
     width: fit-content;
     grid-template-columns: repeat(v-bind(cardPerRow), 1fr);
     gap: 1rem;
+    overflow-y: scroll;
 
     &__card {
       position: relative;

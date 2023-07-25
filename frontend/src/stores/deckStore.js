@@ -115,12 +115,12 @@ export const useDeckStore = defineStore('deckStore', {
         });
 
         this.deck = data;
-
-        // const { data } = await $API.get(`/decks/${idDeck}`);
-
-        // this.deck = data;
       } catch (err) {
-        throw err.response.data;
+        if (err.response.status === 400 && err.response.data.reason==='Deck is full') {
+          console.log('le zizi du caca du prout');
+        } else {
+          throw err.response.data;
+        }
       } finally {
         this.isUserDeckIdsLoading = false;
       }
@@ -138,6 +138,17 @@ export const useDeckStore = defineStore('deckStore', {
         throw err.response.data;
       } finally {
         this.isUserDeckIdsLoading = false;
+      }
+    },
+    async updateDeck(idDeck, options) {
+      this.isUserDecksLoading = true;
+      try {
+        const { data } = await $API.patch(`/decks/${idDeck}`, { params: options });
+        this.deck = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserDecksLoading = false;
       }
     },
   },
