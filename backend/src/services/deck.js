@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import { Deck } from '../db/index.js';
 
 export default {
@@ -15,6 +16,31 @@ export default {
   },
   findById: function (id, options = {}) {
     return Deck.findByPk(id, options);
+  },
+  /**
+   * Find all decks associated with a specific user ID
+   * @param {number} userId
+   * @param {import('sequelize').FindOptions} options
+   * @returns {Promise<Deck[]>}
+   */
+  findByIdUser: function (userId, options = {}) {
+    return Deck.findAll({ ...options, where: { userId } });
+  },
+  /**
+   * Find all decks associated with a specific user ID and a given name
+   * @param {number} userId
+   * @param {import('sequelize').FindOptions} options
+   * @returns {Promise<Deck[]>}
+   */
+  findNameAndByIdUser: function (userId, name, options = {}) {
+    let where = {};
+
+    if (name) {
+      where.name = { [Op.like]: `${name}%` };
+    }
+
+    where.userId = userId;
+    return Deck.findAll({ ...options, where: where });
   },
   create: function (data) {
     return Deck.create(data);

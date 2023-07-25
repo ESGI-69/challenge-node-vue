@@ -110,6 +110,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/decks',
+      name: 'decks',
+      component: () => import('@/views/MyDecks.vue'),
+      meta: {
+        displayName: 'My Decks',
+        authRequired: true,
+      },
+    },
+    {
       path:'/profile',
       name:'edit-profile',
       component: () => import('@/views/EditProfile.vue'),
@@ -151,6 +160,15 @@ const router = createRouter({
       component: () => import('@/views/GameHistory.vue'),
       meta: {
         displayName: 'Game History',
+        authRequired: true,
+      },
+    },
+    {
+      path: '/decks/:id',
+      name: 'deck',
+      component: () => import('@/views/Deck.vue'),
+      meta: {
+        displayName: 'Game',
         authRequired: true,
       },
     },

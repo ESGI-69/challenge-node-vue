@@ -6,7 +6,14 @@
         mode="out-in"
       >
         <button
-          v-if="!isHome && !isInGame && !isInLobby"
+          v-if="isInDeck"
+          class="nes-btn topbar__left__menu-button is-primary"
+          @click="goToDecks"
+        >
+          &lt; Back to decks list
+        </button>
+        <button
+          v-else-if="!isHome && !isInGame && !isInLobby"
           class="nes-btn topbar__left__menu-button is-primary"
           @click="goToHome"
         >
@@ -120,6 +127,7 @@ export default {
     const isHome = computed(() => route.name === 'home' || route.name.startsWith('home-'));
     const isInGame = computed(() => route.name === 'game');
     const isInLobby = computed(() => route.name === 'lobby');
+    const isInDeck = computed(() => route.name === 'deck');
 
     const isForfeitModalOpen = ref(false);
 
@@ -140,6 +148,10 @@ export default {
       goToHome();
     };
 
+    const goToDecks = () => {
+      router.push({ name: 'decks' });
+    };
+
     return {
       cancelGame,
       declareForfeit,
@@ -156,6 +168,8 @@ export default {
       gameId,
       gameStartTime,
       gameTurnQuantity,
+      isInDeck,
+      goToDecks,
     };
   },
 };
