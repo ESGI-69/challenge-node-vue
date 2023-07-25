@@ -7,7 +7,7 @@
   "scripts": {
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "dev": "NODE_ENV=development nodemon src/index.js",
-    "start": "NODE_ENV=production npx sequelize-cli db:migrate && npx sequelize-cli db:seed && node src/index.js",
+    "start": "NODE_ENV=production node src/index.js",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest",
     "test:dev": "NODE_ENV=development NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
     "lint": "eslint src/**/*.js src/**/*.cjs src/**/__tests__/**/*.js",
