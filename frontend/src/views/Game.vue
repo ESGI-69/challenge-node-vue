@@ -10,7 +10,7 @@
     >
       <card-hand
         class="game__container__enemy-hand"
-        :cards-fixed-quantity="5"
+        :cards-fixed-quantity="opponentCardsCount"
         :is-enemy="true"
       />
       <player-avatar
@@ -166,6 +166,7 @@ export default {
     const playerMana = computed(() => gameStore.playerMana);
     const opponentMana = computed(() => gameStore.opponentMana);
     const hand = computed(() => gameStore.hand);
+    const opponentCardsCount = computed(() => gameStore.opponentCardsCount);
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
 
@@ -213,12 +214,13 @@ export default {
     };
 
     if (Object.keys(gameStore.game).length === 0) {
-      gameStore.getHand();
       gameStore.getGame(route.params.id)
-        // eslint-disable-next-line promise/prefer-await-to-then
+      // eslint-disable-next-line promise/prefer-await-to-then
         .catch(() => {
           goHome();
         });
+      gameStore.getHand();
+      gameStore.getOpponentCardsCount();
     }
 
     socket.on('game:forfeited', (game) => {
@@ -392,6 +394,7 @@ export default {
       playerMana,
       opponentMana,
       hand,
+      opponentCardsCount,
     };
   },
 };

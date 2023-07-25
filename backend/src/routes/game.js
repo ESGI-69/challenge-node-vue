@@ -13,6 +13,7 @@ router.post('/join', isLogged, isConnectedToSocket, isNotInGame, gameController.
 router.post('/start', isLogged, isConnectedToSocket, isInGame, isGameOwner, gameController.start);
 router.post('/end-turn', isLogged, isConnectedToSocket, isInProgressGame, gameController.endTurn);
 router.get('/hand', isLogged, isConnectedToSocket, isInProgressGame, gameController.getHand);
+router.get('/opponent-hand', isLogged, isConnectedToSocket, isInProgressGame, gameController.countOpponentCards);
 router.delete('/', isLogged, isConnectedToSocket, isInGame, isGameOwner, gameController.delete);
 router.get('/:id', isLogged, isConnectedToSocket, isInGame, gameController.get);
 

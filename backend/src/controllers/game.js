@@ -176,7 +176,15 @@ export default {
       if (!firstPlayer.hasFavoriteDeck || !secondPlayer.hasFavoriteDeck) throw new Error('One of the players has no favorite deck');
 
       const startedGame = await gameService.start(req.game, firstPlayer, secondPlayer);
-      io.to(req.game.id).emit('game:started', startedGame);
+
+      const firstPlayerHand = await handService.findById(startedGame.first_player_hand);
+      const firstPlayerHandCardsCount = await handService.countCards(startedGame.first_player_hand);
+      const secondPlayerHand = await handService.findById(startedGame.second_player_hand);
+      const secondPlayerHandCardsCount = await handService.countCards(startedGame.second_player_hand);
+
+      users[req.game.first_player].emit('game:started', startedGame, firstPlayerHand, secondPlayerHandCardsCount);
+      users[req.game.second_player].emit('game:started', startedGame, secondPlayerHand, firstPlayerHandCardsCount);
+      // io.to(req.game.id).emit('game:started', startedGame);
       gameService.startTimer(startedGame);
       res.sendStatus(200);
       // eslint-disable-next-line no-console
@@ -245,5 +253,23 @@ export default {
       next(err);
     }
   },
-};
 
+  /**
+   * Express.js controller for GET /games/opponent-hand
+   * Get the number of card in the hand of the opponent player if the user is in a game in progress
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  countOpponentCards: async (req, res, next) => {
+    try {
+      const isFistPlayer = req.game.first_player === req.user.id;
+      const handId = isFistPlayer ? req.game.second_player_hand : req.game.first_player_hand;
+      const count = await handService.countCards(handId);
+      res.json({ count });
+    } catch (err) {
+      next(err);
+    }
+  },
+};

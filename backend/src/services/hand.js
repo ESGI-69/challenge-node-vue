@@ -21,4 +21,14 @@ export default {
       ],
     });
   },
+
+  /**
+   * Count card in hand
+   * @param {number} id
+   * @returns {Promise<number>} Number of cards
+   */
+  async countCards(id) {
+    const hand = await this.findById(id);
+    return hand.cards.length;
+  },
 };
