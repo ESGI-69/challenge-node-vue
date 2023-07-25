@@ -142,4 +142,67 @@ export default {
       next(err);
     }
   },
+
+  /**
+   * Express.js controller PATCH /payments/admin/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
+  async updateStatus(req, res, next) {
+    try {
+      let paymentStatus = 'PENDING';
+      const payment = await paymentService.findByIdWithSessionId(req.params.id);
+
+      if (!payment) {
+        throw new Error('Payment not found', { cause: 'Not Found' });
+      }
+
+      const checkout = await stripePayment.retrieveCheckout(payment.sessionId);
+
+      if (checkout.payment_status === 'paid') {
+        paymentStatus = 'PAID';
+      }
+
+      if (checkout.status === 'expired' && checkout.payment_status === 'unpaid') {
+        paymentStatus = 'CANCELED';
+      }
+
+      const paymentUpdated = await paymentService.update(
+        { id: parseInt(payment.id) },
+        { status: paymentStatus },
+      );
+
+      res.status(200).json(paymentUpdated);
+
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async creditPlayer (req, res, next) {
+    try {
+      const payment = await paymentService.findById(req.params.id);
+      if (!payment) {
+        throw new Error('Payment not found', { cause: 'Not Found' });
+      }
+
+      if (payment.isCredited) {
+        throw new Error('Payment already credited');
+      }
+
+      const product = await productService.findById(payment.productId);
+      await userService.addMoney(req.user, product.value);
+      await paymentService.update(
+        { id: parseInt(payment.id) },
+        { isCredited: true },
+      );
+
+      res.status(200).json({ message: 'Payment credited' });
+
+    } catch (err) {
+      next(err);
+    }
+  },
 };

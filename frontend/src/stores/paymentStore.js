@@ -8,6 +8,8 @@ export const usePaymentStore = defineStore('paymentStore', {
     isPostPaymentLoading: false,
     isPatchPaymentLoading: false,
     isGetPaymentsAdminLoading: false,
+    isUpdateStatusLoading: false,
+    isCreditPlayerLoading: false,
     checkoutUrl: '',
     payments: [],
     paymentsAdmin: [],
@@ -79,6 +81,36 @@ export const usePaymentStore = defineStore('paymentStore', {
       }
       finally {
         this.isGetPaymentsAdminLoading = false;
+      }
+    },
+
+    /**
+     * Update the status of a payment
+     * @param {int} id The payment id
+     */
+    async updateStatus(id) {
+      this.isUpdateStatusLoading = true;
+      try {
+        await $API.patch(`/payments/admin/${id}/`);
+      }
+      catch (err) {
+        throw err.response.data;
+      }
+      finally {
+        this.isUpdateStatusLoading = false;
+      }
+    },
+
+    async creditPlayer(id) {
+      this.isCreditPlayerLoading = true;
+      try {
+        await $API.patch(`/payments/admin/credit/${id}/`);
+      }
+      catch (err) {
+        throw err.response.data;
+      }
+      finally {
+        this.isCreditPlayerLoading = false;
       }
     },
   },

@@ -57,48 +57,66 @@
         <el-input
           v-model="search"
           size="small"
-          placeholder="Type to search"
+          placeholder="Email, product, status, date or sessionId"
         />
       </template>
       <template #default="scope">
         <el-button
           size="small"
-          @click="handleCheckStatus(scope.$index, scope.row)"
+          :loading="isUpdateStatusLoading"
+          @click="handleCheckStatus(scope.row)"
         >
           Check Status
         </el-button>
         <el-button
+          v-if="!scope.row.isCredited"
           size="small"
           type="danger"
-          @click="handleDelete(scope.$index, scope.row)"
+          :loading="isCreditPlayerLoading"
+          @click="dialogVisible = true, paymentId = scope.row.id"
         >
-          Delete
+          Credit
         </el-button>
       </template>
     </el-table-column>
   </el-table>
+  <el-dialog
+    v-model="dialogVisible"
+    title="Warning !"
+    width="30%"
+  >
+    <span>Do you want to credit the player ?</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false, paymentId = null">Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="dialogVisible = false, handleCreditPlayer(paymentId), paymentId = null"
+        >
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
 import { computed, ref } from 'vue';
 import formatDate from '@/utils/formatDate';
 
+
 import { usePaymentStore } from '@/stores/paymentStore';
-import { useProductStore } from '@/stores/productStore';
-import { useUserStore } from '@/stores/userStore';
 
 export default {
   name: 'AdminPayments',
   setup() {
     const paymentStore = usePaymentStore();
-    const productStore = useProductStore();
-    const userStore = useUserStore();
 
     paymentStore.getPaymentsAdmin();
-    userStore.getUsers();
-    productStore.getProducts();
 
     const isPaymentsLoading = computed(() => paymentStore.isGetPaymentsAdminLoading);
+    const isUpdateStatusLoading = computed(() => paymentStore.isUpdateStatusLoading);
+    const isCreditPlayerLoading = computed(() => paymentStore.isCreditPlayerLoading);
     const payments = computed(() => paymentStore.paymentsAdmin);
 
     const paymentsFormated = computed(() => {
@@ -127,11 +145,18 @@ export default {
       ),
     );
 
-    const handleCheckStatus = (index, row) => {
-      console.log(index, row);
+    const handleCheckStatus = async(row) => {
+      await paymentStore.updateStatus(row.id);
+      paymentStore.getPaymentsAdmin();
+
     };
-    const handleDelete = (index, row) => {
-      console.log(index, row);
+
+    const dialogVisible = ref(false);
+    const paymentId = ref(null);
+
+    const handleCreditPlayer = async(id) =>  {
+      await paymentStore.creditPlayer(id);
+      paymentStore.getPaymentsAdmin();
     };
 
     return {
@@ -140,7 +165,11 @@ export default {
       search,
       filterTableData,
       handleCheckStatus,
-      handleDelete,
+      handleCreditPlayer,
+      dialogVisible,
+      paymentId,
+      isCreditPlayerLoading,
+      isUpdateStatusLoading,
     };
   },
 };
