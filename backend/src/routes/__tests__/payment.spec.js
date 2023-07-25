@@ -143,6 +143,17 @@ describe('As an User/Player ', () => {
       expect(response.body).toStrictEqual({});
     }),
   );
+
+  it('GET /admin should return 403', () => request(app)
+    .get('/payments/admin')
+    .set('Authorization', `Bearer ${playerToken}`)
+    .expect(403)
+    .expect('Forbidden')
+    .then((response) => {
+      expect(response.body).toStrictEqual({});
+    }),
+  );
+
 });
 
 describe('As a User/Player with missing fields', () => {

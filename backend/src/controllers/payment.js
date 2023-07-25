@@ -133,9 +133,7 @@ export default {
    */
   async cgetAdmin(req, res, next) {
     try {
-      if (!req.user.isAdmin) {
-        throw new Error('Forbidden');
-      }
+      if (!req.user.isAdmin) throw new Error('You\'r not admin', { cause: 'Forbidden' });
 
       res.json(await paymentService.findAllWithSessionId({}));
     } catch (err) {
@@ -181,6 +179,13 @@ export default {
     }
   },
 
+  /**
+   * Express.js controller PATCH /payments/admin/credit/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   */
   async creditPlayer (req, res, next) {
     try {
       const payment = await paymentService.findById(req.params.id);
