@@ -1,99 +1,87 @@
 <template>
-  <div class="home">
+  <div
+    class="home"
+    :class="{ 'home--is-submenu-displayed': isSubmenuDisplayed }"
+  >
     <container class="home__menu">
-      <div class="home__menu__content">
-        <h1 class="home__menu__content__title">
-          Main Menu
-        </h1>
-        <button
-          class="nes-btn is-primary"
-          @click="createGame"
-        >
-          Create Game
-        </button>
-        <router-link
-          :to="{ name: 'join' }"
-          class="nes-btn"
-        >
+      <h1 class="home__menu__title">
+        Main Menu
+      </h1>
+      <button
+        class="nes-btn is-primary home__menu__create"
+        @click="createGame"
+      >
+        Create Game
+      </button>
+      <router-link
+        :to="{ name: 'join' }"
+        class="home__menu__join"
+      >
+        <button class="nes-btn">
           Join Game
-        </router-link>
-        <div class="nes-separator" />
-        <router-link
-          :to="{ name: 'cards' }"
-          class="nes-btn"
-        >
-          My Cards
-        </router-link>
-        <router-link
-          :to="{ name: 'decks' }"
-          class="nes-btn"
-        >
-          My Decks
-        </router-link>
-        <router-link
-          :to="{ name: 'packs' }"
-          class="nes-btn"
-        >
-          My Packs
-        </router-link>
-        <router-link
-          :to="{ name: 'shop' }"
-          class="nes-btn"
-        >
-          Shop
-        </router-link>
-        <div class="nes-separator" />
-        <router-link
-          v-if="isAdmin"
-          to="/admin"
-          class="nes-btn"
-        >
-          Admin Panel
-        </router-link>
-        <router-link
-          :to="{ name: 'home' }"
-          class="nes-btn"
-        >
-          Settings
-        </router-link>
-        <router-link
-          :to="{ name: 'edit-profile' }"
-          class="nes-btn"
-        >
-          Edit Profile
-        </router-link>
-        <router-link
-          :to="{ name: 'game-history' }"
-          class="nes-btn"
-        >
-          Games History
-        </router-link>
-        <router-link
-          :to="{ name: 'payments-history' }"
-          class="nes-btn"
-        >
-          Payments History
-        </router-link>
-        <router-link
-          :to="{ name: 'stats' }"
-          class="nes-btn"
-        >
-          Statistics
-        </router-link>
-        <button
-          class="nes-btn is-error"
-          @click="logout"
-        >
-          Logout
         </button>
+      </router-link>
+      <router-link
+        :to="{ name: 'home-packs-cards' }"
+        class="home__menu__card-packs"
+      >
+        <button class="nes-btn">
+          Packs & Cards
+        </button>
+      </router-link>
+      <router-link
+        v-if="isAdmin"
+        to="/admin"
+        class="home__menu__admin"
+      >
+        <button class="nes-btn is-success">
+          Admin Panel
+        </button>
+      </router-link>
+      <router-link
+        :to="{ name: 'edit-profile' }"
+        class="home__menu__profile"
+      >
+        <button class="nes-btn">
+          Edit Profile
+        </button>
+      </router-link>
+      <router-link
+        :to="{ name: 'home-history-stats' }"
+        class="home__menu__history-stats"
+      >
+        <button class="nes-btn">
+          History & Stats
+        </button>
+      </router-link>
+      <button
+        class="nes-btn is-error home__menu__logout"
+        @click="logout"
+      >
+        Logout
+      </button>
+    </container>
+    <container
+      v-if="isSubmenuDisplayed"
+      class="home__sub-menu"
+    >
+      <div class="home__sub-menu__header">
+        <button
+          class="home__sub-menu__header__close nes-btn is-error"
+          @click="$router.push({ name: 'home' })"
+        >
+          X Close
+        </button>
+        {{ routeDisplayName }}
       </div>
+      <router-view />
     </container>
   </div>
 </template>
 
 <script>
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 import Container from '@/components/Container.vue';
 
@@ -111,10 +99,14 @@ export default {
     const profileStore = useProfileStore();
     const gameStore = useGameStore();
     const router = useRouter();
+    const route = useRoute();
 
     const isAdmin = computed(() => profileStore.isAdmin);
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
+
+    const isSubmenuDisplayed = computed(() => route.name !== 'home');
+    const routeDisplayName = computed(() => route.meta.displayName);
 
     const logout = () => {
       authStore.logout();
@@ -137,6 +129,8 @@ export default {
       isAdmin,
       avatarUrl,
       createGame,
+      isSubmenuDisplayed,
+      routeDisplayName,
     };
   },
 };
@@ -146,24 +140,84 @@ export default {
 .home {
   height: 100%;
   display: flex;
-  flex-direction: column;
   gap: 1rem;
   align-items: center;
   justify-content: center;
 
-  &__logo {
-    width: 12rem;
-    height: 12rem;
+  &__menu {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "title title"
+      "admin admin"
+      "create profile"
+      "create history-stats"
+      "join card-packs"
+      "join logout";
+
+    & > a {
+      display: flex;
+      width: 100%;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      & > button {
+        width: 100%;
+      }
+    }
+
+    &__title {
+      grid-area: title;
+      text-align: center;
+    }
+
+    &__create {
+      grid-area: create;
+    }
+
+    &__profile {
+      grid-area: profile;
+    }
+
+    &__history-stats {
+      grid-area: history-stats;
+    }
+
+    &__join {
+      grid-area: join;
+    }
+
+    &__logout {
+      grid-area: logout;
+    }
+
+    &__card-packs {
+      grid-area: card-packs;
+    }
+
+    &__admin {
+      grid-area: admin;
+    }
   }
 
-  &__menu {
-    &__content {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+  &__sub-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 
-      .nes-separator {
-        margin: 0 3rem;
+    &__header {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      white-space: nowrap;
+      padding-bottom: 1rem;
+      border-bottom: 0.25rem solid black;
+
+      &__close {
+        font-size: 0.75rem;
       }
     }
   }
