@@ -1,6 +1,8 @@
 import { Game, User } from '../db/index.js';
 import { Op } from 'sequelize';
 import { users as userSockets } from '../socket/index.js';
+import handService from './hand.js';
+import deckService from './deck.js';
 
 /**
  * Key is the id of the game
@@ -64,9 +66,9 @@ export default {
     return Game.build(data).validate();
   },
   /**
-     * Find game where the user is first_player or second_player
-     * @param {typeof import('../db/index.js').User} userModel
-     */
+   * Find game where the user is first_player or second_player
+   * @param {typeof import('../db/index.js').User} userModel
+   */
   findCurrentGameByUser: function (userModel) {
     return Game.findOne({
       where: {
@@ -123,6 +125,12 @@ export default {
     gameModel.startedAt = new Date();
     gameModel.first_player_deck = firstPlayerModel.idDeckFav;
     gameModel.second_player_deck = secondPlayerModel.idDeckFav;
+    const firstPlayerDeck = await deckService.findById(gameModel.first_player_deck);
+    const secondPlayerDeck = await deckService.findById(gameModel.second_player_deck);
+    const fisrtPayerHand = handService.create(gameModel, firstPlayerModel, firstPlayerDeck);
+    const secondPlayerHand = handService.create(gameModel, secondPlayerModel, secondPlayerDeck);
+    gameModel.first_player_hand = fisrtPayerHand.id;
+    gameModel.second_player_hand = secondPlayerHand.id;
     gameModel.current_player = gameModel.first_player;
     await gameModel.save();
     return this.findById(gameModel.id);
