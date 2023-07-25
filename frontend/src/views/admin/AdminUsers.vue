@@ -65,14 +65,14 @@
         <template #default="scope">
           <el-button
             type="primary"
-            size="mini"
+            size="default"
             @click="handleEdit(scope.row)"
           >
             Edit
           </el-button>
           <el-button
             type="danger"
-            size="mini"
+            size="default"
             @click="handleBan(scope.row)"
           >
             {{ scope.row.isBanned ? 'Unban' : 'Ban' }}

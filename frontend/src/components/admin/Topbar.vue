@@ -63,6 +63,8 @@ export default {
           return '1';
         case 'adminPayments':
           return '2';
+        case 'adminUsers':
+          return '3';
         default:
           return '1';
       }
