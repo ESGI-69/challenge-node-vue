@@ -10,7 +10,8 @@ export const state = reactive({
 
 // TODO use env variable
 // export const socket = io(import.meta.env.VITE_API);
-export const socket = io('ws://localhost:3000/', {
+const url = import.meta.env.VITE_API.replace('http', 'ws');
+export const socket = io(url, {
   autoConnect: false,
   query: {
     token: Cookies.get(import.meta.env.VITE_COOKIE_TOKEN_NAME),
