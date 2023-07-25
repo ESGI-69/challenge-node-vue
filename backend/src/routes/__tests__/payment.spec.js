@@ -5,6 +5,7 @@ import getJwt from '../../../tests/getJwt.js';
 import stripePayment from '../../utils/stripePayment.js';
 
 const playerToken = await getJwt('usertest@example.com', '123456');
+const adminToken = await getJwt('admin@example.com', '123456');
 
 const playerId = 5;
 let paymentID;
@@ -123,6 +124,25 @@ describe('As an User/Player ', () => {
     ),
   );
 
+  it('PATCH /admin/:id shoud 403', () => request(app)
+    .patch(`/payments/admin/${paymentID}`)
+    .set('Authorization', `Bearer ${playerToken}`)
+    .expect(403)
+    .expect('Forbidden')
+    .then((response) => {
+      expect(response.body).toStrictEqual({});
+    }),
+  );
+
+  it('PATCH /admin/credit/:id shoud 403', () => request(app)
+    .patch(`/payments/admin/credit/${paymentID}`)
+    .set('Authorization', `Bearer ${playerToken}`)
+    .expect(403)
+    .expect('Forbidden')
+    .then((response) => {
+      expect(response.body).toStrictEqual({});
+    }),
+  );
 });
 
 describe('As a User/Player with missing fields', () => {
@@ -179,6 +199,47 @@ describe('As a User/Player with missing fields', () => {
   );
 });
 
+describe('As an Admin ', () => {
+  let stripePaymentCreateCheckoutMock;
+  let stripePaymentRetrieveCheckoutMock;
+  let stripePaymentcloseCheckoutMock;
+
+  beforeAll(() => {
+    stripePaymentCreateCheckoutMock = jest.spyOn(stripePayment, 'createCheckout').mockResolvedValue(fakeCheckoutSession);
+    stripePaymentRetrieveCheckoutMock = jest.spyOn(stripePayment, 'retrieveCheckout').mockResolvedValue(fakeCheckoutSession);
+    stripePaymentcloseCheckoutMock = jest.spyOn(stripePayment, 'closeCheckout').mockResolvedValue();
+  });
+
+  afterAll(() => {
+    stripePaymentCreateCheckoutMock.mockRestore();
+    stripePaymentRetrieveCheckoutMock.mockRestore();
+    stripePaymentcloseCheckoutMock.mockRestore();
+  });
+
+  it('PATCH /admin/:id should return 200', () => request(app)
+    .patch(`/payments/admin/${paymentID}`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then((response) => {
+      expect(response.body.status).toBe('PENDING');
+      expect(response.body.userId).toBe(playerId);
+      expect(response.body.checkoutUrl).toBe(fakeCheckoutSession.url);
+    }),
+  );
+
+  it('PATCH /admin/credit/:id should return 200', () => request(app)
+    .patch(`/payments/admin/credit/${paymentID}`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then((response) => {
+      expect(response.body).toStrictEqual({ message: 'Payment credited' });
+    }),
+  );
+
+});
+
 describe('As an Unlogged User ', () => {
   it('GET /payment should return 401', () => request(app)
     .get('/payments')
@@ -206,6 +267,30 @@ describe('As an Unlogged User ', () => {
 
   it('PATCH /payment/:id should return 401', () => request(app)
     .patch(`/payments/${paymentID}`)
+    .expect(401)
+    .expect('Content-Type', /json/)
+    .then((response) => {
+      expect(response.body).toStrictEqual({
+        code: 'not_logged_in',
+        message: 'Not logged in',
+      });
+    }),
+  );
+
+  it('PATCH /admin/:id should return 401', () => request(app)
+    .patch(`/payments/admin/${paymentID}`)
+    .expect(401)
+    .expect('Content-Type', /json/)
+    .then((response) => {
+      expect(response.body).toStrictEqual({
+        code: 'not_logged_in',
+        message: 'Not logged in',
+      });
+    }),
+  );
+
+  it('PATCH /admin/credit/:id should return 401', () => request(app)
+    .patch(`/payments/admin/credit/${paymentID}`)
     .expect(401)
     .expect('Content-Type', /json/)
     .then((response) => {
