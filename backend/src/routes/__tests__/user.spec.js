@@ -256,6 +256,27 @@ describe('User Balance Update (Admin)', () => {
     }));
 });
 
+describe('User Ban Update (Admin)', () => {
+  it('PATCH /users/:id/ban should ban a user', () => request(app)
+    .patch(`/users/${userId}/ban`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send({ isBanned: true })
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then((res) => {
+      expect(typeof res.body.id).toBe('number');
+      expect(res.body.email).toBe(user.email);
+      expect(res.body.firstname).toBe(user.firstname);
+      expect(res.body.lastname).toBe(user.lastname);
+      expect(res.body.updatedAt).toBeDefined();
+      expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
+      expect(res.body.createdAt).toBeDefined();
+      expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
+      expect(res.body.createdAt).toBe(user.createdAt);
+      expect(res.body.isBanned).toBe(true);
+    }));
+});
+
 describe('User updating his profile', () => {
   let mailerSendMailMock;
 
