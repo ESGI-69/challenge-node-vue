@@ -35,7 +35,7 @@ export default {
   // justify-content: center;
   // align-items: center;
   gap: 1rem;
-  height: 100%;
+  // height: 100%;
 
   &__ctnr-deck-vue{
     display: flex;

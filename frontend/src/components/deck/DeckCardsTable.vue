@@ -15,13 +15,8 @@
           :id="card.id"
           :name="card.name"
           :cost="card.cost"
-        />
-        <button
-          class="nes-btn is-error"
           @click="removeCardFromDeck(card.id)"
-        >
-          -
-        </button>
+        />
       </div>
     </div>
   </container>
@@ -97,8 +92,8 @@ export default {
             flex-direction: row;
             white-space: nowrap;
 
-            &__btn-add-card{
-                white-space: nowrap;
+            &__btn-remove-card{
+              height: 3rem;
             }
         }
     }

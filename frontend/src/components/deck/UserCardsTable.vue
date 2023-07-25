@@ -88,12 +88,21 @@
       v-else-if="!isLoading"
       class="cards-table__cards"
     >
-      <card
+      <span
         v-for="card in cards"
         :key="card.id"
-        v-bind="card"
-        @click="addCardFromDeck(card.id)"
-      />
+        class="cards-table__cards__card"
+      >
+        <card
+          v-bind="card"
+        />
+        <span
+          class="cards-table__cards__card__add"
+          @click="addCardFromDeck(card.id)"
+        >
+          +
+        </span>
+      </span>
     </div>
     <div
       v-else
@@ -139,7 +148,7 @@ export default {
 
     const deckId = route.params.id;
 
-    const cardPerRow = 3;
+    const cardPerRow = 4;
 
     const isLoading = computed(() => cardStore.isUserCardsLoading);
     const cards = computed(() => cardStore.userCards);
@@ -263,8 +272,31 @@ export default {
 
   &__cards {
     display: grid;
+    width: fit-content;
     grid-template-columns: repeat(v-bind(cardPerRow), 1fr);
     gap: 1rem;
+
+    &__card {
+      position: relative;
+      display: grid;
+
+      &:hover{
+        .cards-table__cards__card__add{
+          display: flex;
+        }
+      }
+
+      &__add{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: white;
+        font-size: 5rem;
+        padding: 50% 35%;
+        display: none;
+        background-color: rgba(0,0,0, 0.5);
+      }
+    }
   }
 
   &__loading, &__empty {

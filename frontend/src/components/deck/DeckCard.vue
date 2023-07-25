@@ -2,16 +2,25 @@
   <div class="card">
     <span
       class="card__cost"
+      :style="`background-image: url(${ManaCrystal})`"
     >
       {{ cost }}
     </span>
     <span class="card__name">
       {{ name }}
     </span>
+    <img
+      class="card__trash"
+      :src="Trash"
+      alt="Trash"
+    >
   </div>
 </template>
 
 <script>
+import ManaCrystal from '@/assets/mana-crystal.png';
+import Trash from '@/assets/delete.png';
+
 export default {
   name: 'Card',
   components: {
@@ -95,6 +104,8 @@ export default {
   },
   setup() {
     return {
+      ManaCrystal,
+      Trash,
     };
   },
 };
@@ -105,37 +116,49 @@ export default {
     position: relative;
     display: flex;
     flex-direction: row;
-    width: 80%;
-    height: 5rem;
-    // text-align: center;
+    width: 100%;
+    height: 4rem;
+    background-color: #36a3f7;
+    border: solid 3px black;
+    border-radius: 1rem;
+    gap: 0.5rem;
     align-items: center;
-    background-color: red;
     justify-content: center;
-    gap: 1rem;
 
     &__cost{
-        // position: absolute;
-        // font-size: 1rem;
-        left: 1rem;
-        color: white;
+      position: absolute;
+      display: flex;
+      left: 1rem;
+      justify-content: center;
+      align-items: center;
+      height: 2rem;
+      width: 2rem;
+      color: white;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
     }
 
     &__name{
-        margin-left: 1rem;
-        font-size: 1rem;
-        text-align: left;
-        align-items: left;
+      font-size: 0.75rem;
+      text-align: left;
+      align-items: left;
+      color: white;
     }
 
-    &__add-cart{
-        // position: absolute;
-        // right: 1rem;
-        font-size: 2rem;
-        color: white;
+    &__trash{
+      position: absolute;
+      opacity: 0;
+      right: 1rem;
+      height: 2rem;
+      width: 2rem;
+    }
 
-        &:hover{
-            color: rgb(0, 172, 185);
-        }
+    &:hover{
+      opacity: 0.8;
+      .card__trash{
+        opacity: 1;
+      }
     }
 
 }
