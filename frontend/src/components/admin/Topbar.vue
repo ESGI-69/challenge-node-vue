@@ -32,6 +32,11 @@
         Payments
       </router-link>
     </el-menu-item>
+    <el-menu-item index="3">
+      <router-link :to="{ name: 'adminUsers' }">
+        Users
+      </router-link>
+    </el-menu-item>
     <el-menu-item>
       Moderation
     </el-menu-item>
@@ -58,6 +63,8 @@ export default {
           return '1';
         case 'adminPayments':
           return '2';
+        case 'adminUsers':
+          return '3';
         default:
           return '1';
       }

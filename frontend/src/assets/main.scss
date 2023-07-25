@@ -37,6 +37,10 @@ html, body, #app {
   }
 }
 
+.el-message__content {
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer !important;
+}
 .el-popper * {
   font-family: Arial, Helvetica, sans-serif;
 }
