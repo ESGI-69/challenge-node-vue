@@ -12,6 +12,50 @@
           @input="setNameFilter"
         >
       </div>
+      <div class="decks-table__header__favorite-deck">
+        <span class="decks-table__header__favorite-deck__label">Favorite:</span>
+        <div class="nes-select">
+          <select
+            id="select-fav-deck"
+            required
+            @change="selectFavDeck"
+          >
+            <option
+              v-if="idDeckFav === null"
+              value=""
+              selected
+            >
+              Aucun
+            </option>
+            <option
+              v-else
+              value=""
+              hidden
+              disabled
+            >
+              Aucun
+            </option>
+            <template
+              v-for="deck in decks"
+              :key="deck.id"
+            >
+              <option
+                v-if="deck.id === idDeckFav"
+                selected
+                :value="deck.id"
+              >
+                {{ deck.name }}
+              </option>
+              <option
+                v-else
+                :value="deck.id"
+              >
+                {{ deck.name }}
+              </option>
+            </template>
+          </select>
+        </div>
+      </div>
       <div class="decks-table__header__order">
         <button
           class="decks-table__decks__create-button nes-btn is-primary"
@@ -47,15 +91,27 @@
       v-else-if="!isLoading"
       class="decks-table__decks"
     >
-      <router-link
+      <span
         v-for="deck in decks"
         :key="deck.id"
-        :to="{ name: 'deck', params: { id: deck.id } }"
+        class="decks-table__decks__deck"
       >
-        <deck
-          v-bind="deck"
-        />
-      </router-link>
+        <router-link
+          :to="{ name: 'deck', params: { id: deck.id } }"
+        >
+          <deck
+            v-bind="deck"
+          />
+        </router-link>
+
+        <img
+          class="decks-table__decks__deck__delete"
+          :src="Trash"
+          alt="Trash"
+          @click="deleteDeck(deck.id)"
+        >
+
+      </span>
     </div>
     <div
       v-else
@@ -90,11 +146,13 @@
 import { computed, ref } from 'vue';
 
 import Deck from '@/components/Deck.vue';
-// import TablePagination from './TablePagination.vue';
 import Container from '@/components/Container.vue';
 import Modal from '@/components/Modal.vue';
 
+import Trash from '@/assets/delete.png';
+
 import { useDeckStore } from '@/stores/deckStore';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default {
   name: 'DecksTable',
@@ -102,30 +160,25 @@ export default {
     Deck,
     Modal,
     Container,
-    // TablePagination,
   },
   setup() {
     const deckStore = useDeckStore();
+    const profileStore = useProfileStore();
 
-    const deckPerPage = 8;
-    const deckPerRow = deckPerPage / 2;
+    const deckPerRow = 4;
+
+    const idDeckFav = computed(() => profileStore.profile.idDeckFav);
 
     const isLoading = computed(() => deckStore.isUserDecksLoading);
     const isCreateModalOpen = ref(false);
     const decks = computed(() => deckStore.decks);
-    const totalDecks = computed(() => deckStore.userDecksCount);
-    const totalPages = computed(() => Math.ceil(totalDecks.value / 6));
-    const currentPage = ref(1);
     const nameFilter = ref('');
-    const selectedDeck = ref(null);
     const newDeckName = ref('');
 
     const getDecks = () => {
       if (nameFilter.value !== '') {
 
         const options = {
-          offset: (currentPage.value - 1) * 6,
-          limit: deckPerPage,
           name: nameFilter.value,
         };
         deckStore.getUserDecks(options);
@@ -136,23 +189,13 @@ export default {
 
     getDecks();
 
-    const changePage = (page) => {
-      if (page === currentPage.value) return;
-      currentPage.value = page;
-      getDecks();
+    const deleteDeck = (id) => {
+      deckStore.deleteDeck(id);
     };
 
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value -= 1;
-        getDecks();
-      }
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value += 1;
-        getDecks();
+    const selectFavDeck = (event) => {
+      if (event.target.value !== '') {
+        profileStore.updateDeckFav(event.target.value);
       }
     };
 
@@ -180,17 +223,15 @@ export default {
       isLoading,
       decks,
       getDecks,
-      currentPage,
-      totalPages,
-      changePage,
-      previousPage,
-      nextPage,
       nameFilter,
       setNameFilter,
       resetNameFilter,
-      selectedDeck,
       newDeckName,
       createDeck,
+      idDeckFav,
+      selectFavDeck,
+      Trash,
+      deleteDeck,
     };
   },
 };
@@ -212,6 +253,15 @@ export default {
       span {
         margin-right: 0.5rem;
       }
+    }
+
+    &__favorite-deck{
+      display: flex;
+      flex-direction: row;
+       &__label{
+        display: flex;
+        align-items: center;
+       }
     }
 
     &__order {
@@ -237,6 +287,25 @@ export default {
     display: grid;
     grid-template-columns: repeat(v-bind(deckPerRow), 1fr);
     gap: 1rem;
+
+    &__deck{
+      position: relative;
+
+      &:hover{
+        .decks-table__decks__deck__delete{
+          display: flex;
+        }
+      }
+
+      &__delete{
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: none;
+        height: 2rem;
+        width: 2rem;
+      }
+    }
   }
 
   &__loading, &__empty {
@@ -257,7 +326,7 @@ export default {
   }
 
   .name-filter {
-    width: 15rem;
+    width: 10rem;
   }
 }
 </style>

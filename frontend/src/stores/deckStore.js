@@ -8,6 +8,7 @@ export const useDeckStore = defineStore('deckStore', {
     isUserDecksLoading: false,
     isUserDeckLoading: false,
     isUserDeckIdsLoading: false,
+    msgError: '',
     userDecks: [],
     userDecksCount: 0,
     /**
@@ -115,15 +116,45 @@ export const useDeckStore = defineStore('deckStore', {
         });
 
         this.deck = data;
+        this.msgError = '';
+      } catch (err) {
+        if (err.response.status === 400 && err.response.data.reason==='Deck is full') {
+          this.msgError = err.response.data.reason;
+        } else {
+          throw err.response.data;
+        }
+      } finally {
+        this.isUserDeckIdsLoading = false;
+      }
+    },
+    async deleteDeck(idDeck) {
+      this.isUserDeckIdsLoading = true;
+      try {
+        await $API.delete(`/decks/${idDeck}`);
 
-        // const { data } = await $API.get(`/decks/${idDeck}`);
+        const cleanedDecks = this.decks.filter((deck) => deck.id !== idDeck);
 
-        // this.deck = data;
+        this.decks = cleanedDecks;
+
       } catch (err) {
         throw err.response.data;
       } finally {
         this.isUserDeckIdsLoading = false;
       }
+    },
+    async updateDeck(idDeck, options) {
+      this.isUserDecksLoading = true;
+      try {
+        const { data } = await $API.patch(`/decks/${idDeck}`, { params: options });
+        this.deck = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserDecksLoading = false;
+      }
+    },
+    resetMsgError() {
+      this.msgError = '';
     },
   },
 });

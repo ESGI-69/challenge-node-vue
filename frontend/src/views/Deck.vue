@@ -1,28 +1,90 @@
 <template>
-  <div class="my-deck">
-    <h1>
-      <i class="nes-icon is-large star" />&nbsp;My deck&nbsp;<i class="nes-icon is-large star" />
+  <container class="my-deck">
+    <h1 class="my-deck__title">
+      {{ deckName }}
+      <img
+        class="my-deck__edit"
+        :src="Edit"
+        alt="Edit"
+        @click="isEditModalOpen = true"
+      >
     </h1>
     <div class="my-deck__ctnr-deck-vue">
       <user-cards-table />
       <deck-cards-table />
     </div>
-  </div>
+    <modal
+      v-model:isOpen="isEditModalOpen"
+      @confirm="updateDeck"
+    >
+      <template #header>
+        <h2>Edit deck name</h2>
+      </template>
+      <div class="nes-field">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          v-model="newDeckName"
+          type="text"
+          class="nes-input"
+        >
+      </div>
+      <template #confirm>
+        <span>Update</span>
+      </template>
+    </modal>
+  </container>
 </template>
 
 <script>
+import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
 import UserCardsTable from '@/components/deck/UserCardsTable.vue';
 import DeckCardsTable from '@/components/deck/DeckCardsTable.vue';
+import Container from '@/components/Container.vue';
+import Modal from '@/components/Modal.vue';
+
+import Edit from '@/assets/edit.png';
+
+import { useDeckStore } from '@/stores/deckStore';
 
 
 export default {
   name: 'DeckCards',
   components: {
-    UserCardsTable,
+    Container,
     DeckCardsTable,
+    Modal,
+    UserCardsTable,
   },
   setup() {
+    const deckStore = useDeckStore();
+
+    const route = useRoute();
+
+    const deckId = route.params.id;
+
+    const deckName = computed(() => deckStore.deck.name);
+    const isEditModalOpen = ref(false);
+    const newDeckName = ref('');
+
+    const updateDeck = () => {
+      const options = {
+        name: newDeckName.value,
+      };
+
+      deckStore.updateDeck(deckId, options);
+      isEditModalOpen.value = false;
+    };
+
     return {
+      updateDeck,
+      deckId,
+      deckName,
+      Edit,
+      isEditModalOpen,
+      newDeckName,
     };
   },
 };
@@ -32,15 +94,34 @@ export default {
 .my-deck {
   display: flex;
   flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
   gap: 1rem;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
 
   &__ctnr-deck-vue{
     display: flex;
     flex-direction: row;
     gap: 3rem;
+    height: 100%;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  &__title{
+    margin-top: 2rem;
+  }
+
+  &__edit{
+    width: 2rem;
+    height: 2rem;
+    margin-top: -1rem;
+
+    &:hover{
+      cursor: pointer;
+    }
   }
 }
 </style>

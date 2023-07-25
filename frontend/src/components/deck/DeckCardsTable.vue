@@ -1,7 +1,17 @@
 <template>
-  <container class="deck-card">
+  <div class="deck-card">
     <div class="deck-card__header">
-      <h1>Deck cards</h1>
+      <h1>
+        Deck cards&nbsp;
+        <span
+          :class="{
+            'deck-card__header__count--red': countCards < 5,
+            'deck-card__header__count--green': countCards === 5,
+          }"
+        >
+          ({{ countCards }}/5)
+        </span>
+      </h1>
     </div>
     <div
       class="deck-card__list"
@@ -15,22 +25,16 @@
           :id="card.id"
           :name="card.name"
           :cost="card.cost"
-        />
-        <button
-          class="nes-btn is-error"
           @click="removeCardFromDeck(card.id)"
-        >
-          -
-        </button>
+        />
       </div>
     </div>
-  </container>
+  </div>
 </template>
 
 <script>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import Container from '@/components/Container.vue';
 
 import DeckCard from '@/components/deck/DeckCard.vue';
 
@@ -40,7 +44,6 @@ export default {
   name: 'CardsTable',
   components: {
     DeckCard,
-    Container,
   },
   setup() {
     const deckStore = useDeckStore();
@@ -50,6 +53,7 @@ export default {
 
     const deck = computed(() => deckStore.deck);
     const cards = computed(() => deckStore.deck.Cards);
+    const countCards = computed(() => deckStore.deck.Cards?.length);
     // const isUserDeckIdsLoading = computed(() => deckStore.isUserDeckIdsLoading);
 
     const getDeck = () => {
@@ -64,6 +68,7 @@ export default {
 
     return {
       cards,
+      countCards,
       deckId,
       deck,
       getDeck,
@@ -78,12 +83,30 @@ export default {
     display: flex;
     flex-direction: column;
     width: 25%;
+    border: solid 4px black;
+    text-align: center;
+    padding: 0 2rem;
+    max-height: 98%;
 
     &__header{
         align-items: center;
         text-align: center;
         border-bottom: solid 2px black;
         margin-bottom: 2rem;
+
+        h1{
+          font-size: 1.3rem;
+        }
+
+        &__count{
+          &--red{
+            color: red;
+          }
+
+          &--green{
+            color: green;
+          }
+        }
     }
 
     &__list{
@@ -97,8 +120,8 @@ export default {
             flex-direction: row;
             white-space: nowrap;
 
-            &__btn-add-card{
-                white-space: nowrap;
+            &__btn-remove-card{
+              height: 3rem;
             }
         }
     }

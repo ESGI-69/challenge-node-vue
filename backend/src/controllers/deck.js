@@ -51,6 +51,8 @@ export default {
       const deck = await deckService.findById(parseInt(req.params.id), {
         include: Card,
       });
+
+      if (req.user.id !== deck.userId) throw new Error('You don\'t own this deck', { cause: 'Unauthorized' });
       if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
 
       res.json(deck);
@@ -132,6 +134,7 @@ export default {
    */
   patch : async (req, res, next) => {
     try {
+      const { name } = req.body.params;
       const deck = await deckService.findById(parseInt(req.params.id));
       if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
       if (req.user.id !== deck.userId) throw new Error('You don\'t own this deck', { cause: 'Unauthorized' });
@@ -139,10 +142,12 @@ export default {
       await deck.update(
         {
           id: parseInt(req.params.id),
-          name: req.body.name,
+          name: name,
         },
       );
-      res.json(await deckService.findById(deck.id));
+      res.json(await deckService.findById(deck.id, {
+        include: Card,
+      }));
     } catch (err) {
       next(err);
     }
@@ -198,6 +203,8 @@ export default {
       if (!card) throw new Error('Card not found', { cause: 'Not Found' });
 
       if (!await userService.hasCard(req.user, req.body.cardId)) throw new Error('You don\'t have this card', { cause: 'Unauthorized' });
+
+      if (deck.Cards.length == 5) throw new Error('Deck is full', { cause: 'Bad Request' });
 
       await deckService.addCard(deck, parseInt(req.body.cardId));
 

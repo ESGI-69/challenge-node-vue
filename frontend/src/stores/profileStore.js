@@ -82,5 +82,16 @@ export const useProfileStore = defineStore('profileStore', {
         this.isGameHistoryLoading = false;
       }
     },
+    async updateDeckFav(idDeck) {
+      this.isGameHistoryLoading = true;
+      try {
+        const { data } = await $API.post(`/users/choose-fav-deck/${idDeck}`);
+        this.profile = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isGameHistoryLoading = false;
+      }
+    },
   },
 });

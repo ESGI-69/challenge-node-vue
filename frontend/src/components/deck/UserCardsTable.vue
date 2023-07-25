@@ -1,5 +1,5 @@
 <template>
-  <container class="cards-table">
+  <div class="cards-table">
     <div class="cards-table__header">
       <div class="cards-table__header__filters">
         <span>
@@ -88,12 +88,21 @@
       v-else-if="!isLoading"
       class="cards-table__cards"
     >
-      <card
-        v-for="card in cards"
+      <span
+        v-for="card in filteredCards"
         :key="card.id"
-        v-bind="card"
-        @click="addCardFromDeck(card.id)"
-      />
+        class="cards-table__cards__card"
+      >
+        <card
+          v-bind="card"
+        />
+        <span
+          class="cards-table__cards__card__add"
+          @click="addCardFromDeck(card.id)"
+        >
+          +
+        </span>
+      </span>
     </div>
     <div
       v-else
@@ -101,24 +110,29 @@
     >
       <p>Loading...</p>
     </div>
-    <transition name="fade">
-      <card-detail
-        v-if="!!selectedCard"
-        :card="selectedCard"
-        @close="selectedCard = null"
-      />
-    </transition>
-  </container>
+  </div>
+  <modal-error
+    v-model:isOpen="isErrorModalOpen"
+    @cancel="closeModalError"
+  >
+    <template #header>
+      <h2>Error</h2>
+    </template>
+    <div class="nes-field">
+      <p>
+        {{ msgError }}
+      </p>
+    </div>
+  </modal-error>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Card from '@/components/Card.vue';
-import Container from '@/components/Container.vue';
 import CardCost from '@/components/card/CardCost.vue';
-import CardDetail from '@/components/CardDetail.vue';
+import ModalError from '@/components/ModalError.vue';
 
 import { useCardStore } from '@/stores/cardStore';
 import { useDeckStore } from '@/stores/deckStore';
@@ -128,8 +142,7 @@ export default {
   components: {
     Card,
     CardCost,
-    CardDetail,
-    Container,
+    ModalError,
   },
   setup() {
     const cardStore = useCardStore();
@@ -139,21 +152,37 @@ export default {
 
     const deckId = route.params.id;
 
-    const cardPerRow = 3;
+    const cardPerRow = 4;
 
     const isLoading = computed(() => cardStore.isUserCardsLoading);
+    const deckCards = computed(() => deckStore.deck.Cards);
     const cards = computed(() => cardStore.userCards);
+    const msgError = computed(() => deckStore.msgError);
+    const isErrorModalOpen = ref(false);
+
+    const filteredCards = computed(() => {
+      if (deckCards.value.length === 0){
+        return cards.value;
+      }
+      const deckCardIds = new Set(deckCards.value.map(card => card.id));
+      return cards.value.filter(card => !deckCardIds.has(card.id));
+    });
+
     const totalCards = computed(() => cardStore.userCardsCount);
-    const totalPages = computed(() => Math.ceil(totalCards.value / 6));
-    const currentPage = ref(1);
     const order = ref('cost');
     const costFilter = ref(null);
-    const selectedCard = ref(null);
+
+    const closeModalError = () => {
+      isErrorModalOpen.value = false;
+      deckStore.resetMsgError();
+    };
+
+    watch(msgError, (newVal) => {
+      isErrorModalOpen.value = newVal !== '';
+    });
 
     const getCards = () => {
       const options = {
-        offset: (currentPage.value - 1) * 6,
-        // limit: cardPerPage,
         order: order.value,
         cost: costFilter.value,
       };
@@ -162,30 +191,14 @@ export default {
 
     const addCardFromDeck = (cardId) => {
       deckStore.addCardFromDeck(deckId, cardId);
+
+      // if (msgError.value !== '') {
+      //   isErrorModalOpen.value = true;
+      // }
     };
 
     // Load cards on created
     getCards();
-
-    const changePage = (page) => {
-      if (page === currentPage.value) return;
-      currentPage.value = page;
-      getCards();
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value -= 1;
-        getCards();
-      }
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value += 1;
-        getCards();
-      }
-    };
 
     const setCostFilter = (cost) => {
       if (costFilter.value === cost) {
@@ -205,19 +218,18 @@ export default {
       addCardFromDeck,
       cardPerRow,
       cards,
-      changePage,
+      closeModalError,
       costFilter,
-      currentPage,
+      deckCards,
+      isErrorModalOpen,
+      filteredCards,
       getCards,
       isLoading,
-      nextPage,
+      msgError,
       order,
-      previousPage,
       resetCostFilter,
-      selectedCard,
       setCostFilter,
       totalCards,
-      totalPages,
     };
   },
 };
@@ -228,6 +240,9 @@ export default {
   display: flex;
   flex-direction: column;
   width: 75%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
   &__header {
     display: flex;
     justify-content: space-between;
@@ -263,8 +278,32 @@ export default {
 
   &__cards {
     display: grid;
+    width: fit-content;
     grid-template-columns: repeat(v-bind(cardPerRow), 1fr);
     gap: 1rem;
+    overflow-y: scroll;
+
+    &__card {
+      position: relative;
+      display: grid;
+
+      &:hover{
+        .cards-table__cards__card__add{
+          display: flex;
+        }
+      }
+
+      &__add{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: white;
+        font-size: 5rem;
+        padding: 50% 35%;
+        display: none;
+        background-color: rgba(0,0,0, 0.5);
+      }
+    }
   }
 
   &__loading, &__empty {
