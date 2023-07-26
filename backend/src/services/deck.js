@@ -98,7 +98,7 @@ export default {
     const deck = await Deck.findByPk(id, {
       include: Card,
     });
-    return deck.cards.length;
+    return deck.Cards.length;
   },
   /**
    * @param {import('../db/index.js').Deck} deckModel
@@ -109,6 +109,6 @@ export default {
     const deck = await Deck.findByPk(id, {
       include: Card,
     });
-    return (deck.cards.length == 5);
+    return (deck.Cards.length == 5);
   },
 };
