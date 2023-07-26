@@ -1,6 +1,7 @@
 import { Game, User } from '../db/index.js';
 import { Op } from 'sequelize';
-import socket, { users as userSockets } from '../socket/index.js';
+import { users as userSockets } from '../socket/index.js';
+import { io } from '../index.js';
 import handService from './hand.js';
 import deckService from './deck.js';
 import userService from './user.js';
@@ -157,9 +158,12 @@ export default {
     gameModel.endedAt = new Date();
     gameModel.endType = reason;
     const game = await gameModel.save();
+    await userService.addMoney(user, 150);
+    await userService.addXp(user, 150);
+    const winnerUser = await userService.findById(user.id);
     const looserId = game.first_player === user.id ? game.second_player : game.first_player;
-    userSockets[looserId].emit('game:end', game);
-    userSockets[gameModel.winner].emit('game:win', game);
+    userSockets[looserId].emit('game:loose', game);
+    userSockets[gameModel.winner].emit('game:win', game, winnerUser);
   },
   /**
    * Start the timer for the current player
@@ -229,17 +233,17 @@ export default {
   attackPlayer: async function (gameModel, attackCardModel) {
     const isCurrentPlayerIsFirstPlayer = gameModel.current_player === gameModel.first_player;
     if (isCurrentPlayerIsFirstPlayer) {
-      gameModel.second_player_health -= attackCardModel.attack;
+      gameModel.second_player_hp -= attackCardModel.attack;
     } else {
-      gameModel.first_player_health -= attackCardModel.attack;
+      gameModel.first_player_hp -= attackCardModel.attack;
     }
     await gameModel.save();
-    socket.to(gameModel.id).emit('game:attack:player', gameModel, attackCardModel);
-    if (gameModel.first_player_health <= 0) {
+    io.to(gameModel.id).emit('game:attack:player', gameModel, attackCardModel);
+    if (gameModel.first_player_hp <= 0) {
       const winner = await userService.findById(gameModel.second_player);
       this.end(gameModel, winner, 'health');
     }
-    if (gameModel.second_player_health <= 0) {
+    if (gameModel.second_player_hp <= 0) {
       const winner = await userService.findById(gameModel.first_player);
       return this.end(gameModel, winner, 'health');
     }

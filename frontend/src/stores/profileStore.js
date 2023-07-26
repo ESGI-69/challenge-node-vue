@@ -27,7 +27,6 @@ export const useProfileStore = defineStore('profileStore', {
      * @type {string | null}
      */
     avatarUrl: null,
-    isAdmin: false,
   }),
 
   getters: {
@@ -36,6 +35,7 @@ export const useProfileStore = defineStore('profileStore', {
      **/
     getFullName: (state) => `${state.profile.firstname} ${state.profile.lastname}`,
     getId: (state) => state.profile.id,
+    isAdmin: (state) => state.profile.role === 'ADMIN',
   },
 
   actions: {
@@ -43,14 +43,17 @@ export const useProfileStore = defineStore('profileStore', {
       this.isProfileLoading = true;
       try {
         const { data } = await $API.get('/users/me');
-        const avatarUrl = `${import.meta.env.VITE_API}/profile-pictures/${data.avatar}`;
-        this.profile = { ...data, avatar: avatarUrl };
-        this.isAdmin = data.role === 'ADMIN';
+        this.setProfile(data);
       } catch (err) {
         throw err.response.data;
       } finally {
         this.isProfileLoading = false;
       }
+    },
+
+    async setProfile(data) {
+      const avatarUrl = `${import.meta.env.VITE_API}/profile-pictures/${data.avatar}`;
+      this.profile = { ...data, avatar: avatarUrl };
     },
 
     async getProfileAvatar() {

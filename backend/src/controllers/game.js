@@ -4,6 +4,7 @@ import generateGameCode from '../utils/generateGameCode.js';
 import { asignUserSocketToGameRoom, removeUserSocketFromGameRoom, users } from '../socket/index.js';
 import { io } from '../index.js';
 import userService from '../services/user.js';
+import cardService from '../services/card.js';
 
 export default {
   /**
@@ -281,8 +282,13 @@ export default {
    */
   attackPlayer: async (req, res, next) => {
     try {
+      if (!req.body.cardId) {
+        throw new Error('Missing cardId in body');
+      }
+
       // TODO: Check if the card used is on board
-      await gameService.attackPlayer(req.game, req.body.cardId);
+      const attackCard = await cardService.findById(req.body.cardId);
+      await gameService.attackPlayer(req.game, attackCard);
       res.sendStatus(200);
     } catch (err) {
       next(err);

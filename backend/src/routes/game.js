@@ -18,6 +18,7 @@ router.delete('/', isLogged, isConnectedToSocket, isInGame, isGameOwner, gameCon
 router.get('/:id', isLogged, isConnectedToSocket, isInGame, gameController.get);
 
 // attack
-router.get('/attack/player', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.attackPlayer);
+router.route('/attack' );
+router.post('/attack/player', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.attackPlayer);
 
 export default router;

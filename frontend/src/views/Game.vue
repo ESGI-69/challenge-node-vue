@@ -89,6 +89,11 @@
         :mana="opponentMana"
       />
     </container>
+    <attack-line
+      ref="attackLine"
+      :attack="attackDamage"
+      :is-valid="isHoveringEnemy"
+    />
     <pop-up
       v-model:isOpen="isForfeitModalOpen"
       @close="goHome"
@@ -98,16 +103,36 @@
       </template>
       <p>Your opponent has forfeited.</p>
       <p>You win!</p>
-      <p>50px & 50<i class="nes-icon coin is-small" /></p>
+      <p>150px & 150<i class="nes-icon coin is-small" /></p>
       <template #confirm>
         <span>Nice</span>
       </template>
     </pop-up>
-    <attack-line
-      ref="attackLine"
-      :attack="attackDamage"
-      :is-valid="isHoveringEnemy"
-    />
+    <pop-up
+      v-model:isOpen="isLooseModalOpen"
+      @close="goHome"
+    >
+      <template #header>
+        <h2>You have been defeated! 🗿</h2>
+      </template>
+      <p>You loose!</p>
+      <template #confirm>
+        <span>Ok</span>
+      </template>
+    </pop-up>
+    <pop-up
+      v-model:isOpen="isWinnerModalOpen"
+      @close="goHome"
+    >
+      <template #header>
+        <h2>You have defeated your opponent! 🗿</h2>
+      </template>
+      <p>You win!</p>
+      <p>50px & 50<i class="nes-icon coin is-small" /></p>
+      <template #confirm>
+        <span>Awesome</span>
+      </template>
+    </pop-up>
   </div>
 </template>
 
@@ -178,6 +203,8 @@ export default {
     const enemyHp = computed(() => gameStore.game.first_player === profileStore.getId ? gameStore.game.second_player_hp : gameStore.game.first_player_hp);
 
     const isForfeitModalOpen = ref(false);
+    const isWinnerModalOpen = ref(false);
+    const isLooseModalOpen = ref(false);
 
     const cardsOnBoard = ref([
       {
@@ -226,6 +253,25 @@ export default {
     socket.on('game:forfeited', (game) => {
       gameStore.setGame(game);
       isForfeitModalOpen.value = true;
+    });
+
+    // socket.on('game:attack:player', (game, attackCard) => {
+    socket.on('game:attack:player', (game) => {
+      gameStore.setGame(game);
+      // console.log('attack player', attackCard);
+      // moveElement(cardPlayerRef[attackCard.attacker].$el, cardPlayerRef[attackCard.target].$el);
+    });
+
+    socket.on('game:win', (game, user) => {
+      gameStore.setGame(game);
+      user;
+      isWinnerModalOpen.value = true;
+      profileStore.setProfile(user);
+    });
+
+    socket.on('game:loose', (game) => {
+      gameStore.setGame(game);
+      isLooseModalOpen.value = true;
     });
 
     const onAdd = () => {
@@ -312,11 +358,15 @@ export default {
 
     const sendAttack = () => {
       if (!isPlayerTurn.value) return;
-      socket.emit('game:attack', {
-        gameId: gameStore.game.id,
-        attacker: attack.attacker,
-        target: attack.target,
-      });
+      // console.log('send attack', attack);
+      if (attack.target === 'player') {
+        gameStore.attackPlayer(attack.attacker);
+      }
+      // socket.emit('game:attack', {
+      //   gameId: gameStore.game.id,
+      //   attacker: attack.attacker,
+      //   target: attack.target,
+      // });
       cancelAttack();
     };
 
@@ -395,6 +445,8 @@ export default {
       opponentMana,
       hand,
       opponentCardsCount,
+      isWinnerModalOpen,
+      isLooseModalOpen,
     };
   },
 };
