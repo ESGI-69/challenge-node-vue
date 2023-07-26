@@ -94,6 +94,7 @@ const hasPackBalance = (req, res, next) => {
 const isConnectedToSocket = (req, res, next) => {
   try {
     if (!users[req.user.id]) throw new Error('User not connected to socket', { cause: 'Unauthorized', code: 'not_connected_to_socket' });
+    req.socket = users[req.user.id];
     next();
   } catch (error) {
     next(error);

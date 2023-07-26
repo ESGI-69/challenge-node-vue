@@ -26,11 +26,12 @@
 
       <div class="game__container__board">
         <card
-          v-for="card in enemyCardsOnBoard"
+          v-for="{ card, currentHealth } in opponentBoardCardInstances"
           :key="card.id"
           :ref="setCardRef(card.id)"
           class="enemy-card"
           v-bind="card"
+          :health="currentHealth"
           @mouseup="(event) => attackEnemy(card.id, event)"
           @mouseover="mouseEnterEnemy"
           @mouseleave="mouseLeaveEnemy"
@@ -45,7 +46,7 @@
       />
       <!-- draggable=".none" is for disabling the drag effect -->
       <draggable
-        v-model="cardsOnBoard"
+        :model-value="myBoardCardInstances"
         :group="{
           name: 'cards',
           pull: false,
@@ -58,8 +59,9 @@
       >
         <template #item="{ element }">
           <card
-            v-bind="element"
-            :ref="setCardPlayerRef(element.id)"
+            :ref="setCardPlayerRef(element.card.id)"
+            v-bind="element.card"
+            :health="element.currentHealth"
             class="card-hand__card-wrapper__card"
             :class="{
               'nes-pointer': isPlayerTurn,
@@ -198,6 +200,8 @@ export default {
     const opponentMana = computed(() => gameStore.opponentMana);
     const hand = computed(() => gameStore.hand);
     const opponentCardsCount = computed(() => gameStore.opponentCardsCount);
+    const myBoardCardInstances = computed(() => gameStore.myBoardCardInstances);
+    const opponentBoardCardInstances = computed(() => gameStore.opponentBoardCardInstances);
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
 
@@ -280,10 +284,19 @@ export default {
       isLooseModalOpen.value = true;
     });
 
-    const onAdd = () => {
-      // When a card is added to the board
-      // console.log('onAdd');
-      // console.log(event);
+    socket.on('game:player-hand', ({ cards }, game) => {
+      gameStore.setHand(cards);
+      gameStore.setGame(game);
+    });
+
+    socket.on('game:opponent-hand', (cardCount, game) => {
+      gameStore.setOpponentCardCount(cardCount);
+      gameStore.setGame(game);
+    });
+
+    const onAdd = (event) => {
+      const cardId = event.item.__draggable_context.element.id;
+      gameStore.placeCard(cardId);
     };
 
     // Drag and drop attack logic
@@ -511,6 +524,8 @@ export default {
       shatteringGif,
       isWinnerModalOpen,
       isLooseModalOpen,
+      myBoardCardInstances,
+      opponentBoardCardInstances,
     };
   },
 };
