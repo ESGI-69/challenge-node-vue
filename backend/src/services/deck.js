@@ -111,4 +111,23 @@ export default {
     });
     return (deck.Cards.length == 5);
   },
+  /**
+   * @param {import('../db/index.js').Deck} deckModel
+   * @param {number} idUser
+   * @returns
+   * */
+  getValids: async (idUser) => {
+    const decks = await Deck.findAll({
+      where: {
+        userId: idUser,
+      },
+      include: Card,
+    });
+
+    const valids = decks.filter((deck) => {
+      return (deck.Cards.length == 5);
+    });
+
+    return valids;
+  },
 };

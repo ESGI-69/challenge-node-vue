@@ -85,12 +85,11 @@ export default {
    * */
   getValidDecks: async (req, res, next) => {
     try {
-      const decks = await deckService.findByIdUser(parseInt(req.user.id), {
+      const decks = await deckService.getValids(parseInt(req.user.id), {
         include: Card,
       });
 
-      const filteredDecks = decks.filter(deck => deck.Cards.length === 5);
-      res.json(filteredDecks);
+      res.json(decks);
     } catch (err) {
       next(err);
     }
