@@ -32,19 +32,7 @@
         width="180"
       >
         <template #default="scope">
-          <el-popover
-            effect="light"
-            trigger="hover"
-            placement="top"
-            width="auto"
-          >
-            <template #default>
-              <div>role: {{ scope.row.role }}</div>
-            </template>
-            <template #reference>
-              <el-tag>{{ scope.row.role }}</el-tag>
-            </template>
-          </el-popover>
+          <el-tag>{{ scope.row.role }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column
