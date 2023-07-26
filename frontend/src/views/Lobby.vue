@@ -146,7 +146,7 @@ export default {
     const isGameLeft = computed(() => gameStore.isGameLeft);
     const iAmGameOwner = computed(() => gameStore.iAmGameOwner);
     const idDeckFav = computed(() => profileStore.profile.idDeckFav);
-    const decks = computed(() => deckStore.decks);
+    const decks = computed(() => deckStore.validDecks);
 
     const profile = computed(() => profileStore.profile);
 
@@ -155,11 +155,11 @@ export default {
     const hasStartError = ref(false);
     const startErrorMessage = ref('');
 
-    const getDecks = () => {
-      deckStore.getDecks();
+    const getValidDecks = () => {
+      deckStore.getValidDecks();
     };
 
-    getDecks();
+    getValidDecks();
 
     const goToHome = () => {
       gameStore.$reset();
@@ -226,7 +226,7 @@ export default {
     return {
       actualGame,
       decks,
-      getDecks,
+      getValidDecks,
       goToHome,
       iAmGameOwner,
       idDeckFav,

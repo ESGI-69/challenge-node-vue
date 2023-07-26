@@ -36,7 +36,7 @@
               Aucun
             </option>
             <template
-              v-for="deck in decks"
+              v-for="deck in validDecks"
               :key="deck.id"
             >
               <option
@@ -172,6 +172,7 @@ export default {
     const isLoading = computed(() => deckStore.isUserDecksLoading);
     const isCreateModalOpen = ref(false);
     const decks = computed(() => deckStore.decks);
+    const validDecks = computed(() => deckStore.validDecks);
     const nameFilter = ref('');
     const newDeckName = ref('');
 
@@ -188,6 +189,12 @@ export default {
     };
 
     getDecks();
+
+    const getValidDecks = () => {
+      deckStore.getValidDecks();
+    };
+
+    getValidDecks();
 
     const deleteDeck = (id) => {
       deckStore.deleteDeck(id);
@@ -218,20 +225,22 @@ export default {
     };
 
     return {
+      createDeck,
       deckPerRow,
+      decks,
+      deleteDeck,
+      getDecks,
+      getValidDecks,
+      idDeckFav,
       isCreateModalOpen,
       isLoading,
-      decks,
-      getDecks,
       nameFilter,
-      setNameFilter,
-      resetNameFilter,
       newDeckName,
-      createDeck,
-      idDeckFav,
+      resetNameFilter,
+      setNameFilter,
       selectFavDeck,
       Trash,
-      deleteDeck,
+      validDecks,
     };
   },
 };
