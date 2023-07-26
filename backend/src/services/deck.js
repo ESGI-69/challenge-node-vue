@@ -95,7 +95,7 @@ export default {
    * @returns
    * */
   countCard: async (id) => {
-    const deck = await this.findById(id, {
+    const deck = await Deck.findByPk(id, {
       include: Card,
     });
     return deck.cards.length;
@@ -106,7 +106,7 @@ export default {
    * @returns
    * */
   isValid: async (id) => {
-    const deck = await this.findById(id, {
+    const deck = await Deck.findByPk(id, {
       include: Card,
     });
     return (deck.cards.length == 5);
