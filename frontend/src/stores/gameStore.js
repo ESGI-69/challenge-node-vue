@@ -10,6 +10,7 @@ export const useGameStore = defineStore('gameStore', {
     isGameLeft: false,
     isLeaveGameLoading: false,
     isJoinGameLoading: false,
+    isGameRunning: null,
     /**
      * @type {{
      *  id: string;
@@ -186,6 +187,15 @@ export const useGameStore = defineStore('gameStore', {
     async attackPlayer(cardId) {
       try {
         await $API.post('/game/attack/player', { cardId });
+      } catch (error) {
+        throw error.response;
+      }
+    },
+    async getGameRunning() {
+      try {
+        const { data } = await $API.get('/game/game-running');
+
+        this.isGameRunning = data;
       } catch (error) {
         throw error.response;
       }
