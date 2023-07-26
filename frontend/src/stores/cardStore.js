@@ -8,6 +8,9 @@ export const useCardStore = defineStore('cardStore', {
     isUserCardsLoading: false,
     isUserCardLoading: false,
     isUserCardIdsLoading: false,
+    isPostCardLoading: false,
+    isDeleteCardLoading: false,
+    isPatchCardLoading: false,
     userCards: [],
     userCardsCount: 0,
     /**
@@ -62,6 +65,55 @@ export const useCardStore = defineStore('cardStore', {
         throw err.response.data;
       } finally {
         this.isUserCardIdsLoading = false;
+      }
+    },
+
+    /**
+     * Post a new card
+     * @param {{ name: string, cost: number, rarity: string, type: string, attack: number, health: number, image: File }} payload The payload sent to the API
+     * @returns {Promise<void>}
+     */
+    async postCard(payload) {
+      this.isPostCardLoading = true;
+      try {
+        await $API.post('/cards', payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isPostCardLoading = false;
+      }
+    },
+
+    /**
+     * Delete a card
+     * @param {number} id The id of the card to delete
+     * @returns {Promise<void>}
+     */
+    async deleteCard(id) {
+      this.isDeleteCardLoading = true;
+      try {
+        await $API.delete(`/cards/${id}`);
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isDeleteCardLoading = false;
+      }
+    },
+
+    /**
+     * Patch a card
+     * @param {number} id The id of the card to patch
+     * @param {{ name: string, cost: number, rarity: string, type: string, attack: number, health: number, image: File }} payload The payload sent to the API
+     * @returns {Promise<void>}
+     */
+    async patchCard(id, payload) {
+      this.isPatchCardLoading = true;
+      try {
+        await $API.patch(`/cards/${id}`, payload, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isPatchCardLoading = false;
       }
     },
   },

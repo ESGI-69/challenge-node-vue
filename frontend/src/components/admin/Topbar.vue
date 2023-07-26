@@ -1,46 +1,74 @@
 <template>
-  <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo"
-    mode="horizontal"
-    :ellipsis="false"
-    @select="handleSelect"
-  >
-    <el-menu-item index="0">
-      <router-link
-        class="topbar-link"
-        to="/"
+  <div class="topbar">
+    <el-menu
+      :default-active="activeIndex"
+      class="el-menu-demo"
+      mode="horizontal"
+      :ellipsis="false"
+      @select="handleSelect"
+    >
+      <el-menu-item
+        index="0"
+        class="nav-item"
       >
-        <el-icon><back /></el-icon>
-        Back
-      </router-link>
-    </el-menu-item>
-    <el-menu-item index="1">
-      <router-link
-        class="topbar-link"
-        :to="{ name : 'adminHome'}"
+        <router-link
+          class="topbar-link"
+          to="/"
+        >
+          <el-icon><back /></el-icon>
+          Back
+        </router-link>
+      </el-menu-item>
+      <el-menu-item
+        index="1"
+        class="nav-item"
       >
-        Admin Panel
-      </router-link>
-    </el-menu-item>
-    <div class="flex-grow" />
-    <el-menu-item index="2">
-      <router-link
-        class="topbar-link"
-        :to="{ name: 'adminPayments' }"
+        <router-link
+          class="topbar-link"
+          :to="{ name : 'adminHome'}"
+        >
+          Admin Panel
+        </router-link>
+      </el-menu-item>
+      <div class="flex-grow" />
+      <el-menu-item
+        index="2"
+        class="nav-item"
       >
-        Payments
-      </router-link>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <router-link :to="{ name: 'adminUsers' }">
-        Users
-      </router-link>
-    </el-menu-item>
-    <el-menu-item>
-      Moderation
-    </el-menu-item>
-  </el-menu>
+        <router-link
+          class="topbar-link"
+          :to="{ name: 'adminPayments' }"
+        >
+          Payments
+        </router-link>
+      </el-menu-item>
+      <el-menu-item
+        index="3"
+        class="nav-item"
+      >
+        <router-link
+          class="topbar-link"
+          :to="{ name: 'adminUsers' }"
+        >
+          Users
+        </router-link>
+      </el-menu-item>
+      <el-menu-item
+        index="4"
+        class="nav-item"
+      >
+        <router-link
+          class="topbar-link"
+          :to="{ name: 'adminCards' }"
+        >
+          Cards
+        </router-link>
+      </el-menu-item>
+      <el-menu-item>
+        Moderation
+      </el-menu-item>
+    </el-menu>
+  </div>
 </template>
 
 <script>
@@ -65,6 +93,8 @@ export default {
           return '2';
         case 'adminUsers':
           return '3';
+        case 'adminCards':
+          return '4';
         default:
           return '1';
       }
@@ -86,5 +116,12 @@ export default {
 }
 .topbar-link {
   text-decoration: none;
+}
+
+.nav-item {
+  padding: 0;
+  .topbar-link {
+    padding: 0 20px;
+  }
 }
 </style>

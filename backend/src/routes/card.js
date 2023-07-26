@@ -29,7 +29,7 @@ router.get('/', isAdmin, cardController.cget);
 router.post('/', isAdmin, cardImageUpload.single('image'), addCardImage, cardController.post);
 router.get('/:id', isLogged, cardController.get);
 router.get('/:id/image', cardController.getImage);
-router.patch('/:id', isAdmin, cardController.patch);
+router.patch('/:id', isAdmin, cardImageUpload.single('image'), addCardImage, cardController.patch);
 router.delete('/:id', isAdmin, cardController.delete);
 
 export default router;

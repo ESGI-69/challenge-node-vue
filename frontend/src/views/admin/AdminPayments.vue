@@ -1,103 +1,105 @@
 <template>
-  <el-table
-    v-loading="isPaymentsLoading"
-    :data="filterTableData"
-    height="75vh"
-    style="width: 100%"
-    stripe
-    :default-sort="{ prop: 'createdAt', order: 'descending' }"
-  >
-    <el-table-column
-      prop="createdAt"
-      label="Date"
-      sortable
-    />
-
-    <el-table-column
-      prop="product.name"
-      label="Product"
-    />
-
-    <el-table-column
-      prop="user.email"
-      label="User"
-    />
-
-    <el-table-column
-      prop="isCredited"
-      label="Credited"
-      width="100"
-    />
-
-    <el-table-column
-      label="Status"
+  <div class="admin-payments">
+    <el-table
+      v-loading="isPaymentsLoading"
+      :data="filterTableData"
+      height="75vh"
+      style="width: 100%"
+      stripe
+      :default-sort="{ prop: 'createdAt', order: 'descending' }"
     >
-      <template #default="scope">
-        <el-text
-          class="mx-1"
-          :type="{
-            PAID: 'success',
-            PENDING: 'warning',
-            CANCELED: 'danger',
-          }[scope.row.status]"
-        >
-          {{ scope.row.status }}
-        </el-text>
-      </template>
-    </el-table-column>
+      <el-table-column
+        prop="createdAt"
+        label="Date"
+        sortable
+      />
 
-    <el-table-column
-      prop="sessionId"
-      label="Session ID"
-      width="300"
-    />
+      <el-table-column
+        prop="product.name"
+        label="Product"
+      />
 
-    <el-table-column align="right">
-      <template #header>
-        <el-input
-          v-model="search"
-          size="small"
-          placeholder="Email, product, status, date or sessionId"
-        />
+      <el-table-column
+        prop="user.email"
+        label="User"
+      />
+
+      <el-table-column
+        prop="isCredited"
+        label="Credited"
+        width="100"
+      />
+
+      <el-table-column
+        label="Status"
+      >
+        <template #default="scope">
+          <el-text
+            class="mx-1"
+            :type="{
+              PAID: 'success',
+              PENDING: 'warning',
+              CANCELED: 'danger',
+            }[scope.row.status]"
+          >
+            {{ scope.row.status }}
+          </el-text>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        prop="sessionId"
+        label="Session ID"
+        width="300"
+      />
+
+      <el-table-column align="right">
+        <template #header>
+          <el-input
+            v-model="search"
+            size="small"
+            placeholder="Email, product, status, date or sessionId"
+          />
+        </template>
+        <template #default="scope">
+          <el-button
+            size="small"
+            :loading="isUpdateStatusLoading"
+            @click="handleCheckStatus(scope.row)"
+          >
+            Check Status
+          </el-button>
+          <el-button
+            v-if="!scope.row.isCredited"
+            size="small"
+            type="danger"
+            :loading="isCreditPlayerLoading"
+            @click="dialogVisible = true, paymentId = scope.row.id"
+          >
+            Credit
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog
+      v-model="dialogVisible"
+      title="Warning !"
+      width="30%"
+    >
+      <span>Do you want to credit the player ?</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false, paymentId = null">Cancel</el-button>
+          <el-button
+            type="primary"
+            @click="dialogVisible = false, handleCreditPlayer(paymentId), paymentId = null"
+          >
+            Confirm
+          </el-button>
+        </span>
       </template>
-      <template #default="scope">
-        <el-button
-          size="small"
-          :loading="isUpdateStatusLoading"
-          @click="handleCheckStatus(scope.row)"
-        >
-          Check Status
-        </el-button>
-        <el-button
-          v-if="!scope.row.isCredited"
-          size="small"
-          type="danger"
-          :loading="isCreditPlayerLoading"
-          @click="dialogVisible = true, paymentId = scope.row.id"
-        >
-          Credit
-        </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-dialog
-    v-model="dialogVisible"
-    title="Warning !"
-    width="30%"
-  >
-    <span>Do you want to credit the player ?</span>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false, paymentId = null">Cancel</el-button>
-        <el-button
-          type="primary"
-          @click="dialogVisible = false, handleCreditPlayer(paymentId), paymentId = null"
-        >
-          Confirm
-        </el-button>
-      </span>
-    </template>
-  </el-dialog>
+    </el-dialog>
+  </div>
 </template>
 
 <script>

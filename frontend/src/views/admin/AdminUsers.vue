@@ -1,7 +1,5 @@
 <template>
-  <p>Users</p>
-
-  <div>
+  <div class="admin-users">
     <el-table
       v-loading="isUsersLoading"
       :row-class-name="tableRowClassName"

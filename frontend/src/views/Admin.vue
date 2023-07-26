@@ -1,5 +1,5 @@
 <template>
-  <el-main>
+  <el-main class="admin-view">
     <h1>{{ title }}</h1>
     <router-view />
   </el-main>
