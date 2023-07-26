@@ -335,11 +335,11 @@ export default {
       // Add the card instance to the board
       await boardService.addCardInstance(board, cardInstance);
 
-      req.game.reload();
+      const updatedGame = await gameService.findById(req.game.id);
 
-      req.socket.emit('game:player-hand', updatedHand, req.game);
+      req.socket.emit('game:player-hand', updatedHand, updatedGame);
       const opponentSocket = userSockets[req.game.current_player === req.game.first_player ? req.game.second_player : req.game.first_player];
-      opponentSocket.emit('game:opponent-hand', updatedHand.cards.length, req.game);
+      opponentSocket.emit('game:opponent-hand', updatedHand.cards.length, updatedGame);
       // io.to(req.game.id).emit('game:board:add', req.body.cardId);
     } catch (err) {
       next(err);

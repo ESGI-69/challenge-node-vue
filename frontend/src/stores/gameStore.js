@@ -81,12 +81,14 @@ export const useGameStore = defineStore('gameStore', {
     setGame(game) {
       game.id = game.id.toUpperCase();
       this.game = game;
-      if (this.iAmGameOwner) {
-        this.setMyBoardCardInstances(game.firstPlayerBoard.cardInstances);
-        this.setOpponentBoardCardInstances(game.secondPlayerBoard.cardInstances);
-      } else {
-        this.setMyBoardCardInstances(game.secondPlayerBoard.cardInstances);
-        this.setOpponentBoardCardInstances(game.firstPlayerBoard.cardInstances);
+      if (game.firstPlayerBoard.cardInstances && game.secondPlayerBoard.cardInstances) {
+        if (this.iAmGameOwner) {
+          this.setMyBoardCardInstances(game.firstPlayerBoard.cardInstances);
+          this.setOpponentBoardCardInstances(game.secondPlayerBoard.cardInstances);
+        } else {
+          this.setMyBoardCardInstances(game.secondPlayerBoard.cardInstances);
+          this.setOpponentBoardCardInstances(game.firstPlayerBoard.cardInstances);
+        }
       }
     },
 
