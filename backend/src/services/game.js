@@ -1,10 +1,11 @@
-import { Game, User } from '../db/index.js';
+import { Board, Card, CardInstance, Game, User } from '../db/index.js';
 import { Op } from 'sequelize';
 import { users as userSockets } from '../socket/index.js';
 import { io } from '../index.js';
 import handService from './hand.js';
 import deckService from './deck.js';
 import userService from './user.js';
+import boardService from './board.js';
 
 /**
  * Key is the id of the game
@@ -44,6 +45,38 @@ export default {
         {
           model: User,
           as: 'secondPlayer',
+        },
+        {
+          model: Board,
+          as: 'firstPlayerBoard',
+          include: [
+            {
+              model: CardInstance,
+              as: 'cardInstances',
+              include: [
+                {
+                  model: Card,
+                  as: 'card',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Board,
+          as: 'secondPlayerBoard',
+          include: [
+            {
+              model: CardInstance,
+              as: 'cardInstances',
+              include: [
+                {
+                  model: Card,
+                  as: 'card',
+                },
+              ],
+            },
+          ],
         },
       ],
     });
@@ -89,6 +122,38 @@ export default {
           model: User,
           as: 'secondPlayer',
         },
+        {
+          model: Board,
+          as: 'firstPlayerBoard',
+          include: [
+            {
+              model: CardInstance,
+              as: 'cardInstances',
+              include: [
+                {
+                  model: Card,
+                  as: 'card',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Board,
+          as: 'secondPlayerBoard',
+          include: [
+            {
+              model: CardInstance,
+              as: 'cardInstances',
+              include: [
+                {
+                  model: Card,
+                  as: 'card',
+                },
+              ],
+            },
+          ],
+        },
       ],
     });
   },
@@ -133,6 +198,8 @@ export default {
     if (!await deckService.isValid(firstPlayerDeck.id)) throw new Error('First player deck is invalid');
     if (!await deckService.isValid(secondPlayerDeck.id)) throw new Error('Second player deck is invalid');
 
+    // Hand creation
+
     const firstPayerHand = await handService.create(gameModel, firstPlayerModel, firstPlayerDeck);
     const secondPlayerHand = await handService.create(gameModel, secondPlayerModel, secondPlayerDeck);
 
@@ -140,6 +207,17 @@ export default {
 
     gameModel.first_player_hand = firstPayerHand.id;
     gameModel.second_player_hand = secondPlayerHand.id;
+
+    // Board creation
+
+    const firstPlayerBoard = await boardService.create(gameModel, firstPlayerModel);
+    const secondPlayerBoard = await boardService.create(gameModel, secondPlayerModel);
+
+    if (!firstPlayerBoard || !secondPlayerBoard) throw new Error('Cannot create board');
+
+    gameModel.first_player_board = firstPlayerBoard.id;
+    gameModel.second_player_board = secondPlayerBoard.id;
+
     gameModel.current_player = gameModel.first_player;
     await gameModel.save();
     return this.findById(gameModel.id);
