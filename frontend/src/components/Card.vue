@@ -80,6 +80,8 @@ import CardCost from '@/components/card/CardCost.vue';
 
 import backOfCard from '@/assets/backOfCardResized.webp';
 
+import breakGlass from '@/assets/breakglass.svg';
+
 export default {
   name: 'Card',
   components: {
@@ -209,6 +211,7 @@ export default {
       isFaceDown,
       backOfCard,
       imageUrl,
+      breakGlass,
     };
   },
 };
@@ -416,4 +419,24 @@ export default {
       box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);
     }
   }
+  .breakCard{
+  -webkit-mask-image: url(http://localhost:8080/src/assets/Composition-1noloop.gif);
+  mask-position: center;
+  animation: zoom 2.5s ease-out;
+  animation-fill-mode: forwards ;
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: grayscale(0%) drop-shadow(0 0 0.5rem rgb(3, 3, 3));
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+    filter: grayscale(100%);
+
+  }
+}
 </style>
