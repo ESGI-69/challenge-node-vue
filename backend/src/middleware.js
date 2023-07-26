@@ -44,6 +44,10 @@ const isLogged = (req, res, next) => {
     code: 'email_not_validated',
     message: 'Email not validated',
   });
+  if (req.user.isBanned) return res.status(401).send({
+    code: 'banned',
+    message: 'You are banned',
+  });
   next();
 };
 
