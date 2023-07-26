@@ -14,6 +14,12 @@ const user = {
   lastname: 'Lastname',
 };
 
+const bannedUser = {
+  email: 'userban@example.com',
+  firstname: 'jesuisban',
+  lastname: 'jesuisban',
+};
+
 // create a new avatar file
 const avatar = fs.createReadStream('./tests/assets/avatar.png');
 
@@ -31,6 +37,7 @@ let userEmailToken;
 let avatarUserId;
 let avatarEmailToken;
 const adminToken = await getJwt('admin@example.com', '123456');
+const bannedToken = await getJwt('userban@example.com)', '123456');
 
 describe('Register flow', () => {
   let mailerSendMailMock;
@@ -258,23 +265,29 @@ describe('User Balance Update (Admin)', () => {
 
 describe('User Ban Update (Admin)', () => {
   it('PATCH /users/:id/ban should ban a user', () => request(app)
-    .patch(`/users/${userId}/ban`)
+    .patch('/users/6/ban')
     .set('Authorization', `Bearer ${adminToken}`)
     .send({ isBanned: true })
     .expect(200)
     .expect('Content-Type', /json/)
     .then((res) => {
       expect(typeof res.body.id).toBe('number');
-      expect(res.body.email).toBe(user.email);
-      expect(res.body.firstname).toBe(user.firstname);
-      expect(res.body.lastname).toBe(user.lastname);
+      expect(res.body.email).toBe(bannedUser.email);
+      expect(res.body.firstname).toBe(bannedUser.firstname);
+      expect(res.body.lastname).toBe(bannedUser.lastname);
       expect(res.body.updatedAt).toBeDefined();
       expect(typeof new Date(res.body.updatedAt).toISOString()).toBe('string');
       expect(res.body.createdAt).toBeDefined();
       expect(typeof new Date(res.body.createdAt).toISOString()).toBe('string');
-      expect(res.body.createdAt).toBe(user.createdAt);
       expect(res.body.isBanned).toBe(true);
     }));
+});
+
+describe('User info access (Banned)', () => {
+  it('GET /users/me should return 401', () => request(app)
+    .get('/users/me')
+    .set('Authorization', `Bearer ${bannedToken}`)
+    .expect(401));
 });
 
 describe('User updating his profile', () => {

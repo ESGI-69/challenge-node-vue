@@ -59,6 +59,14 @@ export default (connection) => {
     hasEnoughBalance(amount) {
       return this.balance >= amount;
     }
+
+    /**
+     * Check if the user is banned
+     * @returns {boolean}
+     */
+    isUserBanned() {
+      return this.isBanned;
+    }
   }
 
   User.init(
