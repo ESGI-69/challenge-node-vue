@@ -120,7 +120,6 @@ export default {
       flippedCards.value = [];
       packStore.resetOpenning();
       isAPackHasBeenOpen.value = false;
-      flippedCards.value = [];
     };
 
     const cardFlipped = ({ isFacingUp, id }) => {

@@ -111,6 +111,7 @@ import Container from '@/components/Container.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { useGameStore } from '@/stores/gameStore';
+import { usePackStore } from '@/stores/packStore';
 
 export default {
   name: 'HomeView',
@@ -121,6 +122,7 @@ export default {
     const authStore = useAuthStore();
     const profileStore = useProfileStore();
     const gameStore = useGameStore();
+    const packStore = usePackStore();
     const router = useRouter();
     const route = useRoute();
 
@@ -138,6 +140,7 @@ export default {
     };
 
     getGameRunning();
+    packStore.resetOpenning();
 
     const logout = () => {
       authStore.logout();
