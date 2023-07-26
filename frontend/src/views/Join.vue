@@ -22,6 +22,12 @@
         Join game
       </button>
     </div>
+    <p
+      v-if="errorMessage !== ''"
+      class="nes-text is-error"
+    >
+      {{ errorMessage }}
+    </p>
     <p class="nes-text is-error">
       {{ gameNotFound ? 'Game code incorrect, please try again' : ' ' }}
     </p>
@@ -47,13 +53,16 @@ export default {
 
     const gameId = ref('');
     const gameNotFound = ref(false);
+    const errorMessage = ref('');
 
     const joinGame = async () => {
+      errorMessage.value = '';
       gameNotFound.value = false;
       try {
         const { id } = await gameStore.join(gameId.value);
         router.push({ name: 'lobby', params: { id } });
       } catch (error) {
+        errorMessage.value = error.data.reason;
         if (error.status === 404) {
           gameNotFound.value = true;
         } else {
@@ -63,7 +72,7 @@ export default {
       }
     };
 
-    return { gameId, joinGame, gameNotFound };
+    return { gameId, joinGame, gameNotFound, errorMessage };
   },
 };
 </script>
