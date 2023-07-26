@@ -326,9 +326,7 @@ export default {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = cardId;
-
       moveElement(attack.attacker, cardId);
-
       sendAttack();
     };
 
@@ -348,20 +346,16 @@ export default {
           cardTargeted = cardsEnemyRef[target].$el;
         }
 
-        // currentAttacker = attacker;
         currentTargeted = target;
 
-
       } else { //if enemy is attacking
-        cardAttacker = cardsEnemyRef[target].$el;
+        cardAttacker = cardsEnemyRef[attacker].$el;
         if (type === 'player'){
           cardTargeted = playerRef.value.$el;
         } else {
-          cardTargeted = cardPlayerRef[attacker].$el;
+          cardTargeted = cardPlayerRef[target].$el;
         }
-
-        // currentAttacker = target;
-        currentTargeted = attacker;
+        currentTargeted = target;
       }
 
       cardAttacker.style.transition = '0.35s ease-out';
