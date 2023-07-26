@@ -109,6 +109,7 @@
           />
         </div>
         <el-form
+          ref="formRef"
           v-loading="isPatchCardLoading"
           :model="currentCardEdit"
           label-width="120px"
@@ -310,6 +311,7 @@ export default {
     const isPatchCardLoading = computed(() => cardStore.isPatchCardLoading);
     const currentCardEdit = reactive({});
     const drawer = ref(false);
+    const formRef = ref();
     const editMode = computed(() =>{
       if (image.value) {
         return true;
@@ -380,7 +382,20 @@ export default {
       if (!formEl) return;
       await formEl.validate(async (valid) => {
         if (valid) {
-          // continue here
+          let imageToSend;
+          if (image.value) {
+            imageToSend = image.value.raw;
+          }
+          await cardStore.patchCard(
+            currentCardEdit.id,
+            {
+              ...currentCardEdit,
+              image: imageToSend,
+            },
+          );
+          cancelDrawerClick();
+          cardStore.getCards();
+          ElMessage.success('Card updated');
         }
       });
 
@@ -412,6 +427,8 @@ export default {
       resetForm,
       image,
       editMode,
+      submitForm,
+      formRef,
     };
   },
 };
@@ -435,6 +452,7 @@ export default {
     left: 1rem;
     padding: 1rem;
     background-color: #7f7f7f;
+    z-index: -1;
   }
 }
 </style>
