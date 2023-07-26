@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-cards-edit">
+  <div class="admin-cards-create">
     <el-container>
       <el-aside width="300px">
         <card
@@ -162,7 +162,7 @@ import { ElMessage } from 'element-plus';
 import { useCardStore } from '@/stores/cardStore';
 
 export default {
-  name: 'AdminCardsEdit',
+  name: 'AdminCardsCreate',
   components: {
     Card,
   },

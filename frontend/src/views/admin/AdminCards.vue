@@ -16,7 +16,7 @@
         label="Create a a new card"
         name="add"
       >
-        <admin-cards-edit />
+        <admin-cards-create />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -26,13 +26,13 @@
 import { ref } from 'vue';
 
 import AdminCardsTable from '@/components/admin/AdminCardsTable.vue';
-import AdminCardsEdit from '@/components/admin/AdminCardsEdit.vue';
+import AdminCardsCreate from '@/components/admin/AdminCardsCreate.vue';
 
 export default {
   name: 'AdminCards',
   components: {
     AdminCardsTable,
-    AdminCardsEdit,
+    AdminCardsCreate,
   },
   setup() {
     const activeName = ref('overview');
