@@ -50,6 +50,59 @@ module.exports = {
     }, {
       id: 3,
     });
+
+    await queryInterface.bulkInsert('deck_cards', [
+      {
+        deckId: 1,
+        cardId: 1,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 1,
+        cardId: 2,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 1,
+        cardId: 7,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 1,
+        cardId: 8,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 1,
+        cardId: 9,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 2,
+        cardId: 2,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 2,
+        cardId: 3,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 2,
+        cardId: 4,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 2,
+        cardId: 5,
+        createdAt: new Date(),
+      },
+      {
+        deckId: 2,
+        cardId: 6,
+        createdAt: new Date(),
+      },
+    ]);
   },
 
   async down (queryInterface) {
@@ -60,6 +113,7 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     await queryInterface.bulkDelete('decks', null, {});
+    await queryInterface.bulkDelete('deck_cards', null, {});
 
     await queryInterface.bulkUpdate('users', {
       idDeckFav: null,

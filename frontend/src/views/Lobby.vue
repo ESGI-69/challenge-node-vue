@@ -38,7 +38,10 @@
         >
           {{ startErrorMessage }}
         </p>
-        <div class="game__container__choose-deck">
+        <div
+          v-if="decks.length > 0"
+          class="game__container__choose-deck"
+        >
           <span class="game__container__choose-deck__label">Choose deck:</span>
           <div class="nes-select">
             <select
@@ -82,14 +85,20 @@
             </select>
           </div>
         </div>
+        <div
+          v-else
+          class="game__container__choose-deck nes-text is-error"
+        >
+          <p>You don't have any valid decks, please create one and come back.</p>
+        </div>
         <div class="game__container__buttons">
           <button
             v-if="iAmGameOwner"
             type="button"
             class="nes-btn"
             :class="{
-              'is-disabled': !actualGame.second_player,
-              'is-primary': actualGame.second_player,
+              'is-disabled': !actualGame.second_player || decks.length === 0,
+              'is-primary': actualGame.second_player && decks.length > 0,
             }"
             @click="startGame"
           >
