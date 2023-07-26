@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import gameController from '../controllers/game.js';
-import { isConnectedToSocket, isGameOwner, isInGame, isInProgressGame, isLogged, isNotInGame } from '../middleware.js';
+import { isConnectedToSocket, isGameOwner, isInGame, isInProgressGame, isLogged, isNotInGame, isPlayerTurn } from '../middleware.js';
 // import io from '../index.js';
 
 const router = Router();
@@ -16,5 +16,8 @@ router.get('/hand', isLogged, isConnectedToSocket, isInProgressGame, gameControl
 router.get('/opponent-hand', isLogged, isConnectedToSocket, isInProgressGame, gameController.countOpponentCards);
 router.delete('/', isLogged, isConnectedToSocket, isInGame, isGameOwner, gameController.delete);
 router.get('/:id', isLogged, isConnectedToSocket, isInGame, gameController.get);
+
+// attack
+router.get('/attack/player', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.attackPlayer);
 
 export default router;

@@ -272,4 +272,20 @@ export default {
       next(err);
     }
   },
+
+  /**
+   * Express.js controller for GET /games/attack/player
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  attackPlayer: async (req, res, next) => {
+    try {
+      // TODO: Check if the card used is on board
+      await gameService.attackPlayer(req.game, req.body.cardId);
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  },
 };
