@@ -22,7 +22,7 @@
 // import { toRefs, ref, computed } from 'vue';
 import { computed } from 'vue';
 
-import backOfDeck from '@/assets/backOfCardResized.webp';
+import backOfDeck from '@/assets/backOfDeck.png';
 
 export default {
   name: 'Deck',
@@ -79,12 +79,13 @@ export default {
         box-sizing: border-box;
         width: calc(100% - 4rem);
         margin: 0 2rem;
-        background-color: #a600ff;
-        color: white;
+        color: black;
         position: absolute;
+        font-weight: bold;
         height: 4rem;
         font-size: 1.25rem;
-        bottom: 2rem;
+        background: rgba(255,255,255,0.3);
+        bottom: 1rem;
         display: flex;
         justify-content: center;
         padding: 0 2rem;
