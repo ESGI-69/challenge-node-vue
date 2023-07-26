@@ -321,7 +321,7 @@ export default {
       gameModel.first_player_hp -= attackCardModel.attack;
     }
     await gameModel.save();
-    io.to(gameModel.id).emit('game:attack:player', gameModel, attackCardModel);
+    io.to(gameModel.id).emit('game:attack:player', gameModel, attackCardModel.id);
     if (gameModel.first_player_hp <= 0) {
       const winner = await userService.findById(gameModel.second_player);
       this.end(gameModel, winner, 'health');

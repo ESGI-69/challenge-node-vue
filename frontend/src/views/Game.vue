@@ -66,7 +66,7 @@
             :class="{
               'nes-pointer': isPlayerTurn,
             }"
-            @mousedown="(event) => startAttack(element.id, element.attack, event)"
+            @mousedown="(event) => startAttack(element.card.id, element.card.attack, event)"
             @mouseup="cancelAttack"
           />
         </template>
