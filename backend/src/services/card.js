@@ -51,9 +51,6 @@ export default {
       where: criteria,
       returning: true,
     });
-    console.log('service criteria', criteria);
-    console.log('service data', data);
-    console.log('service', cards);
     return cards;
   },
   validate: function (data) {

@@ -79,9 +79,6 @@ export default {
         { id: parseInt(req.params.id) },
         req.body,
       );
-      console.log('card', card);
-      console.log('req.body', req.body);
-      console.log('id', parseInt(req.params.id));
       if (!card) return res.sendStatus(404);
       const updatedCard = await cardService.findByIdAdmin(card.id);
       res.json(updatedCard);
