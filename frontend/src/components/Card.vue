@@ -213,12 +213,7 @@ export default {
     const { isFlippable, id, imageEditUrl } = toRefs(props);
 
     const clickEvent = computed(() => isFlippable.value ? 'click' : null);
-    const imageUrl = computed(() => {
-      if (!props.editMode){
-        return `${import.meta.env.VITE_API}/cards/${id.value}/image`;
-      }
-      return imageEditUrl.value;
-    });
+    const imageUrl = computed(() => !props.editMode ? `${import.meta.env.VITE_API}/cards/${id.value}/image` : imageEditUrl.value);
     const isFaceDown = ref(props.isStartFaceDown);
 
     const flipCard = () => {
