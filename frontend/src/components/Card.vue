@@ -419,7 +419,7 @@ export default {
       box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);
     }
   }
-  .breakCard{
+  .breakCard{ // L'animation de la carte qui se brise
   -webkit-mask-image: url(http://localhost:8080/src/assets/Composition-1noloop.gif);
   mask-position: center;
   animation: zoom 2.5s ease-out;
