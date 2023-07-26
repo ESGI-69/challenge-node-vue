@@ -50,6 +50,21 @@ module.exports = {
         obtainedAt: new Date(),
       },
       {
+        userId: 2,
+        cardId: 4,
+        obtainedAt: new Date(),
+      },
+      {
+        userId: 2,
+        cardId: 5,
+        obtainedAt: new Date(),
+      },
+      {
+        userId: 2,
+        cardId: 6,
+        obtainedAt: new Date(),
+      },
+      {
         userId: 3,
         cardId: 3,
         obtainedAt: new Date(),

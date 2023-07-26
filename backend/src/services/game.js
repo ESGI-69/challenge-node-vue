@@ -130,7 +130,8 @@ export default {
     const firstPlayerDeck = await deckService.findById(gameModel.first_player_deck);
     const secondPlayerDeck = await deckService.findById(gameModel.second_player_deck);
 
-    if (!deckService.isValid(firstPlayerDeck.id) || !deckService.isValid( secondPlayerDeck.id)) throw new Error('Invalid deck');
+    if (!await deckService.isValid(firstPlayerDeck.id)) throw new Error('First player deck is invalid');
+    if (!await deckService.isValid(secondPlayerDeck.id)) throw new Error('Second player deck is invalid');
 
     const firstPayerHand = await handService.create(gameModel, firstPlayerModel, firstPlayerDeck);
     const secondPlayerHand = await handService.create(gameModel, secondPlayerModel, secondPlayerDeck);
