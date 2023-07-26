@@ -18,6 +18,9 @@ router.get('/opponent-hand', isLogged, isConnectedToSocket, isInProgressGame, ga
 router.delete('/', isLogged, isConnectedToSocket, isInGame, isGameOwner, gameController.delete);
 router.get('/:id', isLogged, isConnectedToSocket, isInGame, gameController.get);
 
+// Place card on board
+router.post('/board/card', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.placeCard);
+
 // attack
 router.route('/attack' );
 router.post('/attack/player', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.attackPlayer);

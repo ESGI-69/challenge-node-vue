@@ -280,10 +280,17 @@ export default {
       isLooseModalOpen.value = true;
     });
 
-    const onAdd = () => {
-      // When a card is added to the board
-      // console.log('onAdd');
-      // console.log(event);
+    socket.on('game:player-hand', ({ cards }) => {
+      gameStore.setHand(cards);
+    });
+
+    socket.on('game:opponent-hand', (cardCount) => {
+      gameStore.setOpponentCardCount(cardCount);
+    });
+
+    const onAdd = (event) => {
+      const cardId = event.item.__draggable_context.element.id;
+      gameStore.placeCard(cardId);
     };
 
     // Drag and drop attack logic

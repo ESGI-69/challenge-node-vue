@@ -200,5 +200,13 @@ export const useGameStore = defineStore('gameStore', {
         throw error.response;
       }
     },
+
+    async placeCard(cardId) {
+      try {
+        await $API.post('/game/board/card', { cardId });
+      } catch (error) {
+        throw error.response;
+      }
+    },
   },
 });

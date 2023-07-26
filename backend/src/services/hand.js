@@ -31,4 +31,13 @@ export default {
     const hand = await this.findById(id);
     return hand.cards.length;
   },
+
+  async removeCard(handModel, cardId) {
+    await handModel.removeCard(cardId);
+  },
+
+  async containCard(handModel, cardId) {
+    const cards = await handModel.getCards();
+    return cards.some((card) => card.id === cardId);
+  },
 };

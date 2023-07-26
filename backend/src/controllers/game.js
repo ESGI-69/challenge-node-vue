@@ -3,6 +3,7 @@ import handService from '../services/hand.js';
 import generateGameCode from '../utils/generateGameCode.js';
 import { asignUserSocketToGameRoom, removeUserSocketFromGameRoom, users } from '../socket/index.js';
 import { io } from '../index.js';
+import { users as userSockets } from '../socket/index.js';
 import userService from '../services/user.js';
 import cardService from '../services/card.js';
 
@@ -305,7 +306,26 @@ export default {
       const game = await gameService.findCurrentGameByUser(req.user);
 
       res.json(game);
+    } catch (err) {
+      next(err);
+    }
+  },
 
+  placeCard: async (req, res, next) => {
+    try {
+      if (!req.body.cardId) {
+        throw new Error('Missing cardId in body');
+      }
+      const hand = await handService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_hand : req.game.second_player_hand);
+      const isCardInHand = await handService.containCard(hand, req.body.cardId);
+      if (!isCardInHand) throw new Error('Card not in hand', { cause: 'Forbidden' });
+      await handService.removeCard(hand, req.body.cardId);
+      const updatedHand = await handService.findById(hand.id);
+
+      req.socket.emit('game:player-hand', updatedHand);
+      const opponentSocket = userSockets[req.game.current_player === req.game.first_player ? req.game.second_player : req.game.first_player];
+      opponentSocket.emit('game:opponent-hand', updatedHand.cards.length);
+      // io.to(req.game.id).emit('game:board:add', req.body.cardId);
     } catch (err) {
       next(err);
     }
