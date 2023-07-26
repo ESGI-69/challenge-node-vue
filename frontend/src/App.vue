@@ -12,16 +12,11 @@
         name="layout"
         mode="out-in"
       >
-        <suspense>
-          <template #fallback>
-            <loading />
-          </template>
-          <component
-            :is="LayoutComponent"
-          >
-            <component :is="Component" />
-          </component>
-        </suspense>
+        <component
+          :is="LayoutComponent"
+        >
+          <component :is="Component" />
+        </component>
       </transition>
     </router-view>
   </div>

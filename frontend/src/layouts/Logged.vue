@@ -1,24 +1,34 @@
 <template>
-  <div
-    class="logged"
-    :style="{ backgroundImage: `url(${background})` }"
+  <transition
+    name="view"
+    mode="out-in"
   >
-    <topbar class="logged__topbar" />
-    <main class="logged__main">
-      <transition
-        name="view"
-        mode="out-in"
-      >
-        <slot />
-      </transition>
-    </main>
-  </div>
+    <div
+      v-if="!isLoading"
+      class="logged"
+      :style="{ backgroundImage: `url(${background})` }"
+    >
+      <topbar class="logged__topbar" />
+      <main class="logged__main">
+        <transition
+          name="view"
+          mode="out-in"
+        >
+          <slot />
+        </transition>
+      </main>
+    </div>
+    <div v-else>
+      <loading />
+    </div>
+  </transition>
 </template>
 
 <script>
-import { computed, onErrorCaptured } from 'vue';
+import { computed, onErrorCaptured, ref } from 'vue';
 
 import Topbar from '@/components/Topbar.vue';
+import Loading from '@/views/Loading.vue';
 
 import background from '@/assets/carpet.jpg';
 
@@ -31,29 +41,40 @@ export default {
   name: 'LoggedLayout',
   components: {
     Topbar,
+    Loading,
   },
-  async setup() {
+  setup() {
     onErrorCaptured((error) => {
       console.error('Error captured in LoggedLayout');
       console.error(error);
     });
 
-    await connect();
 
     const cardStore = useCardStore();
     const appStore = useAppStore();
     const profileStore = useProfileStore();
     const cardIds = computed(() => cardStore.userCards);
+    const isLoading = ref(true);
 
-    await profileStore.getProfile();
-    await profileStore.getProfileAvatar();
+    const load = async () => {
+      await connect();
 
-    await cardStore.getUserCardIds();
+      await profileStore.getProfile();
+      await profileStore.getProfileAvatar();
 
-    await appStore.preloadCardImages(cardIds.value);
+      await cardStore.getUserCardIds();
+
+      await appStore.preloadCardImages(cardIds.value);
+
+      isLoading.value = false;
+    };
+
+    load();
+
 
     return {
       background,
+      isLoading,
     };
   },
 };
