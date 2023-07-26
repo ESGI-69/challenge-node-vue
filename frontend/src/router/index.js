@@ -37,7 +37,6 @@ const router = createRouter({
         displayName: 'Admin Panel',
         authRequired: true,
         layout: 'admin',
-        // adminRequired: true,
       },
       children: [
         {
