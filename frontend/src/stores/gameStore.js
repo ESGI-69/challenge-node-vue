@@ -36,6 +36,8 @@ export const useGameStore = defineStore('gameStore', {
     isHandLoading: false,
     hand: [],
     opponentCardsCount: 0,
+    myBoardCardInstances: [],
+    opponentBoardCardInstances: [],
   }),
 
   getters: {
@@ -79,6 +81,13 @@ export const useGameStore = defineStore('gameStore', {
     setGame(game) {
       game.id = game.id.toUpperCase();
       this.game = game;
+      if (this.iAmGameOwner) {
+        this.setMyBoardCardInstances(game.firstPlayerBoard.cardInstances);
+        this.setOpponentBoardCardInstances(game.secondPlayerBoard.cardInstances);
+      } else {
+        this.setMyBoardCardInstances(game.secondPlayerBoard.cardInstances);
+        this.setOpponentBoardCardInstances(game.firstPlayerBoard.cardInstances);
+      }
     },
 
     /**
@@ -207,6 +216,14 @@ export const useGameStore = defineStore('gameStore', {
       } catch (error) {
         throw error.response;
       }
+    },
+
+    setMyBoardCardInstances(cards) {
+      this.myBoardCardInstances = cards;
+    },
+
+    setOpponentBoardCardInstances(cards) {
+      this.opponentBoardCardInstances = cards;
     },
   },
 });

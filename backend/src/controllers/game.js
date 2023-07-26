@@ -6,6 +6,8 @@ import { io } from '../index.js';
 import { users as userSockets } from '../socket/index.js';
 import userService from '../services/user.js';
 import cardService from '../services/card.js';
+import boardService from '../services/board.js';
+import cardInstanceService from '../services/cardInstance.js';
 
 export default {
   /**
@@ -310,21 +312,34 @@ export default {
       next(err);
     }
   },
-
+  /**
+  * Place a deck card card on the board
+  * @param {import('express').Request} req
+  * @param {import('express').Response} res
+  * @param {import('express').NextFunction} next
+  */
   placeCard: async (req, res, next) => {
     try {
       if (!req.body.cardId) {
         throw new Error('Missing cardId in body');
       }
       const hand = await handService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_hand : req.game.second_player_hand);
+      const board = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
       const isCardInHand = await handService.containCard(hand, req.body.cardId);
       if (!isCardInHand) throw new Error('Card not in hand', { cause: 'Forbidden' });
       await handService.removeCard(hand, req.body.cardId);
       const updatedHand = await handService.findById(hand.id);
 
-      req.socket.emit('game:player-hand', updatedHand);
+      // Create a new card instance
+      const cardInstance = await cardInstanceService.create(board.id, req.body.cardId);
+      // Add the card instance to the board
+      await boardService.addCardInstance(board, cardInstance);
+
+      req.game.reload();
+
+      req.socket.emit('game:player-hand', updatedHand, req.game);
       const opponentSocket = userSockets[req.game.current_player === req.game.first_player ? req.game.second_player : req.game.first_player];
-      opponentSocket.emit('game:opponent-hand', updatedHand.cards.length);
+      opponentSocket.emit('game:opponent-hand', updatedHand.cards.length, req.game);
       // io.to(req.game.id).emit('game:board:add', req.body.cardId);
     } catch (err) {
       next(err);

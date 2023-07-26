@@ -23,6 +23,7 @@ export default (connection) => {
       currentHealth: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 1,
       },
       allreadyAttacked: {
         type: DataTypes.BOOLEAN,

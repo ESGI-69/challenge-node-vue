@@ -280,12 +280,14 @@ export default {
       isLooseModalOpen.value = true;
     });
 
-    socket.on('game:player-hand', ({ cards }) => {
+    socket.on('game:player-hand', ({ cards }, game) => {
       gameStore.setHand(cards);
+      gameStore.setGame(game);
     });
 
-    socket.on('game:opponent-hand', (cardCount) => {
+    socket.on('game:opponent-hand', (cardCount, game) => {
       gameStore.setOpponentCardCount(cardCount);
+      gameStore.setGame(game);
     });
 
     const onAdd = (event) => {
