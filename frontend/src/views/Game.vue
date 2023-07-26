@@ -265,9 +265,9 @@ export default {
       isForfeitModalOpen.value = true;
     });
 
-    socket.on('game:attack:player', (game, attackerId) => {
+    socket.on('game:attack:player', (game, attackerId, isTargetDie) => {
+      launchAttackAnimation(attackerId, undefined, true, isTargetDie);
       gameStore.setGame(game);
-      launchAttackAnimation(attackerId, undefined, true);
     });
 
     socket.on('game:win', (game, user) => {
@@ -347,8 +347,9 @@ export default {
      * @param {number} attackerCardId id of the card that attack
      * @param {number} [targetedCardId] id of the card that is targeted
      * @param {boolean} isAPlayerAttack if attack target is the player
+     * @param {boolean} isTagetDead if the target is dead
      */
-    const launchAttackAnimation = (attackerCardId, targetedCardId, isAPlayerAttack = false)  => {
+    const launchAttackAnimation = (attackerCardId, targetedCardId, isAPlayerAttack = false, willTargetDied = false)  => {
       const getTargetedElement = (isAPlayerAttack) => {
         if (isAPlayerAttack) {
           return isPlayerTurn.value ? enemyRef.value.$el : playerRef.value.$el;
@@ -365,18 +366,20 @@ export default {
       const angle = Math.atan2(attackerCardElement.getBoundingClientRect().left - targetedElement.getBoundingClientRect().left, attackerCardElement.getBoundingClientRect().top - targetedElement.getBoundingClientRect().top);
       const rotation = angle * (180 / Math.PI) * -1;
 
-      //Todo changer les valeurs pour la pov si l'enemi attaque & ajouter une class css pour inverser
+      //TODO changer les valeurs pour la pov si l'enemi attaque & ajouter une class css pour inverser
 
       attackerCardElement.style.transition = '0.35s ease-out';
       attackerCardElement.style.transform = `translate(${distanceX}px, ${distanceY}px) rotate(${rotation}deg)`;
       attackerCardElement.children[0].classList.add('card_animation');
 
-      // destroy card after 1500ms
-      setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
-        destroyCard(targetedCardId, isAPlayerAttack);
-      }, 1500);
+      if (willTargetDied) {
+        // destroy target after 1500ms
+        setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
+          destroyCard(targetedCardId, isAPlayerAttack);
+        }, 1500);
+      }
 
-      // reset card after 1300ms
+      // reset attacker card after 1300ms
       setTimeout(() => {
         attackerCardElement.style.boxShadow = 'none';
         attackerCardElement.style.transform = 'translate(0, 0)';
@@ -385,22 +388,22 @@ export default {
 
     };
 
-    const destroyCard = (cardId, isAPlayerAttack = false) => {
+    const destroyCard = (targetCardId, isAPlayerAttack = false) => {
       if (isPlayerTurn.value) { //if player is attacking, we destroy enemy card
         if (isAPlayerAttack) {
           enemyRef.value.$el.classList.add('breakCard');
           enemyRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
-          cardsEnemyRef[cardId].$el.children[0].classList.add('breakCard');
-          cardsEnemyRef[cardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardsEnemyRef[targetCardId].$el.children[0].classList.add('breakCard');
+          cardsEnemyRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       } else { //if enemy is attacking, it destroy one of player card
         if (isAPlayerAttack) {
           playerRef.value.$el.classList.add('breakCard');
           playerRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
-          cardPlayerRef[cardId].$el.children[0].classList.add('breakCard');
-          cardPlayerRef[cardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardPlayerRef[targetCardId].$el.children[0].classList.add('breakCard');
+          cardPlayerRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       }
     };
