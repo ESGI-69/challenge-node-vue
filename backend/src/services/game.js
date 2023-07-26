@@ -164,6 +164,7 @@ export default {
     const looserId = game.first_player === user.id ? game.second_player : game.first_player;
     userSockets[looserId].emit('game:loose', game);
     userSockets[gameModel.winner].emit('game:win', game, winnerUser);
+    return game;
   },
   /**
    * Start the timer for the current player
