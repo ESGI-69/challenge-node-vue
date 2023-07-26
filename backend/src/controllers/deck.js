@@ -83,6 +83,24 @@ export default {
    * @param {import('express').NextFunction} next
    * @returns {Promise<void>}
    * */
+  getValidDecks: async (req, res, next) => {
+    try {
+      const decks = await deckService.getValids(parseInt(req.user.id), {
+        include: Card,
+      });
+
+      res.json(decks);
+    } catch (err) {
+      next(err);
+    }
+  },
+  /**
+   * Express.js controller for GET /decks/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   * */
   getSearchMyDecks: async (req, res, next) => {
     try {
       const { order, limit, offset, name } = req.query;
@@ -237,6 +255,28 @@ export default {
 
       await deckService.removeCard(deck, parseInt(req.query.cardId));
       res.sendStatus(204);
+    } catch (err) {
+      next(err);
+    }
+  },
+  /**
+   * Express.js controller for GET /decks/:id
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns {Promise<void>}
+   * */
+  isValid: async (req, res, next) => {
+    try {
+      const deck = await deckService.findById(parseInt(req.params.id), {
+        include: Card,
+      });
+
+      if (!deck) throw new Error('Deck not found', { cause: 'Not Found' });
+      if (req.user.id !== deck.userId) throw new Error('You don\'t own this deck', { cause: 'Unauthorized' });
+
+      res.json(deck.Cards.length === 5);
+
     } catch (err) {
       next(err);
     }

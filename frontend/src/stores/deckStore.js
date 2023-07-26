@@ -16,6 +16,7 @@ export const useDeckStore = defineStore('deckStore', {
     */
     userDeckIds: [],
     decks: [],
+    validDecks: [],
     deck: {},
   }),
 
@@ -147,6 +148,17 @@ export const useDeckStore = defineStore('deckStore', {
       try {
         const { data } = await $API.patch(`/decks/${idDeck}`, { params: options });
         this.deck = data;
+      } catch (err) {
+        throw err.response.data;
+      } finally {
+        this.isUserDecksLoading = false;
+      }
+    },
+    async getValidDecks() {
+      this.isUserDecksLoading = true;
+      try {
+        const { data } = await $API.get('/decks/valid-decks');
+        this.validDecks = data;
       } catch (err) {
         throw err.response.data;
       } finally {

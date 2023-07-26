@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { Deck } from '../db/index.js';
+import { Card, Deck } from '../db/index.js';
 
 export default {
   count: function (options = {}) {
@@ -88,5 +88,46 @@ export default {
    * */
   hasCard: function (deckModel, cardId) {
     return deckModel.hasCard(cardId);
+  },
+  /**
+   * @param {import('../db/index.js').Deck} deckModel
+   * @param {number} cardId
+   * @returns
+   * */
+  countCard: async (id) => {
+    const deck = await Deck.findByPk(id, {
+      include: Card,
+    });
+    return deck.Cards.length;
+  },
+  /**
+   * @param {import('../db/index.js').Deck} deckModel
+   * @param {number} cardId
+   * @returns
+   * */
+  isValid: async (id) => {
+    const deck = await Deck.findByPk(id, {
+      include: Card,
+    });
+    return (deck.Cards.length == 5);
+  },
+  /**
+   * @param {import('../db/index.js').Deck} deckModel
+   * @param {number} idUser
+   * @returns
+   * */
+  getValids: async (idUser) => {
+    const decks = await Deck.findAll({
+      where: {
+        userId: idUser,
+      },
+      include: Card,
+    });
+
+    const valids = decks.filter((deck) => {
+      return (deck.Cards.length == 5);
+    });
+
+    return valids;
   },
 };

@@ -38,6 +38,50 @@
         >
           {{ startErrorMessage }}
         </p>
+        <div class="game__container__choose-deck">
+          <span class="game__container__choose-deck__label">Choose deck:</span>
+          <div class="nes-select">
+            <select
+              id="select-fav-deck"
+              required
+              @change="selectFavDeck"
+            >
+              <option
+                v-if="idDeckFav === null"
+                value=""
+                selected
+              >
+                Aucun
+              </option>
+              <option
+                v-else
+                value=""
+                hidden
+                disabled
+              >
+                Aucun
+              </option>
+              <template
+                v-for="deck in decks"
+                :key="deck.id"
+              >
+                <option
+                  v-if="deck.id === idDeckFav"
+                  selected
+                  :value="deck.id"
+                >
+                  {{ deck.name }}
+                </option>
+                <option
+                  v-else
+                  :value="deck.id"
+                >
+                  {{ deck.name }}
+                </option>
+              </template>
+            </select>
+          </div>
+        </div>
         <div class="game__container__buttons">
           <button
             v-if="iAmGameOwner"
@@ -70,8 +114,6 @@
   </div>
 </template>
 
-
-
 <script>
 import { computed, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
@@ -82,6 +124,7 @@ import GameId from '@/components/games/GameId.vue';
 
 import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
+import { useDeckStore } from '@/stores/deckStore';
 import { socket } from '@/socket';
 
 export default {
@@ -96,11 +139,14 @@ export default {
     const route = useRoute();
     const gameStore = useGameStore();
     const profileStore = useProfileStore();
+    const deckStore = useDeckStore();
 
     const actualGame = computed(() => gameStore.game);
     const isGameLoading = computed(() => gameStore.isGameLoading);
     const isGameLeft = computed(() => gameStore.isGameLeft);
     const iAmGameOwner = computed(() => gameStore.iAmGameOwner);
+    const idDeckFav = computed(() => profileStore.profile.idDeckFav);
+    const decks = computed(() => deckStore.validDecks);
 
     const profile = computed(() => profileStore.profile);
 
@@ -108,6 +154,12 @@ export default {
     const isGameCanceled = ref(false);
     const hasStartError = ref(false);
     const startErrorMessage = ref('');
+
+    const getValidDecks = () => {
+      deckStore.getValidDecks();
+    };
+
+    getValidDecks();
 
     const goToHome = () => {
       gameStore.$reset();
@@ -149,6 +201,12 @@ export default {
       }
     };
 
+    const selectFavDeck = (event) => {
+      if (event.target.value !== '') {
+        profileStore.updateDeckFav(event.target.value);
+      }
+    };
+
     const getGame = async () => {
       isGameFound.value = false;
       try {
@@ -167,13 +225,17 @@ export default {
 
     return {
       actualGame,
+      decks,
+      getValidDecks,
       goToHome,
       iAmGameOwner,
+      idDeckFav,
       isGameCanceled,
       isGameFound,
       isGameLeft,
       isGameLoading,
       profile,
+      selectFavDeck,
       startGame,
       hasStartError,
       startErrorMessage,
@@ -193,6 +255,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &__choose-deck{
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
 
     &__buttons {
       display: flex;
