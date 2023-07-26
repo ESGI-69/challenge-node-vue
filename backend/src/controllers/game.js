@@ -4,6 +4,7 @@ import generateGameCode from '../utils/generateGameCode.js';
 import { asignUserSocketToGameRoom, removeUserSocketFromGameRoom, users } from '../socket/index.js';
 import { io } from '../index.js';
 import userService from '../services/user.js';
+import cardService from '../services/card.js';
 
 export default {
   /**
@@ -268,6 +269,27 @@ export default {
       const handId = isFistPlayer ? req.game.second_player_hand : req.game.first_player_hand;
       const count = await handService.countCards(handId);
       res.json({ count });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * Express.js controller for GET /games/attack/player
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  attackPlayer: async (req, res, next) => {
+    try {
+      if (!req.body.cardId) {
+        throw new Error('Missing cardId in body');
+      }
+
+      // TODO: Check if the card used is on board
+      const attackCard = await cardService.findById(req.body.cardId);
+      await gameService.attackPlayer(req.game, attackCard);
+      res.sendStatus(200);
     } catch (err) {
       next(err);
     }

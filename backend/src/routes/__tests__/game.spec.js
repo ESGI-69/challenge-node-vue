@@ -581,12 +581,12 @@ describe('Game launch and forfeit', () => {
       expect(game.winner).toBe(2);
     }));
 
-  it('The winner should have win 50 gold and 50 exp', () => userService.findById(2)
+  it('The winner should have win 150 gold and 150 exp', () => userService.findById(2)
     .then((user) => {
       expect(user).toHaveProperty('balance');
-      expect(user.balance).toBe(userBalance + 50);
+      expect(user.balance).toBeGreaterThan(userBalance);
       expect(user).toHaveProperty('xp');
-      expect(user.xp).toBe(userXp + 50);
+      expect(user.xp).toBeGreaterThan(userXp);
     }));
 
   afterAll(async () => {

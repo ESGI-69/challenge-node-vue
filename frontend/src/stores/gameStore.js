@@ -182,5 +182,13 @@ export const useGameStore = defineStore('gameStore', {
     setOpponentCardCount(cardCount) {
       this.opponentCardsCount = cardCount;
     },
+
+    async attackPlayer(cardId) {
+      try {
+        await $API.post('/game/attack/player', { cardId });
+      } catch (error) {
+        throw error.response;
+      }
+    },
   },
 });

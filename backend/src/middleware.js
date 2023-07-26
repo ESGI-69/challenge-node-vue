@@ -166,6 +166,21 @@ const isGameOwner = (req, res, next) => {
   }
 };
 
+/**
+ * Is the current turn of the game is the user's turn. If not, return 403. Must be used after isInProgressGame middleware.
+ * @param {import('express').Request} req Express request object
+ * @param {import('express').Response} res Express response object
+ * @param {import('express').NextFunction} next Express next function
+ */
+const isPlayerTurn = (req, res, next) => {
+  try {
+    if (req.game.current_player !== req.user.id) throw new Error('It is not your turn', { cause: 'Unauthorized' });
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   populateUser,
   isLogged,
@@ -176,4 +191,5 @@ export {
   isConnectedToSocket,
   isNotInGame,
   isGameOwner,
+  isPlayerTurn,
 };
