@@ -82,6 +82,8 @@ import backOfCard from '@/assets/backOfCardResized.webp';
 
 import breakGlass from '@/assets/breakglass.svg';
 
+import shatteringGif from '@/assets/Composition-1noloop.gif';
+
 export default {
   name: 'Card',
   components: {
@@ -205,6 +207,7 @@ export default {
       emit('flip', { isFacingUp: !isFaceDown.value, id: id.value });
     };
 
+
     return {
       clickEvent,
       flipCard,
@@ -212,6 +215,7 @@ export default {
       backOfCard,
       imageUrl,
       breakGlass,
+      shatteringGif,
     };
   },
 };
@@ -420,7 +424,6 @@ export default {
     }
   }
   .breakCard{ // L'animation de la carte qui se brise
-  -webkit-mask-image: url(http://localhost:8080/src/assets/Composition-1noloop.gif);
   mask-position: center;
   animation: zoom 2.5s ease-out;
   animation-fill-mode: forwards ;

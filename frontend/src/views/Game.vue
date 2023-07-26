@@ -156,6 +156,8 @@ import { useGameStore } from '@/stores/gameStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { socket } from '@/socket';
 
+import shatteringGif from '@/assets/Composition-1noloop.gif';
+
 export default {
   name: 'Game',
   components: {
@@ -389,14 +391,18 @@ export default {
       if (isPlayerTurn.value){ //if player is attacking, we destroy enemy card
         if (type === 'player'){
           enemyRef.value.$el.classList.add('breakCard');
+          enemyRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
           cardsEnemyRef[cardId].$el.children[0].classList.add('breakCard');
+          cardsEnemyRef[cardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       } else { //if enemy is attacking, it destroy one of player card
         if (type === 'player'){
           playerRef.value.$el.classList.add('breakCard');
+          playerRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
           cardPlayerRef[cardId].$el.children[0].classList.add('breakCard');
+          cardPlayerRef[cardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       }
     };
@@ -502,6 +508,7 @@ export default {
       destroyCard,
       enemyRef,
       playerRef,
+      shatteringGif,
       isWinnerModalOpen,
       isLooseModalOpen,
     };
@@ -511,7 +518,7 @@ export default {
 
 <style lang="scss" scoped>
 .breakCard{ //l'animation de la destruction de la carte, utilisé pour le player ici
-  -webkit-mask-image: url(http://localhost:8080/src/assets/Composition-1noloop.gif);
+  // -webkit-mask-image: url(http://localhost:8080/src/assets/Composition-1noloop.gif);
   mask-position: center;
   animation: zoom 2.5s ease-out;
   animation-fill-mode: forwards ;
