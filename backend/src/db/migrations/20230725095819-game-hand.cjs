@@ -44,6 +44,8 @@ module.exports = {
           model: 'hands',
           key: 'id',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       CardId: {
         type: Sequelize.INTEGER,
