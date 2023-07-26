@@ -6,6 +6,7 @@ import { isConnectedToSocket, isGameOwner, isInGame, isInProgressGame, isLogged,
 
 const router = Router();
 
+router.get('/game-running', isLogged, gameController.getGameRunningByUserId);
 router.get('/history', isLogged, gameController.getHistory);
 router.post('/', isLogged, isNotInGame, gameController.post);
 router.post('/leave', isLogged, isConnectedToSocket, isInGame, gameController.leave);

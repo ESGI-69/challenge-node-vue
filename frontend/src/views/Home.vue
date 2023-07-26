@@ -8,16 +8,39 @@
         Main Menu
       </h1>
       <button
+        v-if="isGameRunning === null"
         class="nes-btn is-primary home__menu__create"
         @click="createGame"
       >
         Create Game
       </button>
       <router-link
+        v-else
+        :to="{ name: 'game', params: { id: isGameRunning.id } }"
+        class="home__menu__create"
+      >
+        <button class="nes-btn is-primary">
+          Resume Game
+        </button>
+      </router-link>
+      <router-link
+        v-if="isGameRunning === null"
         :to="{ name: 'join' }"
         class="home__menu__join"
       >
         <button class="nes-btn">
+          Join Game
+        </button>
+      </router-link>
+      <router-link
+        v-else
+        :to="{ name: 'join' }"
+        class="home__menu__join"
+      >
+        <button
+          class="nes-btn is-disabled"
+          disabled
+        >
           Join Game
         </button>
       </router-link>
@@ -105,8 +128,16 @@ export default {
 
     const avatarUrl = computed(() => profileStore.avatarUrl);
 
+    const isGameRunning = computed(() => gameStore.isGameRunning);
+
     const isSubmenuDisplayed = computed(() => route.name !== 'home');
     const routeDisplayName = computed(() => route.meta.displayName);
+
+    const getGameRunning = () => {
+      gameStore.getGameRunning();
+    };
+
+    getGameRunning();
 
     const logout = () => {
       authStore.logout();
@@ -127,8 +158,10 @@ export default {
     return {
       logout,
       isAdmin,
+      isGameRunning,
       avatarUrl,
       createGame,
+      getGameRunning,
       isSubmenuDisplayed,
       routeDisplayName,
     };

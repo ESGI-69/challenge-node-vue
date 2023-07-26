@@ -294,4 +294,20 @@ export default {
       next(err);
     }
   },
+  /**
+   * Express.js controller for GET /games/game-running
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  getGameRunningByUserId: async (req, res, next) => {
+    try {
+      const game = await gameService.findCurrentGameByUser(req.user);
+
+      res.json(game);
+
+    } catch (err) {
+      next(err);
+    }
+  },
 };
