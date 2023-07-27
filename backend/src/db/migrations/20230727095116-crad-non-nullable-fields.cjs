@@ -12,10 +12,12 @@ module.exports = {
     await queryInterface.changeColumn('cards', 'attack', {
       type: Sequelize.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     });
     await queryInterface.changeColumn('cards', 'health', {
       type: Sequelize.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     });
   },
 
