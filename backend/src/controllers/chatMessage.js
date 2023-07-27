@@ -1,4 +1,5 @@
 import chatMessageService from '../services/chatMessage.js';
+import userService from '../services/user.js';
 import { io } from '../index.js';
 
 export default {
@@ -13,6 +14,15 @@ export default {
     try {
       const content = req.body.content;
       const userId = req.user.id;
+      const regex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+      const hasScriptTags = regex.test(content);
+      if (content.length > 250 || hasScriptTags) {
+        await userService.update(
+          { id: parseInt(userId) },
+          { isBanned: true },
+        );
+        return res.status(401).json({ message: 'LMAO' });
+      }
 
       const chatMessage = await chatMessageService.create({ content, userId });
 

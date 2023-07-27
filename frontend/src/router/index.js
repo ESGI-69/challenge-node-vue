@@ -79,6 +79,16 @@ const router = createRouter({
             layout: 'admin',
           },
         },
+        {
+          path: 'moderation',
+          name: 'adminModeration',
+          component: () => import('@/views/admin/AdminModeration.vue'),
+          meta: {
+            displayName: 'Chat moderation',
+            authRequired: true,
+            layout: 'admin',
+          },
+        },
       ],
     },
     {

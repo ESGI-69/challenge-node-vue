@@ -146,6 +146,7 @@ export default {
       overflow-y: scroll;
       display: flex;
       flex-direction: column-reverse;
+      overflow-wrap: break-word;
       &__date {
         font-size: 8px;
         margin-right: 16px;
