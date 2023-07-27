@@ -14,10 +14,9 @@ export default (connection) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      reportCount: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
+      isReportedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
       },
     },
     {

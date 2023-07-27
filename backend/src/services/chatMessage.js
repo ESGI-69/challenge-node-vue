@@ -49,5 +49,20 @@ export default {
       where: { id },
     });
   },
+
+  /**
+   * Update a chat message
+   * @param {import('sequelize').WhereOptions} criteria
+   * @param {Object} data
+   * @returns
+   */
+  update: async function (criteria, data) {
+    const [, chatMessages = []] = await ChatMessage.update(data, {
+      where: criteria,
+      returning: true,
+    });
+    if (!chatMessages.length) throw new Error('Chat message not found', { cause: 'Not Found' });
+    return this.findById(chatMessages[0].id);
+  },
 };
 

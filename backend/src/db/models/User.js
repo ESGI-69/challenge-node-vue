@@ -16,7 +16,7 @@ export default (connection) => {
       this.belongsTo(Deck, { foreignKey: 'idDeckFav' });
     }
 
-    /**
+    /*
      * @type {import('mongoose').Model}
      */
     static mongoModel;

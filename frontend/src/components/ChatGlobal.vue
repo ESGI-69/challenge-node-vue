@@ -15,17 +15,47 @@
           v-for="message in messages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))"
           :key="message.id"
         >
+          <img
+            class="chat__container__messages__settings nes-pointer"
+            :src="settings"
+            alt="settings"
+            width="16"
+            @click="openSettings(message)"
+          >
           <span class="chat__container__messages__date">
             {{ formatDateChat(message.createdAt) }}
           </span>
           <span
             v-if="message.user"
             class="chat__container__messages__name nes-text is-primary"
+            :class="{
+              'is-success': message.user.id === me.id,
+            }"
           >
             {{ message.user.firstname }}:
           </span>
           <span>
             {{ message.content }}
+          </span>
+          <span
+            v-if="isSettingsOpen"
+            class="chat__container__messages__report"
+          >
+            <span>
+              Do you want to report this message :  "{{ messageToReport.content }} "?
+            </span>
+            <button
+              class="nes-btn is-primary"
+              @click="reportMessage(messageToReport)"
+            >
+              Yes
+            </button>
+            <button
+              class="nes-btn is-error"
+              @click="isSettingsOpen = !isSettingsOpen"
+            >
+              No
+            </button>
           </span>
         </p>
       </div>
@@ -53,6 +83,12 @@
           >
         </button>
       </div>
+      <span
+        v-if="isError"
+        class="nes-text is-rounded is-error"
+      >
+        Message can't be empty
+      </span>
     </div>
     <div
       class="nes-balloon from-left chat__ballon nes-pointer"
@@ -71,12 +107,14 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import mail from '@/assets/mail.png';
 import send from '@/assets/send.png';
+import settings from '@/assets/settings.png';
 import { useChatStore } from '@/stores/chatStore';
 import formatDateChat from '@/utils/formatDateChat';
 import { socket } from '@/socket';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default {
   name: 'ChatGlobal',
@@ -84,9 +122,18 @@ export default {
   },
   setup() {
     const isChatOpen = ref(false);
+    const isSettingsOpen = ref(false);
+    const isError = ref(false);
     const currentMessage = ref('');
+    const messageToReport = reactive({
+      id: '',
+      content: '',
+    });
 
     const chatStore = useChatStore();
+    const profileStore = useProfileStore();
+
+    const me = computed(() => profileStore.profile);
 
     const isGetChatMessagesLoading = computed(() => chatStore.isGetChatMessagesLoading);
     const isSendMessageLoading = computed(() => chatStore.isSendMessageLoading);
@@ -96,24 +143,51 @@ export default {
     chatStore.getChatMessages();
 
     const sendMessage = async () => {
+      if (currentMessage.value.trim().length === 0) {
+        isError.value = true;
+        return;
+      }
+      isError.value = false;
       await chatStore.sendMessage(currentMessage.value);
       currentMessage.value = '';
     };
 
-    socket.on('chat:message', (message) => {
-      chatStore.addMessage(message);
+    socket.on('chat:message', (messageSend) => {
+      chatStore.addMessage(messageSend);
     });
+
+    socket.on('chat:message:delete', (id) => {
+      chatStore.removeMessage(id);
+    });
+
+    const reportMessage = async (messageReported) => {
+      await chatStore.reportMessage(messageReported);
+      isSettingsOpen.value = !isSettingsOpen.value;
+    };
+
+    const openSettings = (message) => {
+      isSettingsOpen.value = !isSettingsOpen.value;
+      messageToReport.id = message.id;
+      messageToReport.content = message.content;
+    };
 
     return {
       mail,
       isChatOpen,
       messages,
+      settings,
       formatDateChat,
       send,
       currentMessage,
       sendMessage,
       isGetChatMessagesLoading,
       isSendMessageLoading,
+      reportMessage,
+      isSettingsOpen,
+      openSettings,
+      messageToReport,
+      isError,
+      me,
     };
   },
 };
@@ -135,6 +209,7 @@ export default {
     justify-content: space-between;
     padding-left: 1rem;
     padding-right: 1rem;
+    padding-bottom: 4px;
     &__input {
       display: flex;
       flex-direction: row;
@@ -146,9 +221,33 @@ export default {
       overflow-y: scroll;
       display: flex;
       flex-direction: column-reverse;
+      overflow-wrap: break-word;
+      &__report {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        z-index: 22;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+      }
+      &__settings {
+        margin-right: 4px;
+        background-color: #FFF;
+      }
+      &__settings:hover {
+        filter: brightness(0.8);
+      }
       &__date {
         font-size: 8px;
-        margin-right: 16px;
+        margin-right: 8px;
       }
       &__name {
         font-style: italic;

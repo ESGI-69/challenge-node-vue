@@ -64,8 +64,16 @@
           Cards
         </router-link>
       </el-menu-item>
-      <el-menu-item>
-        Moderation
+      <el-menu-item
+        index="5"
+        class="nav-item"
+      >
+        <router-link
+          class="topbar-link"
+          :to="{ name: 'adminModeration' }"
+        >
+          Moderation
+        </router-link>
       </el-menu-item>
     </el-menu>
   </div>
@@ -95,6 +103,8 @@ export default {
           return '3';
         case 'adminCards':
           return '4';
+        case 'adminModeration':
+          return '5';
         default:
           return '1';
       }
