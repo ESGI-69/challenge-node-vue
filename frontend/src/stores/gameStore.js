@@ -237,5 +237,13 @@ export const useGameStore = defineStore('gameStore', {
         throw error.response;
       }
     },
+
+    // setManaPlayer(mana) {
+    //   if (this.game.first_player === useProfileStore().profile.id){
+    //     this.game.first_player_current_mana -= mana;
+    //   } else {
+    //     this.game.second_player_current_mana -= mana;
+    //   }
+    // },
   },
 });

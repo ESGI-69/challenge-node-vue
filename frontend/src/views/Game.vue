@@ -196,8 +196,12 @@ export default {
     const gameId = computed(() => gameStore.game.id);
     const isPlayerTurn = computed(() => gameStore.game.current_player === profileStore.getId);
     const turnStartedAt = computed(() => gameStore.game.turnStartedAt);
-    const playerMana = computed(() => gameStore.playerMana);
-    const opponentMana = computed(() => gameStore.opponentMana);
+    // const playerMana = computed(() => gameStore.playerMana);
+    // const opponentMana = computed(() => gameStore.opponentMana);
+
+    const playerMana = computed(() => gameStore.game.first_player === profileStore.getId ? gameStore.game.first_player_current_mana : gameStore.game.second_player_current_mana);
+    const opponentMana = computed(() => gameStore.game.first_player === profileStore.getId ? gameStore.game.second_player_current_mana : gameStore.game.first_player_current_mana);
+
     const hand = computed(() => gameStore.hand);
     const opponentCardsCount = computed(() => gameStore.opponentCardsCount);
     const myBoardCardInstances = computed(() => gameStore.myBoardCardInstances);
@@ -301,7 +305,11 @@ export default {
 
     const onAdd = (event) => {
       const cardId = event.item.__draggable_context.element.id;
+      // const cardCost = event.item.__draggable_context.element.cost;
+
+      // gameStore.setManaPlayer(cardCost);
       gameStore.placeCard(cardId);
+      gameStore.setGame(gameStore.game);
     };
 
     // Drag and drop attack logic

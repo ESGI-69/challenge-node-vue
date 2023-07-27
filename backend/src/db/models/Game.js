@@ -64,6 +64,26 @@ export default (connection) => {
           max: 10,
         },
       },
+      first_player_current_mana: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: {
+          notEmpty: true,
+          min: 0,
+          max: 10,
+        },
+      },
+      second_player_current_mana: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: {
+          notEmpty: true,
+          min: 0,
+          max: 10,
+        },
+      },
       turn_count: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -148,10 +168,12 @@ export default (connection) => {
               if (game.turn_count % 2 === 0) {
                 if (game.second_player_mana < 10) {
                   game.second_player_mana += 1;
+                  game.second_player_current_mana = game.second_player_mana;
                 }
               } else {
                 if (game.first_player_mana < 10) {
                   game.first_player_mana += 1;
+                  game.first_player_current_mana = game.first_player_mana;
                 }
               }
             }

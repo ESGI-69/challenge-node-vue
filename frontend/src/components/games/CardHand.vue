@@ -112,7 +112,6 @@ export default {
 
     const onRemove = () => {
       // When a card is removed from the hand of the player
-      // console.log('onRemove');
     };
 
     return {
