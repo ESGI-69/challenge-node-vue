@@ -195,7 +195,7 @@
               >
                 <el-input-number
                   v-model.number="currentCardEdit.health"
-                  :min="0"
+                  :min="1"
                   :max="10"
                   :step="1"
                 />
@@ -376,6 +376,8 @@ export default {
       name: [ { required: true, min: 1, message: 'Please input the name of the card', trigger: 'blur' } ],
       description: [ { required: true, message: 'Please input the description of the card', trigger: 'blur' } ],
       type: [ { required: true, message: 'Please input the type of the card', trigger: 'blur' } ],
+      health: [ { required: true, message: 'Please input the health of the card', trigger: 'blur' } ],
+      attack: [ { required: true, message: 'Please input the attack of the card', trigger: 'blur' } ],
     });
 
     const submitForm = async(formEl) => {

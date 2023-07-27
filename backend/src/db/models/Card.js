@@ -56,10 +56,12 @@ export default (connection) => {
       type: DataTypes.STRING,
       attack: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         defaultValue: null,
       },
       health: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         defaultValue: null,
       },
       description: {

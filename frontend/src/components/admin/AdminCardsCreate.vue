@@ -95,7 +95,7 @@
               >
                 <el-input-number
                   v-model.number="form.health"
-                  :min="0"
+                  :min="1"
                   :max="10"
                   :step="1"
                 />
@@ -180,7 +180,7 @@ export default {
       description: '',
       type: '',
       attack: 1,
-      health: 0,
+      health: 1,
     });
     const selectImage = (file) => image.value = file;
     const isPostCardLoading = computed(() => cardStore.isPostCardLoading);
@@ -218,6 +218,8 @@ export default {
       name: [ { required: true, min: 1, message: 'Please input the name of the card', trigger: 'blur' } ],
       description: [ { required: true, message: 'Please input the description of the card', trigger: 'blur' } ],
       type: [ { required: true, message: 'Please input the type of the card', trigger: 'blur' } ],
+      health: [ { required: true, message: 'Please input the health of the card', trigger: 'blur' } ],
+      attack: [ { required: true, message: 'Please input the attack of the card', trigger: 'blur' } ],
     });
 
     return {
