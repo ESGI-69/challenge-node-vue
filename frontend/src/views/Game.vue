@@ -305,11 +305,9 @@ export default {
 
     const onAdd = (event) => {
       const cardId = event.item.__draggable_context.element.id;
-      // const cardCost = event.item.__draggable_context.element.cost;
 
-      // gameStore.setManaPlayer(cardCost);
       gameStore.placeCard(cardId);
-      gameStore.setGame(gameStore.game);
+      // gameStore.setGame(gameStore.game);
     };
 
     // Drag and drop attack logic
