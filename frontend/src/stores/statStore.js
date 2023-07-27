@@ -14,6 +14,11 @@ export const useStatStore = defineStore('statStore', {
     totalXp: 0,
     totalPackOpen: 0,
     numberOfPackOpenByDay: [],
+    numberOfCurrentGames: 0,
+    totalCreditsPurchased: 0,
+    totalMoneySpent: 0,
+    bestSellerProduct: {},
+    averageGameTime: 0,
   }),
 
   actions: {
@@ -76,6 +81,34 @@ export const useStatStore = defineStore('statStore', {
         this.isNumberOfPackOpenByDayLoading = false;
       }
     },
+
+    async getTotalNumbersOfCurrentGames() {
+      try {
+        const { data } = await $API.get('/stat/admin/total-games');
+        this.numberOfCurrentGames = data;
+      } catch (err) {
+        throw err.response.data;
+      }
+    },
+
+    async getTotalCreditsPurchased() {
+      try {
+        const { data } = await $API.get('/stat/admin/total-credits-purchased');
+        this.totalCreditsPurchased = data.totalCreditsPurchased;
+      } catch (err) {
+        throw err.response.data;
+      }
+    },
+
+    async getTotalMoneySpent() {
+      try {
+        const { data } = await $API.get('/stat/admin/total-money-spent');
+        this.totalMoneySpent = data.totalMoneySpent;
+      } catch (err) {
+        throw err.response.data;
+      }
+    },
+
 
   },
 });
