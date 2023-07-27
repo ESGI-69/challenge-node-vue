@@ -35,10 +35,11 @@ export default (userService) => {
       });
     }
 
-    if (await user.isUserBanned()) {
+    if (user.isUserBanned()) {
       return res.status(401).send({
         code: 'user_banned',
         message: 'User banned',
+        reason: user.banReason,
       });
     }
 

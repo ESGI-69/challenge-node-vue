@@ -150,4 +150,9 @@ export default {
     await userModel.save();
     return this.findById(userModel.id);
   },
+  ban(userModel, reason) {
+    userModel.isBanned = true;
+    userModel.banReason = reason;
+    return userModel.save();
+  },
 };

@@ -17,12 +17,12 @@ export default {
       const userId = req.user.id;
       const regex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
       const hasScriptTags = regex.test(content);
-      if (content.length > 250 || hasScriptTags) {
-        await userService.update(
-          { id: parseInt(userId) },
-          { isBanned: true },
-        );
-        return res.status(401).json({ message: 'LMAO' });
+      if (content.length > 250) {
+        await userService.ban(req.user, 'send more than 250 characters in a chat message');
+        return res.status(401).json({ message: 'Don\'t be a hero 🗿' });
+      } else if (hasScriptTags) {
+        await userService.ban(req.user, 'send a chat message containing script tags');
+        return res.status(401).json({ message: 'Don\'t be a hero 🪃' });
       }
 
       const chatMessage = await chatMessageService.create({ content, userId });
