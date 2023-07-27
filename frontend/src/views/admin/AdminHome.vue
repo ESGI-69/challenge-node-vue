@@ -37,9 +37,9 @@
         </div>
       </template>
       <div>
-        {{ 'Average game duration : ' + (averageGameDuration/1000).toFixed(0) + ' seconds' }}
+        {{ 'Average game duration : ' + ( averageGameDuration ? (averageGameDuration/1000).toFixed(0) : 0) + ' seconds' }}
       </div>
-      <div>
+      <div v-if="bestPlayer?.bestPlayer?.firstname">
         {{ 'Best player : ' + bestPlayer?.bestPlayer?.firstname + " " + bestPlayer?.bestPlayer?.lastname }}
       </div>
       <div>

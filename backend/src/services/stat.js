@@ -145,6 +145,10 @@ export default {
   },
 
   getTotalNumbersOfCurrentGames: function () {
+
+    if (!Game.mongoModel) {
+      return [];
+    }
     const count = Game.mongoModel.aggregate([
       {
         $match:
@@ -248,6 +252,11 @@ export default {
 
   getAverageGameDuration: function () {
     //response is in ms
+
+    if (!Game.mongoModel) {
+      return [];
+    }
+
     const count = Game.mongoModel.aggregate([
       {
         $match:
@@ -279,6 +288,11 @@ export default {
   },
 
   getBestPlayer: function () {
+
+    if (!Game.mongoModel) {
+      return [];
+    }
+
     const count = Game.mongoModel.aggregate([[
       {
         $match: {
