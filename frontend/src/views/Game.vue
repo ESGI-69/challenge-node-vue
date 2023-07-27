@@ -66,7 +66,7 @@
             :class="{
               'nes-pointer': isPlayerTurn,
             }"
-            @mousedown="(event) => startAttack(element.id, element.attack, event)"
+            @mousedown="(event) => startAttack(element.card.id, element.card.attack, event)"
             @mouseup="cancelAttack"
           />
         </template>
@@ -265,11 +265,9 @@ export default {
       isForfeitModalOpen.value = true;
     });
 
-    // socket.on('game:attack:player', (game, attackCard) => {
-    socket.on('game:attack:player', (game) => {
+    socket.on('game:attack:player', (game, attackerId, isTargetDie) => {
+      launchAttackAnimation(attackerId, undefined, true, isTargetDie);
       gameStore.setGame(game);
-      // console.log('attack player', attackCard);
-      // moveElement(cardPlayerRef[attackCard.attacker].$el, cardPlayerRef[attackCard.target].$el);
     });
 
     socket.on('game:win', (game, user) => {
@@ -341,81 +339,71 @@ export default {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = cardId;
-      moveElement(attack.attacker, cardId);
       sendAttack();
     };
 
-    const moveElement = (attacker, target, type = null )  => {
-
-      let cardAttacker = {};
-      let cardTargeted = {};
-      // let currentAttacker = {};
-      let currentTargeted = {};
-
-      if (isPlayerTurn.value){ //if player is attacking
-        cardAttacker = cardPlayerRef[attacker].$el;
-
-        if (type === 'player'){
-          cardTargeted = enemyRef.value.$el;
-        } else {
-          cardTargeted = cardsEnemyRef[target].$el;
+    /**
+     *
+     * @param {number} attackerCardId id of the card that attack
+     * @param {number} [targetedCardId] id of the card that is targeted
+     * @param {boolean} isAPlayerAttack if attack target is the player
+     * @param {boolean} isTagetDead if the target is dead
+     */
+    const launchAttackAnimation = (attackerCardId, targetedCardId, isAPlayerAttack = false, willTargetDied = false)  => {
+      const getTargetedElement = (isAPlayerAttack) => {
+        if (isAPlayerAttack) {
+          return isPlayerTurn.value ? enemyRef.value.$el : playerRef.value.$el;
         }
+        return isPlayerTurn.value ? cardsEnemyRef[targetedCardId].$el : cardPlayerRef[targetedCardId].$el;
+      };
 
-        currentTargeted = target;
+      let attackerCardElement = cardPlayerRef[attackerCardId].$el;
+      let targetedElement = getTargetedElement(isAPlayerAttack);
 
-      } else { //if enemy is attacking
-        cardAttacker = cardsEnemyRef[attacker].$el;
-        if (type === 'player'){
-          cardTargeted = playerRef.value.$el;
-        } else {
-          cardTargeted = cardPlayerRef[target].$el;
-        }
-        currentTargeted = target;
-      }
+      const distanceX = targetedElement.getBoundingClientRect().left - attackerCardElement.getBoundingClientRect().left;
+      const distanceY = (targetedElement.getBoundingClientRect().top - attackerCardElement.getBoundingClientRect().top) + ((attackerCardElement.getBoundingClientRect().height) / 2)  ;
 
-      cardAttacker.style.transition = '0.35s ease-out';
-
-      const distanceX = cardTargeted.getBoundingClientRect().left - cardAttacker.getBoundingClientRect().left;
-      const distanceY = (cardTargeted.getBoundingClientRect().top - cardAttacker.getBoundingClientRect().top) + ((cardAttacker.getBoundingClientRect().height) / 2)  ;
-
-
-      const angle = Math.atan2(cardAttacker.getBoundingClientRect().left - cardTargeted.getBoundingClientRect().left, cardAttacker.getBoundingClientRect().top - cardTargeted.getBoundingClientRect().top);
+      const angle = Math.atan2(attackerCardElement.getBoundingClientRect().left - targetedElement.getBoundingClientRect().left, attackerCardElement.getBoundingClientRect().top - targetedElement.getBoundingClientRect().top);
       const rotation = angle * (180 / Math.PI) * -1;
 
-      //Todo changer les valeurs pour la pov si l'enemi attaque & ajouter une class css pour inverser
+      //TODO changer les valeurs pour la pov si l'enemi attaque & ajouter une class css pour inverser
 
-      cardAttacker.style.transform = `translate(${distanceX}px, ${distanceY}px) rotate(${rotation}deg)`;
-      cardAttacker.children[0].classList.add('card_animation');
+      attackerCardElement.style.transition = '0.35s ease-out';
+      attackerCardElement.style.transform = `translate(${distanceX}px, ${distanceY}px) rotate(${rotation}deg)`;
+      attackerCardElement.children[0].classList.add('card_animation');
 
-      // destroy card after 1500ms
-      setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
-        destroyCard(currentTargeted, type);
-      }, 1500);
+      if (willTargetDied) {
+        // destroy target after 1500ms
+        setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
+          destroyCard(targetedCardId, isAPlayerAttack);
+        }, 1500);
+      }
 
+      // reset attacker card after 1300ms
       setTimeout(() => {
-        cardAttacker.style.boxShadow = 'none';
-        cardAttacker.style.transform = 'translate(0, 0)';
-        cardAttacker.children[0].classList.remove('card_animation');
+        attackerCardElement.style.boxShadow = 'none';
+        attackerCardElement.style.transform = 'translate(0, 0)';
+        attackerCardElement.children[0].classList.remove('card_animation');
       }, 1300);
 
     };
 
-    const destroyCard = (cardId, type = null) => {
-      if (isPlayerTurn.value){ //if player is attacking, we destroy enemy card
-        if (type === 'player'){
+    const destroyCard = (targetCardId, isAPlayerAttack = false) => {
+      if (isPlayerTurn.value) { //if player is attacking, we destroy enemy card
+        if (isAPlayerAttack) {
           enemyRef.value.$el.classList.add('breakCard');
           enemyRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
-          cardsEnemyRef[cardId].$el.children[0].classList.add('breakCard');
-          cardsEnemyRef[cardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardsEnemyRef[targetCardId].$el.children[0].classList.add('breakCard');
+          cardsEnemyRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       } else { //if enemy is attacking, it destroy one of player card
-        if (type === 'player'){
+        if (isAPlayerAttack) {
           playerRef.value.$el.classList.add('breakCard');
           playerRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
-          cardPlayerRef[cardId].$el.children[0].classList.add('breakCard');
-          cardPlayerRef[cardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardPlayerRef[targetCardId].$el.children[0].classList.add('breakCard');
+          cardPlayerRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       }
     };
@@ -424,8 +412,6 @@ export default {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = 'player';
-
-      moveElement(attack.attacker, attack.target, 'player');
       sendAttack();
     };
 
