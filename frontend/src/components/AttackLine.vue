@@ -20,13 +20,22 @@ export default {
       type: Number,
       default: 0,
     },
-    isValid: {
+    hoveringType: {
+      type: String,
+      validator: (value) => [
+        'player',
+        'card',
+        'empty',
+      ].includes(value),
+      default: 'empty',
+    },
+    isBoardEmpty: {
       type: Boolean,
       default: false,
     },
   },
   setup(props) {
-    const { attack, isValid } = toRefs(props);
+    const { attack, isBoardEmpty, hoveringType } = toRefs(props);
     const line = ref(null);
     const isDrawing = ref(false);
     let startPoint = reactive({
@@ -40,7 +49,24 @@ export default {
     const deltaX = computed(() => endPoint.x - startPoint.x);
     const deltaY = computed(() => endPoint.y - startPoint.y);
     const length = computed(() => Math.sqrt(deltaX.value * deltaX.value + deltaY.value * deltaY.value));
-    const text = computed(() => isValid.value && attack ? `"${attack.value} damage"` : '"Not a valid target"');
+    const isValid = computed(() => {
+      if (hoveringType.value === 'player' && isBoardEmpty.value) {
+        return true;
+      }
+      if (hoveringType.value === 'card') {
+        return true;
+      }
+      return false;
+    });
+    const text = computed(() => {
+      if (isValid.value) {
+        return `"${attack.value} damage"`;
+      }
+      if (hoveringType.value === 'player') {
+        return '"Kill card on board first"';
+      }
+      return '"Not a valid target"';
+    });
     // To keep the text horizontal
     const transform = computed(() => {
       const angle = Math.atan2(deltaY.value, deltaX.value);
@@ -88,6 +114,7 @@ export default {
       isDrawing,
       text,
       transform,
+      isValid,
     };
   },
 };
