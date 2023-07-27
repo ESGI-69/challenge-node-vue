@@ -61,7 +61,7 @@
           class="decks-table__decks__create-button nes-btn is-primary"
           @click="isCreateModalOpen = true"
         >
-          Create new deck
+          New deck
         </button>
       </div>
     </div>
@@ -98,6 +98,7 @@
       >
         <router-link
           :to="{ name: 'deck', params: { id: deck.id } }"
+          class="decks-table__decks__deck__router"
         >
           <deck
             v-bind="deck"
@@ -247,6 +248,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .decks-table {
+
+  height: 100%;
+  width: 100%;
+
   &__header {
     display: flex;
     justify-content: space-between;
@@ -267,6 +272,7 @@ export default {
     &__favorite-deck{
       display: flex;
       flex-direction: row;
+      width: 30rem;
        &__label{
         display: flex;
         align-items: center;
@@ -299,8 +305,13 @@ export default {
 
     &__deck{
       position: relative;
+      width: fit-content;
 
       &:hover{
+        .decks-table__decks__deck__router{
+          opacity: 0.8;
+          filter: drop-shadow(12px 7px 12px #000);
+        }
         .decks-table__decks__deck__delete{
           display: flex;
         }
@@ -335,7 +346,7 @@ export default {
   }
 
   .name-filter {
-    width: 10rem;
+    width: 15rem;
   }
 }
 </style>
