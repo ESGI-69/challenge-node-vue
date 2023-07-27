@@ -54,17 +54,6 @@
 
 
           <section class="nes-container">
-            <section class="message-list">
-              <section class="message -right message-fix">
-                <!-- Balloon -->
-                <div class="nes-balloon from-right">
-                  <p>Gunga Ginga Gunga Ginga Gunga Ginga Gunga Ginga.</p>
-                </div>
-                <i class="nes-bcrikko" />
-              </section>
-            </section>
-
-
             <section class="message -left message-fix">
               <i class="nes-octocat animate from-left" />
 
@@ -73,6 +62,15 @@
                   You've been banned
                 </p>
               </div>
+            </section>
+            <section class="message-list">
+              <section class="message -right message-fix">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  <p>Why !? I don't undestand ! I didn't try to {{ banReason }}</p>
+                </div>
+                <i class="nes-bcrikko" />
+              </section>
             </section>
           </section>
 
@@ -119,6 +117,7 @@ export default {
     const error = ref(false);
     const errorMessage = ref('');
     const isUserBanned = ref(false);
+    const banReason = ref('');
     const authStore = useAuthStore();
     const router = useRouter();
 
@@ -140,6 +139,7 @@ export default {
         error.value = true;
         if (err.response.data.code === 'user_banned') {
           isUserBanned.value = true;
+          banReason.value = err.response.data.reason;
           // Methode pour show la model dans le style de nes.css
           document.getElementById('dialog-banned').showModal();
         }
@@ -154,6 +154,7 @@ export default {
       errorMessage,
       isEmail,
       isUserBanned,
+      banReason,
     };
   },
 };

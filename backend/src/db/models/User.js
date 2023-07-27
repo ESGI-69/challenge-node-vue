@@ -139,6 +139,10 @@ export default (connection) => {
         allowNull: false,
         defaultValue: false,
       },
+      banReason: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize: connection,
