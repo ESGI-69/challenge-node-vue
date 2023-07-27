@@ -28,6 +28,9 @@
           <span
             v-if="message.user"
             class="chat__container__messages__name nes-text is-primary"
+            :class="{
+              'is-success': message.user.id === me.id,
+            }"
           >
             {{ message.user.firstname }}:
           </span>
@@ -80,6 +83,12 @@
           >
         </button>
       </div>
+      <span
+        v-if="isError"
+        class="nes-text is-rounded is-error"
+      >
+        Message can't be empty
+      </span>
     </div>
     <div
       class="nes-balloon from-left chat__ballon nes-pointer"
@@ -105,6 +114,7 @@ import settings from '@/assets/settings.png';
 import { useChatStore } from '@/stores/chatStore';
 import formatDateChat from '@/utils/formatDateChat';
 import { socket } from '@/socket';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default {
   name: 'ChatGlobal',
@@ -113,6 +123,7 @@ export default {
   setup() {
     const isChatOpen = ref(false);
     const isSettingsOpen = ref(false);
+    const isError = ref(false);
     const currentMessage = ref('');
     const messageToReport = reactive({
       id: '',
@@ -120,6 +131,9 @@ export default {
     });
 
     const chatStore = useChatStore();
+    const profileStore = useProfileStore();
+
+    const me = computed(() => profileStore.profile);
 
     const isGetChatMessagesLoading = computed(() => chatStore.isGetChatMessagesLoading);
     const isSendMessageLoading = computed(() => chatStore.isSendMessageLoading);
@@ -129,6 +143,11 @@ export default {
     chatStore.getChatMessages();
 
     const sendMessage = async () => {
+      if (currentMessage.value.trim().length === 0) {
+        isError.value = true;
+        return;
+      }
+      isError.value = false;
       await chatStore.sendMessage(currentMessage.value);
       currentMessage.value = '';
     };
@@ -167,6 +186,8 @@ export default {
       isSettingsOpen,
       openSettings,
       messageToReport,
+      isError,
+      me,
     };
   },
 };
@@ -188,6 +209,7 @@ export default {
     justify-content: space-between;
     padding-left: 1rem;
     padding-right: 1rem;
+    padding-bottom: 4px;
     &__input {
       display: flex;
       flex-direction: row;
