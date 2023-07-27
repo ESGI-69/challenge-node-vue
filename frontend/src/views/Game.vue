@@ -26,13 +26,13 @@
 
       <div class="game__container__board">
         <card
-          v-for="{ card, currentHealth } in opponentBoardCardInstances"
-          :key="card.id"
-          :ref="setCardRef(card.id)"
+          v-for="{ card, currentHealth, id } in opponentBoardCardInstances"
+          :key="id"
+          :ref="setCardInstaceRef(id)"
           class="enemy-card"
           v-bind="card"
           :health="currentHealth"
-          @mouseup="(event) => attackCard(card.id, event)"
+          @mouseup="(event) => attackCard(id, event)"
           @mouseover="mouseEnterCard"
           @mouseleave="mouseLeaveCard"
         />
@@ -59,7 +59,7 @@
       >
         <template #item="{ element }">
           <card
-            :ref="setCardPlayerRef(element.card.id)"
+            :ref="setCardInstaceRef(element.id)"
             v-bind="element.card"
             :health="element.currentHealth"
             class="game__container__board__card"
@@ -67,7 +67,7 @@
               'nes-pointer': isPlayerTurn && !element.allreadyAttacked,
               'cant-attack': !isPlayerTurn || element.allreadyAttacked,
             }"
-            @mousedown="(event) => isPlayerTurn && !element.allreadyAttacked ? startAttack(element.card.id, element.card.attack, event) : null"
+            @mousedown="(event) => isPlayerTurn && !element.allreadyAttacked ? startAttack(element.id, element.card.attack, event) : null"
             @mouseup="cancelAttack"
           />
         </template>
@@ -178,13 +178,10 @@ export default {
   setup() {
     const attackLine = ref(null);
 
-    let cardsEnemyRef = {};
-    let cardPlayerRef = {};
-    const setCardRef = (cardId) => (el) => {
-      cardsEnemyRef[cardId] = el;
-    };
-    const setCardPlayerRef = (cardId) => (el) => {
-      cardPlayerRef[cardId] = el;
+    let cardInstanceRefs = {};
+
+    const setCardInstaceRef = (cardInstanceId) => (el) => {
+      cardInstanceRefs[cardInstanceId] = el;
     };
 
     const enemyRef = ref({});
@@ -278,8 +275,8 @@ export default {
       gameStore.setGame(game);
     });
 
-    socket.on('game:attack:card', async (game, attackerId, targetedCardId, isTargetDie, isAttackerDie) => {
-      launchAttackAnimation(attackerId, targetedCardId, false, isTargetDie, isAttackerDie);
+    socket.on('game:attack:card', async (game, attackerCardInstanceId, targetedCardInstanceId, isTargetDie, isAttackerDie) => {
+      launchAttackAnimation(attackerCardInstanceId, targetedCardInstanceId, false, isTargetDie, isAttackerDie);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       gameStore.setGame(game);
     });
@@ -328,16 +325,16 @@ export default {
      * @param {number} cardId
      * @param {MouseEvent} event
      */
-    const startAttack = (cardId, cardDamage, event) => {
+    const startAttack = (cardInstanceId, cardDamage, event) => {
       if (!isPlayerTurn.value) return;
       attackLine.value.startDrawing(event);
-      attack.attacker = cardId;
-      attack.attackerRef = cardPlayerRef[cardId];
+      attack.attacker = cardInstanceId;
+      attack.attackerRef = cardInstanceRefs[cardInstanceId];
       attackDamage.value = cardDamage;
     };
 
     const cancelAttack = () => {
-      attackLine.value.resetLine();
+      attackLine.value?.resetLine();
       hoveringType.value = 'empty';
       attack = {
         attacker: null,
@@ -346,13 +343,13 @@ export default {
     };
 
     /**
-     * @param {number} cardId
+     * @param {number} cardInstanceId
      * @param {MouseEvent} event
      */
-    const attackCard = (cardId) => {
+    const attackCard = (cardInstanceId) => {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
-      attack.target = cardId;
+      attack.target = cardInstanceId;
       sendAttack();
     };
 
@@ -376,20 +373,20 @@ export default {
 
     /**
      *
-     * @param {number} attackerCardId id of the card that attack
-     * @param {number} [targetedCardId] id of the card that is targeted
+     * @param {number} attackerCardInstanceId id of the card that attack
+     * @param {number} [targetedCardInstanceId] id of the card that is targeted
      * @param {boolean} isAPlayerAttack if attack target is the player
      * @param {boolean} isTagetDead if the target is dead
      */
-    const launchAttackAnimation = (attackerCardId, targetedCardId, isAPlayerAttack = false, willTargetDied = false, willAttackerDied= false)  => {
+    const launchAttackAnimation = (attackerCardInstanceId, targetedCardInstanceId, isAPlayerAttack = false, willTargetDied = false, willAttackerDied= false)  => {
       const getTargetedElement = (isAPlayerAttack) => {
         if (isAPlayerAttack) {
           return isPlayerTurn.value ? enemyRef.value.$el : playerRef.value.$el;
         }
-        return isPlayerTurn.value ? cardsEnemyRef[targetedCardId].$el : cardPlayerRef[targetedCardId].$el;
+        return cardInstanceRefs[targetedCardInstanceId].$el;
       };
 
-      let attackerCardElement = isPlayerTurn.value ? cardPlayerRef[attackerCardId].$el : cardsEnemyRef[attackerCardId].$el;
+      let attackerCardElement = cardInstanceRefs[attackerCardInstanceId].$el;
       let targetedElement = getTargetedElement(isAPlayerAttack);
 
       const distanceX = targetedElement.getBoundingClientRect().left - attackerCardElement.getBoundingClientRect().left;
@@ -407,13 +404,13 @@ export default {
       if (willTargetDied) {
         // destroy target after 1500ms
         setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
-          destroyCard(targetedCardId, isAPlayerAttack);
+          destroyCard(targetedCardInstanceId, isAPlayerAttack);
         }, 1500);
       }
       if (willAttackerDied) {
         // destroy attacker after 1500ms
         setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
-          destroyCard(attackerCardId, isAPlayerAttack);
+          destroyCard(attackerCardInstanceId, isAPlayerAttack);
         }, 1500);
       }
 
@@ -423,25 +420,24 @@ export default {
         attackerCardElement.style.transform = 'translate(0, 0)';
         attackerCardElement.children[0].classList.remove('card_animation');
       }, 1300);
-
     };
 
-    const destroyCard = (targetCardId, isAPlayerAttack = false) => {
+    const destroyCard = (cardInstanceId, isAPlayerAttack = false) => {
       if (isPlayerTurn.value) { //if player is attacking, we destroy enemy card
         if (isAPlayerAttack) {
           enemyRef.value.$el.classList.add('breakCard');
           enemyRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
-          cardsEnemyRef[targetCardId].$el.children[0].classList.add('breakCard');
-          cardsEnemyRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardInstanceRefs[cardInstanceId].$el.children[0].classList.add('breakCard');
+          cardInstanceRefs[cardInstanceId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       } else { //if enemy is attacking, it destroy one of player card
         if (isAPlayerAttack) {
           playerRef.value.$el.classList.add('breakCard');
           playerRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
-          cardPlayerRef[targetCardId].$el.children[0].classList.add('breakCard');
-          cardPlayerRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardInstanceRefs[cardInstanceId].$el.children[0].classList.add('breakCard');
+          cardInstanceRefs[cardInstanceId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       }
     };
@@ -528,8 +524,7 @@ export default {
       enemyAvatar,
       myHp,
       enemyHp,
-      setCardRef,
-      setCardPlayerRef,
+      setCardInstaceRef,
       playerMana,
       opponentMana,
       hand,
