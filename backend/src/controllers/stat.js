@@ -138,7 +138,7 @@ export default {
     try {
       let averageGameDurationValue = await statService.getAverageGameDuration();
       let parsedValue = {
-        averageGameDurationValue : averageGameDurationValue[0].averageDuration,
+        averageGameDurationValue : averageGameDurationValue?.[0]?.averageDuration,
       };
       res.json(parsedValue);
     } catch (err) {
@@ -150,7 +150,7 @@ export default {
     try {
       let bestPlayerValue = await statService.getBestPlayer();
       let parsedValue = {
-        bestPlayer: bestPlayerValue[0].user[0],
+        bestPlayer: (bestPlayerValue?.[0]?.user[0] ?? {}),
       };
       res.json(parsedValue);
     } catch (err) {
