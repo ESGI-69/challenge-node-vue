@@ -18,11 +18,25 @@ export default {
   },
 
   /**
+   * Find a chat message by id
+   * @param {number} id
+   */
+  findById: (id) => {
+    return ChatMessage.findByPk(id, {
+      include: [{
+        model: User,
+        as: 'user',
+      }],
+    });
+  },
+
+  /**
    * Create a new chat message
    * @param {Object} chatMessage
    */
-  create: (chatMessage) => {
-    return ChatMessage.create(chatMessage);
+  create: async function (chatMessage) {
+    const message = await ChatMessage.create(chatMessage);
+    return this.findById(message.id);
   },
 
   /**
