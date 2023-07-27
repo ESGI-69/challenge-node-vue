@@ -14,6 +14,7 @@ import userRouter from './routes/user.js';
 import gameRouter from './routes/game.js';
 import statRouter from './routes/stat.js';
 import productRouter from './routes/product.js';
+import chatMessageRouter from './routes/chatMessage.js';
 import paymentRouter from './routes/payment.js';
 import deckRouter from './routes/deck.js';
 
@@ -57,6 +58,9 @@ app.use('/stat', statRouter);
 app.use('/products', productRouter);
 
 app.use('/payments', paymentRouter);
+
+app.use('/chat-messages', chatMessageRouter);
+
 app.use('/decks', deckRouter);
 
 app.get('/health', async (req, res) => {
