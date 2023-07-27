@@ -335,7 +335,7 @@ export default {
     align-items: center;
     gap: 2rem;
     height: 752px;
-    width: 1136px;
+    width: 100%;
   }
 
   &__footer {
