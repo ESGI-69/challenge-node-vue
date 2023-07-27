@@ -345,4 +345,45 @@ export default {
       next(err);
     }
   },
+
+  /**
+  * Attack opponent card placed on the board
+  * @param {import('express').Request} req
+  * @param {import('express').Response} res
+  * @param {import('express').NextFunction} next
+  */
+  attackCard: async (req, res, next) => {
+    try {
+      if (!req.body.attackerCardId) {
+        throw new Error('Missing attackerCardId in body');
+      }
+      if (!req.body.targetCardId) {
+        throw new Error('Missing targetCardId in body');
+      }
+
+      const playerBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
+      const attackerCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.attackerCardId, playerBoard.id);
+      if (!attackerCardInstance) {
+        throw new Error('This card is not in your board');
+      }
+      const attackerCardAttack = attackerCardInstance.card.attack;
+
+      const opponentBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.second_player_board : req.game.first_player_board);
+      const targetCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.targetCardId, opponentBoard.id);
+      if (!targetCardInstance) {
+        throw new Error('Your opponent don\'t have this card on his board');
+      }
+      const targetCardAttack = targetCardInstance.card.attack;
+
+      // Damage the cards
+      const { currentHealth: targetCardHealth } = await cardInstanceService.damage(targetCardInstance, attackerCardAttack);
+      const { currentHealth: attackerCardHealth } = await cardInstanceService.damage(attackerCardInstance, targetCardAttack);
+
+      const game = await gameService.findById(req.game.id);
+      io.to(req.game.id).emit('game:attack:card', game, req.body.attackerCardId, req.body.targetCardId, targetCardHealth <= 0, attackerCardHealth <= 0);
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  },
 };

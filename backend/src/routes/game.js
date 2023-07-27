@@ -24,5 +24,6 @@ router.post('/board/card', isLogged, isConnectedToSocket, isInProgressGame, isPl
 // attack
 router.route('/attack' );
 router.post('/attack/player', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.attackPlayer);
+router.post('/attack/card', isLogged, isConnectedToSocket, isInProgressGame, isPlayerTurn, gameController.attackCard);
 
 export default router;

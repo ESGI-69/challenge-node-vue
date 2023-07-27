@@ -36,14 +36,16 @@ export const useGameStore = defineStore('gameStore', {
     isHandLoading: false,
     hand: [],
     opponentCardsCount: 0,
-    myBoardCardInstances: [],
-    opponentBoardCardInstances: [],
+    myBoardCardInstancesData: [],
+    opponentBoardCardInstancesData: [],
   }),
 
   getters: {
     iAmGameOwner: (state) => state.game.first_player === useProfileStore().profile.id,
     playerMana: (state) => (state.game.first_player === useProfileStore().profile.id ? state.game.first_player_mana : state.game.second_player_mana),
     opponentMana: (state) => (state.game.first_player === useProfileStore().profile.id ? state.game.second_player_mana : state.game.first_player_mana),
+    myBoardCardInstances: (state) => state.myBoardCardInstancesData.filter((card) => !card.isDead),
+    opponentBoardCardInstances: (state) => state.opponentBoardCardInstancesData.filter((card) => !card.isDead),
   },
 
   actions: {
@@ -81,7 +83,7 @@ export const useGameStore = defineStore('gameStore', {
     setGame(game) {
       game.id = game.id.toUpperCase();
       this.game = game;
-      if (game.firstPlayerBoard.cardInstances && game.secondPlayerBoard.cardInstances) {
+      if (game.firstPlayerBoard?.cardInstances && game.secondPlayerBoard?.cardInstances) {
         if (this.iAmGameOwner) {
           this.setMyBoardCardInstances(game.firstPlayerBoard.cardInstances);
           this.setOpponentBoardCardInstances(game.secondPlayerBoard.cardInstances);
@@ -221,11 +223,19 @@ export const useGameStore = defineStore('gameStore', {
     },
 
     setMyBoardCardInstances(cards) {
-      this.myBoardCardInstances = cards;
+      this.myBoardCardInstancesData = cards;
     },
 
     setOpponentBoardCardInstances(cards) {
-      this.opponentBoardCardInstances = cards;
+      this.opponentBoardCardInstancesData = cards;
+    },
+
+    async attackCard(attackerCardId, targetCardId) {
+      try {
+        await $API.post('/game/attack/card', { attackerCardId, targetCardId });
+      } catch (error) {
+        throw error.response;
+      }
     },
   },
 });

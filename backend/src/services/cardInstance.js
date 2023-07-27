@@ -23,4 +23,15 @@ export default {
       include: 'card',
     });
   },
+
+  /**
+   * Damage the card instance
+   * @param {import('../db/index.js').CardInstance} cardInstanceModel
+   * @param {number} damage Damanges to apply;
+   */
+  damage: function (cardInstanceModel, damage) {
+    cardInstanceModel.currentHealth -= damage;
+    if (cardInstanceModel.currentHealth < 0) cardInstanceModel.currentHealth = 0;
+    return cardInstanceModel.save();
+  },
 };
