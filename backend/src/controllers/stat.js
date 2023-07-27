@@ -97,4 +97,89 @@ export default {
       next(err);
     }
   },
+
+  getTotalNumbersOfCurrentGames: async (req, res, next) => {
+    try {
+      let totalNumbersOfCurrentGamesValue = await statService.getTotalNumbersOfCurrentGames();
+      let parsedValue = {
+        totalNumbersOfCurrentGames: totalNumbersOfCurrentGamesValue?.[0]?.['totalNumbersOfCurrentGames'] ?? 0,
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getTotalCreditsPurchased: async (req, res, next) => {
+    try {
+      let totalCreditsPurchasedValue = await statService.getTotalCreditsPurchased();
+      let parsedValue = {
+        totalCreditsPurchased: totalCreditsPurchasedValue[0]['amount'],
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getTotalMoneySpent: async (req, res, next) => {
+    try {
+      let totalMoneySpentValue = await statService.getTotalMoneySpent();
+      let parsedValue = {
+        totalMoneySpent: totalMoneySpentValue[0]['amount'],
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getAverageGameDuration: async (req, res, next) => {
+    try {
+      let averageGameDurationValue = await statService.getAverageGameDuration();
+      let parsedValue = {
+        averageGameDurationValue : averageGameDurationValue[0].averageDuration,
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getBestPlayer: async (req, res, next) => {
+    try {
+      let bestPlayerValue = await statService.getBestPlayer();
+      let parsedValue = {
+        bestPlayer: bestPlayerValue[0].user[0],
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getBestSellerProduct: async (req, res, next) => {
+    try {
+      let bestSellerProductValue = await statService.getBestSellerProduct();
+      let parsedValue = {
+        bestSellerProduct: bestSellerProductValue[0].product[0],
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getTotalUsers: async (req, res, next) => {
+    try {
+      let totalUsersValue = await statService.getTotalUsers();
+      let parsedValue = {
+        totalUsers: totalUsersValue[0].totalUsers,
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
 };

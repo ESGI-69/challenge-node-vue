@@ -1,4 +1,4 @@
-import { Card, Pack, User } from '../db/index.js';
+import { Card, Game, Pack, Payment, User } from '../db/index.js';
 
 export default {
   getCardCount: function () {
@@ -100,4 +100,228 @@ export default {
     ]);
     return count;
   },
+
+  /**
+   * Admin stats
+   */
+  getTotalCreditsPurchased: function () {
+    const count = Payment.mongoModel.aggregate([
+      {
+        $lookup:
+          {
+            from: 'products',
+            localField: 'productId',
+            foreignField: 'id',
+            as: 'product',
+          },
+      },
+      {
+        $match:
+          {
+            status: {
+              $eq: 'PAID',
+            },
+          },
+      },
+      {
+        $addFields:
+          {
+            totalProductSold: {
+              $sum: '$product.value',
+            },
+          },
+      },
+      {
+        $group:
+          {
+            _id: null,
+            amount: {
+              $sum: '$totalProductSold',
+            },
+          },
+      },
+    ]);
+    return count;
+  },
+
+  getTotalNumbersOfCurrentGames: function () {
+    const count = Game.mongoModel.aggregate([
+      {
+        $match:
+          {
+            endedAt: {
+              $eq: null,
+            },
+          },
+      },
+      {
+        $count:
+          'totalNumbersOfCurrentGames',
+      },
+    ]);
+    return count;
+  },
+
+  getTotalMoneySpent: function () {
+    const count = Payment.mongoModel.aggregate([
+      {
+        $lookup:
+          {
+            from: 'products',
+            localField: 'productId',
+            foreignField: 'id',
+            as: 'product',
+          },
+      },
+      {
+        $match:
+          {
+            status: {
+              $eq: 'PAID',
+            },
+          },
+      },
+      {
+        $addFields:
+          {
+            totalProductPrice: {
+              $sum: '$product.price',
+            },
+          },
+      },
+      {
+        $group:
+          {
+            _id: null,
+            amount: {
+              $sum: '$totalProductPrice',
+            },
+          },
+      },
+    ]);
+    return count;
+  },
+
+  getBestSellerProduct: function () {
+    const count = Payment.mongoModel.aggregate(
+      [
+        {
+          $group:
+            /**
+             * _id: The id of the group.
+             * fieldN: The first field name.
+             */
+            {
+              _id: '$productId',
+              totalSales: {
+                $sum: 1,
+              },
+            },
+        },
+        {
+          $sort:
+            /**
+             * Provide any number of field/order pairs.
+             */
+            {
+              totalSales: -1,
+            },
+        },
+        {
+          $limit: 1,
+        },
+        // loopup, link _id with product
+        {
+          $lookup:
+            {
+              from: 'products',
+              localField: '_id',
+              foreignField: 'id',
+              as: 'product',
+            },
+        },
+      ],
+
+    );
+    return count;
+  },
+
+  getAverageGameDuration: function () {
+    //response is in ms
+    const count = Game.mongoModel.aggregate([
+      {
+        $match:
+          {
+            endedAt: {
+              $ne: null,
+            },
+          },
+      },
+      {
+        $addFields:
+          {
+            duration: {
+              $subtract: ['$endedAt', '$startedAt'],
+            },
+          },
+      },
+      {
+        $group:
+          {
+            _id: null,
+            averageDuration: {
+              $avg: '$duration',
+            },
+          },
+      },
+    ]);
+    return count;
+  },
+
+  getBestPlayer: function () {
+    const count = Game.mongoModel.aggregate([[
+      {
+        $match: {
+          endedAt: {
+            $ne: null,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$winner',
+          totalWin: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $sort: {
+          totalWin: -1,
+        },
+      },
+      {
+        $limit: 1,
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: 'id',
+          as: 'user',
+        },
+      },
+    ]]);
+    return count;
+  },
+
+  getTotalUsers: function () {
+    const count = User.mongoModel.aggregate([
+      {
+        $count: 'totalUsers',
+      },
+    ]);
+    return count;
+  },
+
 };
