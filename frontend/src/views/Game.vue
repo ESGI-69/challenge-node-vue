@@ -426,18 +426,26 @@ export default {
       if (isPlayerTurn.value) { //if player is attacking, we destroy enemy card
         if (isAPlayerAttack) {
           enemyRef.value.$el.classList.add('breakCard');
-          enemyRef.value.$el.style.maskImage = `url(${shatteringGif})`;
+          enemyRef.value.$el.style.maskImage = `url(${shatteringGif}?${Math.random()})`;
+          // add webkit mask image for chrome
+          enemyRef.value.$el.style.webkitMaskImage = `url(${shatteringGif}?${Math.random()})`;
         } else {
           cardInstanceRefs[cardInstanceId].$el.children[0].classList.add('breakCard');
-          cardInstanceRefs[cardInstanceId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardInstanceRefs[cardInstanceId].$el.children[0].style.maskImage = `url(${shatteringGif}?${Math.random()})`;
+          // add webkit mask image for chrome
+          cardInstanceRefs[cardInstanceId].$el.children[0].style.webkitMaskImage = `url(${shatteringGif}?${Math.random()})`;
         }
       } else { //if enemy is attacking, it destroy one of player card
         if (isAPlayerAttack) {
           playerRef.value.$el.classList.add('breakCard');
-          playerRef.value.$el.style.maskImage = `url(${shatteringGif})`;
+          playerRef.value.$el.style.maskImage = `url(${shatteringGif}?${Math.random()})`;
+          // add webkit mask image for chrome
+          playerRef.value.$el.style.webkitMaskImage = `url(${shatteringGif}?${Math.random()})`;
         } else {
           cardInstanceRefs[cardInstanceId].$el.children[0].classList.add('breakCard');
-          cardInstanceRefs[cardInstanceId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardInstanceRefs[cardInstanceId].$el.children[0].style.maskImage = `url(${shatteringGif}?${Math.random()})`;
+          // add webkit mask image for chrome
+          cardInstanceRefs[cardInstanceId].$el.children[0].style.webkitMaskImage = `url(${shatteringGif}?${Math.random()})`;
         }
       }
     };
