@@ -357,7 +357,7 @@ export default {
         return isPlayerTurn.value ? cardsEnemyRef[targetedCardId].$el : cardPlayerRef[targetedCardId].$el;
       };
 
-      let attackerCardElement = cardPlayerRef[attackerCardId].$el;
+      let attackerCardElement = isPlayerTurn.value ? cardPlayerRef[attackerCardId].$el : cardsEnemyRef[attackerCardId].$el;
       let targetedElement = getTargetedElement(isAPlayerAttack);
 
       const distanceX = targetedElement.getBoundingClientRect().left - attackerCardElement.getBoundingClientRect().left;
