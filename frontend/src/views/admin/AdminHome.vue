@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { useStatStore } from '@/stores/statStore';
 export default {
   name: 'AdminHome',
