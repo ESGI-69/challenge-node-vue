@@ -430,10 +430,10 @@ export default {
       if (isPlayerTurn.value) { //if player is attacking, we destroy enemy card
         if (isAPlayerAttack) {
           enemyRef.value.$el.classList.add('breakCard');
-          enemyRef.value.$el.style.maskImage = `url(${shatteringGif})`;
+          enemyRef.value.$el.style.maskImage = `url(${shatteringGif}?${Math.random()})`;
         } else {
           cardsEnemyRef[targetCardId].$el.children[0].classList.add('breakCard');
-          cardsEnemyRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardsEnemyRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif}?${Math.random()})`;
         }
       } else { //if enemy is attacking, it destroy one of player card
         if (isAPlayerAttack) {
@@ -441,7 +441,7 @@ export default {
           playerRef.value.$el.style.maskImage = `url(${shatteringGif})`;
         } else {
           cardPlayerRef[targetCardId].$el.children[0].classList.add('breakCard');
-          cardPlayerRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
+          cardPlayerRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif}?${Math.random()})`;
         }
       }
     };
