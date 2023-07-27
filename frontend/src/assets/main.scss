@@ -19,7 +19,10 @@ html, body, #app {
 .nes-select > select,
 .nes-container,
 .nes-container.is-rounded,
-.nes-table.is-bordered {
+.nes-table.is-bordered,
+.nes-balloon,
+.nes-balloon::after,
+.nes-balloon::before {
   border-image-repeat: unset;
 }
 

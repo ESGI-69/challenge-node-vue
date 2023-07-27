@@ -52,7 +52,7 @@ export default {
     Container,
     Product,
   },
-  async setup() {
+  setup() {
     const productStore = useProductStore();
     const paymentStore = usePaymentStore();
 

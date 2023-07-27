@@ -17,6 +17,7 @@
           <slot />
         </transition>
       </main>
+      <chat-global />
     </div>
     <div v-else>
       <loading />
@@ -28,6 +29,7 @@
 import { computed, onErrorCaptured, ref } from 'vue';
 
 import Topbar from '@/components/Topbar.vue';
+import ChatGlobal from '@/components/ChatGlobal.vue';
 import Loading from '@/views/Loading.vue';
 
 import background from '@/assets/carpet.jpg';
@@ -42,6 +44,7 @@ export default {
   components: {
     Topbar,
     Loading,
+    ChatGlobal,
   },
   setup() {
     onErrorCaptured((error) => {

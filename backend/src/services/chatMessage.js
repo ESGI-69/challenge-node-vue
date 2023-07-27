@@ -1,4 +1,4 @@
-import { ChatMessage } from '../db/index.js';
+import { ChatMessage, User } from '../db/index.js';
 // import { io } from '../index.js';
 
 export default {
@@ -10,6 +10,10 @@ export default {
   findAll: (criteria) => {
     return ChatMessage.findAll({
       where: criteria,
+      include: [{
+        model: User,
+        as: 'user',
+      }],
     });
   },
 

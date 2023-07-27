@@ -28,7 +28,7 @@ import { useProfileStore } from '@/stores/profileStore';
 
 export default {
   name: 'Checkout',
-  async setup()  {
+  setup()  {
     const isOpen= ref(true);
     const isSuccess = ref(router.currentRoute.value.query.isSuccess === 'true');
     const successText = ref('The payment has been successful, thank you for your purchase!');
@@ -37,14 +37,17 @@ export default {
     const paymentStore = usePaymentStore();
     const profileStore = useProfileStore();
 
-    try {
-      await paymentStore.patchPayment(parseInt(router.currentRoute.value.query.id));
-      if (isSuccess.value) {
-        await profileStore.getProfile();
-      }
-    } catch (error) {
-      router.push('/shop');
-    }
+    paymentStore.patchPayment(parseInt(router.currentRoute.value.query.id))
+      // eslint-disable-next-line promise/prefer-await-to-then
+      .then(() => {
+        if (isSuccess.value) {
+          profileStore.getProfile();
+        }
+      })
+      // eslint-disable-next-line promise/prefer-await-to-then
+      .catch(() => {
+        router.push('/shop');
+      });
 
     const checkoutText = computed(() => isSuccess.value ? successText.value : errorText.value);
 
