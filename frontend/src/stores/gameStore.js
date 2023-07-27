@@ -197,9 +197,9 @@ export const useGameStore = defineStore('gameStore', {
       this.opponentCardsCount = cardCount;
     },
 
-    async attackPlayer(cardId) {
+    async attackPlayer(cardInstanceId) {
       try {
-        await $API.post('/game/attack/player', { cardId });
+        await $API.post('/game/attack/player', { cardInstanceId });
       } catch (error) {
         throw error.response;
       }
@@ -230,9 +230,9 @@ export const useGameStore = defineStore('gameStore', {
       this.opponentBoardCardInstancesData = cards;
     },
 
-    async attackCard(attackerCardId, targetCardId) {
+    async attackCard(attackerCardInstanceId, targetCardInstanceId) {
       try {
-        await $API.post('/game/attack/card', { attackerCardId, targetCardId });
+        await $API.post('/game/attack/card', { attackerCardInstanceId, targetCardInstanceId });
       } catch (error) {
         throw error.response;
       }

@@ -86,7 +86,6 @@ export const useDeckStore = defineStore('deckStore', {
 
         this.deck = data;
 
-        // console.log(this.deck);
       } catch (err) {
         throw err.response.data;
       } finally {

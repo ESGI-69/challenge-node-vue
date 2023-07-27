@@ -287,18 +287,16 @@ export default {
    */
   attackPlayer: async (req, res, next) => {
     try {
-      if (!req.body.cardId) {
-        throw new Error('Missing cardId in body');
+      if (!req.body.cardInstanceId) {
+        throw new Error('Missing cardInstanceId in body');
       }
 
       const opponentBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.second_player_board : req.game.first_player_board);
       const oppenentCardInstanceCount = await boardService.countCardInstances(opponentBoard);
       if (oppenentCardInstanceCount > 0) throw new Error('You can\'t attack the player while he has cards on the board', { cause: 'Forbidden' });
-      const playerBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
-      const attackerCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.cardId, playerBoard.id);
+      const attackerCardInstance = await cardInstanceService.findById(req.body.cardInstanceId);
       if (!attackerCardInstance) throw new Error('This card is not in your board');
       if (attackerCardInstance.allreadyAttacked) throw new Error('This card already attacked', { cause: 'Forbidden' });
-
       await gameService.attackPlayer(req.game, attackerCardInstance);
       res.sendStatus(200);
     } catch (err) {
@@ -366,7 +364,7 @@ export default {
       req.socket.emit('game:player-hand', updatedHand, updatedGame);
       const opponentSocket = userSockets[req.game.current_player === req.game.first_player ? req.game.second_player : req.game.first_player];
       opponentSocket.emit('game:opponent-hand', updatedHand.cards.length, updatedGame);
-      // io.to(req.game.id).emit('game:board:add', req.body.cardId);
+      res.sendStatus(200);
     } catch (err) {
       next(err);
     }
@@ -380,21 +378,19 @@ export default {
   */
   attackCard: async (req, res, next) => {
     try {
-      if (!req.body.attackerCardId) {
-        throw new Error('Missing attackerCardId in body');
+      if (!req.body.attackerCardInstanceId) {
+        throw new Error('Missing attackerCardInstanceId in body');
       }
-      if (!req.body.targetCardId) {
-        throw new Error('Missing targetCardId in body');
+      if (!req.body.targetCardInstanceId) {
+        throw new Error('Missing targetCardInstanceId in body');
       }
 
-      const playerBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
-      const attackerCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.attackerCardId, playerBoard.id);
+      const attackerCardInstance = await cardInstanceService.findById(req.body.attackerCardInstanceId);
       if (!attackerCardInstance) throw new Error('This card is not in your board');
       if (attackerCardInstance.allreadyAttacked) throw new Error('This card already attacked', { cause: 'Forbidden' });
       const attackerCardAttack = attackerCardInstance.card.attack;
 
-      const opponentBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.second_player_board : req.game.first_player_board);
-      const targetCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.targetCardId, opponentBoard.id);
+      const targetCardInstance = await cardInstanceService.findById(req.body.targetCardInstanceId);
       if (!targetCardInstance) {
         throw new Error('Your opponent don\'t have this card on his board');
       }
@@ -409,7 +405,8 @@ export default {
       const { currentHealth: attackerCardHealth } = await cardInstanceService.damage(attackerCardInstance, targetCardAttack);
 
       const game = await gameService.findById(req.game.id);
-      io.to(req.game.id).emit('game:attack:card', game, req.body.attackerCardId, req.body.targetCardId, targetCardHealth <= 0, attackerCardHealth <= 0);
+
+      io.to(req.game.id).emit('game:attack:card', game, req.body.attackerCardInstanceId, req.body.targetCardInstanceId, targetCardHealth <= 0, attackerCardHealth <= 0);
       res.sendStatus(200);
     } catch (err) {
       next(err);
