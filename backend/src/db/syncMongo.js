@@ -68,7 +68,7 @@ export default async(models, sequelize) => {
    * Initialize mongo model and schema. Except for join tables.
    */
   Model.initMongo = function () {
-    if (this.tableName.includes('_')) return;
+    if (this.tableName.includes('_') && !this.tableName === 'card_instances') return;
     if (!this.mongoSchema) {
       this.initMongoSchema();
     }
