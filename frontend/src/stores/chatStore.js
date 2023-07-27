@@ -83,8 +83,7 @@ export const useChatStore = defineStore('chatStore', {
     },
 
     removeMessage(messageId) {
-      console.log(messageId);
-      const messageIndex = this.chatMessages.findIndex((message) => message.id === messageId);
+      const messageIndex = this.chatMessages.findIndex((message) => message.id == messageId);
       this.chatMessages.splice(messageIndex, 1);
     },
 
