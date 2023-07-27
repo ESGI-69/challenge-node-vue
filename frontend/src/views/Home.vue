@@ -15,6 +15,15 @@
         Create Game
       </button>
       <router-link
+        v-else-if="isGameRunning !== null && isGameRunning.startedAt === null"
+        :to="{ name: 'lobby', params: { id: isGameRunning.id } }"
+        class="home__menu__create"
+      >
+        <button class="nes-btn is-primary">
+          Resume Game
+        </button>
+      </router-link>
+      <router-link
         v-else
         :to="{ name: 'game', params: { id: isGameRunning.id } }"
         class="home__menu__create"
