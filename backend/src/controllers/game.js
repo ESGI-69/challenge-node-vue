@@ -332,6 +332,24 @@ export default {
 
       // Create a new card instance
       const cardInstance = await cardInstanceService.create(board.id, req.body.cardId);
+
+      const card = await cardService.findById(req.body.cardId);
+
+      let where = {
+        id: req.game.id,
+      };
+
+      let dataUpdate = {};
+
+      if ( req.game.current_player === req.game.first_player ) {
+        dataUpdate.first_player_current_mana = req.game.first_player_current_mana - card.cost;
+        if ( req.game.first_player_current_mana < card.cost ) throw new Error('Not enough mana', { cause: 'Forbidden' });
+      } else {
+        dataUpdate.second_player_current_mana = req.game.second_player_current_mana - card.cost;
+        if ( req.game.second_player_current_mana < card.cost ) throw new Error('Not enough mana', { cause: 'Forbidden' });
+      }
+
+      await gameService.update(where, dataUpdate);
       // Add the card instance to the board
       await boardService.addCardInstance(board, cardInstance);
 
