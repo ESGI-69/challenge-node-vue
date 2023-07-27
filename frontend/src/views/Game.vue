@@ -62,11 +62,12 @@
             :ref="setCardPlayerRef(element.card.id)"
             v-bind="element.card"
             :health="element.currentHealth"
-            class="card-hand__card-wrapper__card"
+            class="game__container__board__card"
             :class="{
-              'nes-pointer': isPlayerTurn,
+              'nes-pointer': isPlayerTurn && !element.allreadyAttacked,
+              'cant-attack': !isPlayerTurn || element.allreadyAttacked,
             }"
-            @mousedown="(event) => startAttack(element.card.id, element.card.attack, event)"
+            @mousedown="(event) => isPlayerTurn && !element.allreadyAttacked ? startAttack(element.card.id, element.card.attack, event) : null"
             @mouseup="cancelAttack"
           />
         </template>
@@ -579,6 +580,12 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &__card {
+        &.cant-attack {
+          cursor: not-allowed;
+        }
+      }
     }
 
     &__mana-bar {

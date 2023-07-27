@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 
 import { Board, Deck, Hand, User } from '../index.js';
+import boardService from '../../services/board.js';
 
 /**
  * @param {import('sequelize').Sequelize} connection
@@ -140,7 +141,7 @@ export default (connection) => {
       },
       hooks: {
         // On turn change set turnStartedAt to current date
-        beforeUpdate: (game) => {
+        beforeUpdate: async (game) => {
           if (game.changed('current_player')) {
             game.turnStartedAt = new Date();
             game.turn_count += 1;
@@ -149,10 +150,14 @@ export default (connection) => {
                 if (game.second_player_mana < 10) {
                   game.second_player_mana += 1;
                 }
+                const board = await boardService.findById(game.second_player_board);
+                await boardService.resetCardsInstancePlayedStates(board);
               } else {
                 if (game.first_player_mana < 10) {
                   game.first_player_mana += 1;
                 }
+                const board = await boardService.findById(game.first_player_board);
+                await boardService.resetCardsInstancePlayedStates(board);
               }
             }
           }
