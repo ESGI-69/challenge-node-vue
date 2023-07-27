@@ -102,7 +102,7 @@ export default {
     try {
       let totalNumbersOfCurrentGamesValue = await statService.getTotalNumbersOfCurrentGames();
       let parsedValue = {
-        totalNumbersOfCurrentGames: totalNumbersOfCurrentGamesValue[0]['totalNumbersOfCurrentGames'],
+        totalNumbersOfCurrentGames: totalNumbersOfCurrentGamesValue?.[0]?.['totalNumbersOfCurrentGames'] ?? 0,
       };
       res.json(parsedValue);
     } catch (err) {
@@ -150,7 +150,31 @@ export default {
     try {
       let bestPlayerValue = await statService.getBestPlayer();
       let parsedValue = {
-        bestPlayer: bestPlayerValue,
+        bestPlayer: bestPlayerValue[0].user[0],
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getBestSellerProduct: async (req, res, next) => {
+    try {
+      let bestSellerProductValue = await statService.getBestSellerProduct();
+      let parsedValue = {
+        bestSellerProduct: bestSellerProductValue[0].product[0],
+      };
+      res.json(parsedValue);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getTotalUsers: async (req, res, next) => {
+    try {
+      let totalUsersValue = await statService.getTotalUsers();
+      let parsedValue = {
+        totalUsers: totalUsersValue[0].totalUsers,
       };
       res.json(parsedValue);
     } catch (err) {

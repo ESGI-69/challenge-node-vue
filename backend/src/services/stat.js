@@ -315,4 +315,13 @@ export default {
     return count;
   },
 
+  getTotalUsers: function () {
+    const count = User.mongoModel.aggregate([
+      {
+        $count: 'totalUsers',
+      },
+    ]);
+    return count;
+  },
+
 };

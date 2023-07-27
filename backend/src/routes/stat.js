@@ -16,4 +16,6 @@ router.get('/admin/total-credits-purchased', isAdmin, statController.getTotalCre
 router.get('/admin/total-money-spent', isAdmin, statController.getTotalMoneySpent);
 router.get('/admin/average-game-duration', isAdmin, statController.getAverageGameDuration);
 router.get('/admin/best-player', isAdmin, statController.getBestPlayer);
+router.get('/admin/best-seller-product', isAdmin, statController.getBestSellerProduct);
+router.get('/admin/total-users', isAdmin, statController.getTotalUsers);
 export default router;
