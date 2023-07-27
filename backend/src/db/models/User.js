@@ -123,7 +123,7 @@ export default (connection) => {
       balance: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 50,
+        defaultValue: 100,
       },
       mailToken: {
         type: DataTypes.STRING,
