@@ -1,6 +1,7 @@
 import chatMessageService from '../services/chatMessage.js';
 import userService from '../services/user.js';
 import { io } from '../index.js';
+import { Op } from 'sequelize';
 
 export default {
   /**
@@ -62,6 +63,43 @@ export default {
       const id = req.params.id;
       await chatMessageService.delete(id);
       return res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Express.js controller for GET /chat-messages/reported
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  getReported: async (req, res, next) => {
+    try {
+      const chatMessages = await chatMessageService.findAll({
+        isReportedAt: { [Op.not]: null },
+      });
+      return res.status(200).json(chatMessages);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Express.js controller for PATCH /chat-messages/:id/report
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   * @returns
+   */
+  patchReport: async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const chatMessage = await chatMessageService.update(
+        { id },
+        { isReportedAt: new Date() },
+      );
+      return res.status(200).json(chatMessage);
     } catch (error) {
       next(error);
     }

@@ -15,6 +15,19 @@
           v-for="message in messages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))"
           :key="message.id"
         >
+          <span
+            v-if="isSettingsOpen"
+            class="chat__container__messages__report"
+          >
+            Test
+          </span>
+          <img
+            class="chat__container__messages__settings nes-pointer"
+            :src="settings"
+            alt="settings"
+            width="16"
+            @click="isSettingsOpen = !isSettingsOpen"
+          >
           <span class="chat__container__messages__date">
             {{ formatDateChat(message.createdAt) }}
           </span>
@@ -74,6 +87,7 @@
 import { ref, computed } from 'vue';
 import mail from '@/assets/mail.png';
 import send from '@/assets/send.png';
+import settings from '@/assets/settings.png';
 import { useChatStore } from '@/stores/chatStore';
 import formatDateChat from '@/utils/formatDateChat';
 import { socket } from '@/socket';
@@ -84,6 +98,7 @@ export default {
   },
   setup() {
     const isChatOpen = ref(false);
+    const isSettingsOpen = ref(false);
     const currentMessage = ref('');
 
     const chatStore = useChatStore();
@@ -104,16 +119,23 @@ export default {
       chatStore.addMessage(message);
     });
 
+    const reportMessage = async (message) => {
+      await chatStore.reportMessage(message);
+    };
+
     return {
       mail,
       isChatOpen,
       messages,
+      settings,
       formatDateChat,
       send,
       currentMessage,
       sendMessage,
       isGetChatMessagesLoading,
       isSendMessageLoading,
+      reportMessage,
+      isSettingsOpen,
     };
   },
 };
@@ -147,9 +169,26 @@ export default {
       display: flex;
       flex-direction: column-reverse;
       overflow-wrap: break-word;
+      &__report {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        z-index: 22;
+        padding: 2rem;
+      }
+      &__settings {
+        margin-right: 4px;
+        background-color: #FFF;
+      }
+      &__settings:hover {
+        filter: brightness(0.8);
+      }
       &__date {
         font-size: 8px;
-        margin-right: 16px;
+        margin-right: 8px;
       }
       &__name {
         font-style: italic;
