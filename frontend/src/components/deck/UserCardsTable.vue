@@ -282,6 +282,7 @@ export default {
     grid-template-columns: repeat(v-bind(cardPerRow), 1fr);
     gap: 1rem;
     overflow-y: scroll;
+    margin-bottom: 2rem;
 
     &__card {
       position: relative;

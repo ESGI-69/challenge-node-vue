@@ -232,6 +232,9 @@ export default {
 
 <style lang="scss" scoped>
 .cards-table {
+  overflow-x: hidden;
+  overflow-y: scroll;
+
   &__header {
     display: flex;
     justify-content: space-between;
