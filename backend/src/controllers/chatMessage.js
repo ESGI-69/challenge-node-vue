@@ -62,6 +62,7 @@ export default {
     try {
       const id = req.params.id;
       await chatMessageService.delete(id);
+      io.emit('chat:message:delete', id);
       return res.sendStatus(204);
     } catch (error) {
       next(error);
@@ -104,4 +105,18 @@ export default {
       next(error);
     }
   },
+
+  patchUnreport: async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const chatMessage = await chatMessageService.update(
+        { id },
+        { isReportedAt: null },
+      );
+      return res.status(200).json(chatMessage);
+    } catch (error) {
+      next(error);
+    }
+  },
+
 };

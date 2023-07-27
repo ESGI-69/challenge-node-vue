@@ -56,7 +56,7 @@ export default {
    * @param {Object} data
    * @returns
    */
-  update: async (criteria, data) => {
+  update: async function (criteria, data) {
     const [, chatMessages = []] = await ChatMessage.update(data, {
       where: criteria,
       returning: true,

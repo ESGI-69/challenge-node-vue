@@ -15,18 +15,12 @@
           v-for="message in messages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))"
           :key="message.id"
         >
-          <span
-            v-if="isSettingsOpen"
-            class="chat__container__messages__report"
-          >
-            Test
-          </span>
           <img
             class="chat__container__messages__settings nes-pointer"
             :src="settings"
             alt="settings"
             width="16"
-            @click="isSettingsOpen = !isSettingsOpen"
+            @click="openSettings(message)"
           >
           <span class="chat__container__messages__date">
             {{ formatDateChat(message.createdAt) }}
@@ -39,6 +33,26 @@
           </span>
           <span>
             {{ message.content }}
+          </span>
+          <span
+            v-if="isSettingsOpen"
+            class="chat__container__messages__report"
+          >
+            <span>
+              Do you want to report this message :  "{{ messageToReport.content }} "?
+            </span>
+            <button
+              class="nes-btn is-primary"
+              @click="reportMessage(messageToReport)"
+            >
+              Yes
+            </button>
+            <button
+              class="nes-btn is-error"
+              @click="isSettingsOpen = !isSettingsOpen"
+            >
+              No
+            </button>
           </span>
         </p>
       </div>
@@ -84,7 +98,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import mail from '@/assets/mail.png';
 import send from '@/assets/send.png';
 import settings from '@/assets/settings.png';
@@ -100,6 +114,10 @@ export default {
     const isChatOpen = ref(false);
     const isSettingsOpen = ref(false);
     const currentMessage = ref('');
+    const messageToReport = reactive({
+      id: '',
+      content: '',
+    });
 
     const chatStore = useChatStore();
 
@@ -115,12 +133,23 @@ export default {
       currentMessage.value = '';
     };
 
-    socket.on('chat:message', (message) => {
-      chatStore.addMessage(message);
+    socket.on('chat:message', (messageSend) => {
+      chatStore.addMessage(messageSend);
     });
 
-    const reportMessage = async (message) => {
-      await chatStore.reportMessage(message);
+    socket.on('chat:message:delete', (id) => {
+      chatStore.removeMessage(id);
+    });
+
+    const reportMessage = async (messageReported) => {
+      await chatStore.reportMessage(messageReported);
+      isSettingsOpen.value = !isSettingsOpen.value;
+    };
+
+    const openSettings = (message) => {
+      isSettingsOpen.value = !isSettingsOpen.value;
+      messageToReport.id = message.id;
+      messageToReport.content = message.content;
     };
 
     return {
@@ -136,6 +165,8 @@ export default {
       isSendMessageLoading,
       reportMessage,
       isSettingsOpen,
+      openSettings,
+      messageToReport,
     };
   },
 };
@@ -178,6 +209,12 @@ export default {
         background-color: white;
         z-index: 22;
         padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
       }
       &__settings {
         margin-right: 4px;
