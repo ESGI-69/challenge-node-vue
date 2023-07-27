@@ -265,8 +265,15 @@ export default {
       isForfeitModalOpen.value = true;
     });
 
-    socket.on('game:attack:player', (game, attackerId, isTargetDie) => {
+    socket.on('game:attack:player', async (game, attackerId, isTargetDie) => {
       launchAttackAnimation(attackerId, undefined, true, isTargetDie);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      gameStore.setGame(game);
+    });
+
+    socket.on('game:attack:card', async (game, attackerId, targetedCardId, isTargetDie, isAttackerDie) => {
+      launchAttackAnimation(attackerId, targetedCardId, false, isTargetDie, isAttackerDie);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       gameStore.setGame(game);
     });
 
@@ -342,6 +349,24 @@ export default {
       sendAttack();
     };
 
+    const attackPlayer = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      attack.target = 'player';
+      sendAttack();
+    };
+
+    const sendAttack = () => {
+      if (!isPlayerTurn.value) return;
+      // console.log('send attack', attack);
+      if (attack.target === 'player') {
+        gameStore.attackPlayer(attack.attacker);
+      } else {
+        gameStore.attackCard(attack.attacker, attack.target);
+      }
+      cancelAttack();
+    };
+
     /**
      *
      * @param {number} attackerCardId id of the card that attack
@@ -349,7 +374,7 @@ export default {
      * @param {boolean} isAPlayerAttack if attack target is the player
      * @param {boolean} isTagetDead if the target is dead
      */
-    const launchAttackAnimation = (attackerCardId, targetedCardId, isAPlayerAttack = false, willTargetDied = false)  => {
+    const launchAttackAnimation = (attackerCardId, targetedCardId, isAPlayerAttack = false, willTargetDied = false, willAttackerDied= false)  => {
       const getTargetedElement = (isAPlayerAttack) => {
         if (isAPlayerAttack) {
           return isPlayerTurn.value ? enemyRef.value.$el : playerRef.value.$el;
@@ -376,6 +401,12 @@ export default {
         // destroy target after 1500ms
         setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
           destroyCard(targetedCardId, isAPlayerAttack);
+        }, 1500);
+      }
+      if (willAttackerDied) {
+        // destroy attacker after 1500ms
+        setTimeout(() => { // on envoie l'animation destroyCard à l'objet ciblée (currentTargeted)
+          destroyCard(attackerCardId, isAPlayerAttack);
         }, 1500);
       }
 
@@ -406,27 +437,6 @@ export default {
           cardPlayerRef[targetCardId].$el.children[0].style.maskImage = `url(${shatteringGif})`;
         }
       }
-    };
-
-    const attackPlayer = () => {
-      if (!isPlayerTurn.value) return;
-      if (!attack.attacker) return;
-      attack.target = 'player';
-      sendAttack();
-    };
-
-    const sendAttack = () => {
-      if (!isPlayerTurn.value) return;
-      // console.log('send attack', attack);
-      if (attack.target === 'player') {
-        gameStore.attackPlayer(attack.attacker);
-      }
-      // socket.emit('game:attack', {
-      //   gameId: gameStore.game.id,
-      //   attacker: attack.attacker,
-      //   target: attack.target,
-      // });
-      cancelAttack();
     };
 
     /**

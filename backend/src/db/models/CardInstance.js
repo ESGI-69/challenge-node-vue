@@ -30,6 +30,11 @@ export default (connection) => {
         allowNull: false,
         defaultValue: false,
       },
+      isDead: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       timestamps: false,
@@ -40,6 +45,11 @@ export default (connection) => {
           const card = await Card.findByPk(cardInstance.card_id);
           cardInstance.currentHealth = card.health;
           await cardInstance.save();
+        },
+        beforeUpdate: (cardInstance) => {
+          if (cardInstance.currentHealth <= 0) {
+            cardInstance.isDead = true;
+          }
         },
       },
       getterMethods: {
