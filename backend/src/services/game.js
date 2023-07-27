@@ -6,6 +6,7 @@ import handService from './hand.js';
 import deckService from './deck.js';
 import userService from './user.js';
 import boardService from './board.js';
+import gameService from './game.js';
 
 /**
  * Key is the id of the game
@@ -267,13 +268,14 @@ export default {
     const oldPlayerId = gameModel.current_player;
     gameModel.current_player = gameModel.current_player === gameModel.first_player ? gameModel.second_player : gameModel.first_player;
     await gameModel.save();
-    if (oldPlayerId) userSockets[oldPlayerId].emit('game:turn:end', gameModel);
-    userSockets[gameModel.current_player].emit('game:turn:start', gameModel);
-    if (forced) clearTimeout(gameTurnsTimeout[gameModel.id]);
-    gameTurnsTimeout[gameModel.id] = setTimeout(() => this.changePlayerTurn(gameModel), 30000);
+    const game = await gameService.findById(gameModel.id);
+    if (oldPlayerId) userSockets[oldPlayerId].emit('game:turn:end', game);
+    userSockets[game.current_player].emit('game:turn:start', game);
+    if (forced) clearTimeout(gameTurnsTimeout[game.id]);
+    gameTurnsTimeout[game.id] = setTimeout(() => this.changePlayerTurn(game), 30000);
     // eslint-disable-next-line no-console
-    console.log(`[Game ${gameModel.id}] Turn changed to ${gameModel.current_player} at ${new Date().toLocaleTimeString()} ${forced ? '(asked by the user)' : ''}`);
-    return gameModel;
+    console.log(`[Game ${game.id}] Turn changed to ${game.current_player} at ${new Date().toLocaleTimeString()} ${forced ? '(asked by the user)' : ''}`);
+    return game;
   },
 
   /**
@@ -311,18 +313,22 @@ export default {
   /**
    * Attack the player with the given card
    * @param {import('../db/index.js').Game} gameModel
-   * @param {import('../db/index.js').Card} attackCardModel
+   * @param {import('../db/index.js').CardInstance} attackCardInstanceModel
    */
-  attackPlayer: async function (gameModel, attackCardModel) {
+  attackPlayer: async function (gameModel, attackCardInstanceModel) {
     const isCurrentPlayerIsFirstPlayer = gameModel.current_player === gameModel.first_player;
     if (isCurrentPlayerIsFirstPlayer) {
-      gameModel.second_player_hp -= attackCardModel.attack;
+      gameModel.second_player_hp -= attackCardInstanceModel.card.attack;
     } else {
-      gameModel.first_player_hp -= attackCardModel.attack;
+      gameModel.first_player_hp -= attackCardInstanceModel.card.attack;
     }
+    attackCardInstanceModel.allreadyAttacked = true;
+    await attackCardInstanceModel.save();
     await gameModel.save();
+    const game = await gameService.findById(gameModel.id);
+
     const isTargetDie = isCurrentPlayerIsFirstPlayer ? gameModel.second_player_hp <= 0 : gameModel.first_player_hp <= 0;
-    io.to(gameModel.id).emit('game:attack:player', gameModel, attackCardModel.id, isTargetDie);
+    io.to(gameModel.id).emit('game:attack:player', game, attackCardInstanceModel.card.id, isTargetDie);
     if (gameModel.first_player_hp <= 0) {
       const winner = await userService.findById(gameModel.second_player);
       this.end(gameModel, winner, 'health');

@@ -5,7 +5,6 @@ import { asignUserSocketToGameRoom, removeUserSocketFromGameRoom, users } from '
 import { io } from '../index.js';
 import { users as userSockets } from '../socket/index.js';
 import userService from '../services/user.js';
-import cardService from '../services/card.js';
 import boardService from '../services/board.js';
 import cardInstanceService from '../services/cardInstance.js';
 
@@ -289,9 +288,12 @@ export default {
         throw new Error('Missing cardId in body');
       }
 
-      // TODO: Check if the card used is on board
-      const attackCard = await cardService.findById(req.body.cardId);
-      await gameService.attackPlayer(req.game, attackCard);
+      const playerBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
+      const attackerCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.cardId, playerBoard.id);
+      if (!attackerCardInstance) throw new Error('This card is not in your board');
+      if (attackerCardInstance.allreadyAttacked) throw new Error('This card already attacked', { cause: 'Forbidden' });
+
+      await gameService.attackPlayer(req.game, attackerCardInstance);
       res.sendStatus(200);
     } catch (err) {
       next(err);
@@ -381,9 +383,8 @@ export default {
 
       const playerBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
       const attackerCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.attackerCardId, playerBoard.id);
-      if (!attackerCardInstance) {
-        throw new Error('This card is not in your board');
-      }
+      if (!attackerCardInstance) throw new Error('This card is not in your board');
+      if (attackerCardInstance.allreadyAttacked) throw new Error('This card already attacked', { cause: 'Forbidden' });
       const attackerCardAttack = attackerCardInstance.card.attack;
 
       const opponentBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.second_player_board : req.game.first_player_board);
@@ -392,6 +393,10 @@ export default {
         throw new Error('Your opponent don\'t have this card on his board');
       }
       const targetCardAttack = targetCardInstance.card.attack;
+
+      // Mark the cards as user for this turn
+      attackerCardInstance.allreadyAttacked = true;
+      await attackerCardInstance.save();
 
       // Damage the cards
       const { currentHealth: targetCardHealth } = await cardInstanceService.damage(targetCardInstance, attackerCardAttack);

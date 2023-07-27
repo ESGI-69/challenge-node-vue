@@ -28,7 +28,7 @@ export default (connection) => {
       allreadyAttacked: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false,
+        defaultValue: true,
       },
       isDead: {
         type: DataTypes.BOOLEAN,

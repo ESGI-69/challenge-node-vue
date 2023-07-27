@@ -24,4 +24,18 @@ export default {
   addCardInstance: function (boardModel, cardInstanceModel) {
     return boardModel.addCardInstance(cardInstanceModel);
   },
+
+  /**
+   * Reset all card instances played states in that board
+   * @param {import('../index.js').Board} boardModel
+   */
+  resetCardsInstancePlayedStates: async function (boardModel) {
+    const cardInstances = await boardModel.getCardInstances();
+    const savePromises = [];
+    cardInstances.forEach((cardInstance) => {
+      cardInstance.allreadyAttacked = false;
+      savePromises.push(cardInstance.save());
+    });
+    return Promise.all(savePromises);
+  },
 };
