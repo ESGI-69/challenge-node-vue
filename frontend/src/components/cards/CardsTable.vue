@@ -67,7 +67,7 @@
         to="/packs"
         class="nes-btn is-primary"
       >
-        Buy cards
+        Buy card packs
       </router-link>
     </div>
     <div
