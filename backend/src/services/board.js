@@ -38,4 +38,8 @@ export default {
     });
     return Promise.all(savePromises);
   },
+
+  countCardInstances: async function (boardModel) {
+    return (await boardModel.getCardInstances()).lenght;
+  },
 };

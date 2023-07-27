@@ -20,8 +20,8 @@
         :hp-count="enemyHp"
         class="avatar__container__enemy"
         @mouseup="attackPlayer"
-        @mouseover="mouseEnterEnemy"
-        @mouseleave="mouseLeaveEnemy"
+        @mouseover="mouseEnterPlayer"
+        @mouseleave="mouseLeavePlayer"
       />
 
       <div class="game__container__board">
@@ -32,9 +32,9 @@
           class="enemy-card"
           v-bind="card"
           :health="currentHealth"
-          @mouseup="(event) => attackEnemy(card.id, event)"
-          @mouseover="mouseEnterEnemy"
-          @mouseleave="mouseLeaveEnemy"
+          @mouseup="(event) => attackCard(card.id, event)"
+          @mouseover="mouseEnterCard"
+          @mouseleave="mouseLeaveCard"
         />
       </div>
       <turn-bar
@@ -97,7 +97,8 @@
     <attack-line
       ref="attackLine"
       :attack="attackDamage"
-      :is-valid="isHoveringEnemy"
+      :hovering-type="hoveringType"
+      :is-board-empty="opponentBoardCardInstances.length === 0"
     />
     <pop-up
       v-model:isOpen="isForfeitModalOpen"
@@ -188,6 +189,7 @@ export default {
 
     const enemyRef = ref({});
     const playerRef = ref({});
+    const hoveringType = ref('empty');
 
     const gameStore = useGameStore();
     const profileStore = useProfileStore();
@@ -321,8 +323,6 @@ export default {
     });
     const attackDamage = ref(0);
 
-    const isHoveringEnemy = ref(false);
-
     /**
      * The user mousedown on his card to attack
      * @param {number} cardId
@@ -338,7 +338,7 @@ export default {
 
     const cancelAttack = () => {
       attackLine.value.resetLine();
-      isHoveringEnemy.value = false;
+      hoveringType.value = 'empty';
       attack = {
         attacker: null,
         target: null,
@@ -349,7 +349,7 @@ export default {
      * @param {number} cardId
      * @param {MouseEvent} event
      */
-    const attackEnemy = (cardId) => {
+    const attackCard = (cardId) => {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = cardId;
@@ -357,6 +357,7 @@ export default {
     };
 
     const attackPlayer = () => {
+      if (opponentBoardCardInstances.value.length > 0) return;
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
       attack.target = 'player';
@@ -365,7 +366,6 @@ export default {
 
     const sendAttack = () => {
       if (!isPlayerTurn.value) return;
-      // console.log('send attack', attack);
       if (attack.target === 'player') {
         gameStore.attackPlayer(attack.attacker);
       } else {
@@ -466,16 +466,28 @@ export default {
       attackLine.value.drawLine(event);
     };
 
-    const mouseEnterEnemy = () => {
+    const mouseEnterPlayer = () => {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
-      isHoveringEnemy.value = true;
+      hoveringType.value = 'player';
     };
 
-    const mouseLeaveEnemy = () => {
+    const mouseLeavePlayer = () => {
       if (!isPlayerTurn.value) return;
       if (!attack.attacker) return;
-      isHoveringEnemy.value = false;
+      hoveringType.value = 'empty';
+    };
+
+    const mouseEnterCard = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      hoveringType.value = 'card';
+    };
+
+    const mouseLeaveCard = () => {
+      if (!isPlayerTurn.value) return;
+      if (!attack.attacker) return;
+      hoveringType.value = 'empty';
     };
 
     // Turn logic
@@ -492,7 +504,7 @@ export default {
     return {
       attack,
       attackDamage,
-      attackEnemy,
+      attackCard,
       attackLine,
       cancelAttack,
       cardsOnBoard,
@@ -504,10 +516,11 @@ export default {
       gameId,
       goHome,
       isForfeitModalOpen,
-      isHoveringEnemy,
       isPlayerTurn,
-      mouseEnterEnemy,
-      mouseLeaveEnemy,
+      mouseEnterCard,
+      mouseLeaveCard,
+      mouseEnterPlayer,
+      mouseLeavePlayer,
       moveAttackLine,
       onAdd,
       turnStartedAt,
@@ -529,6 +542,7 @@ export default {
       isLooseModalOpen,
       myBoardCardInstances,
       opponentBoardCardInstances,
+      hoveringType,
     };
   },
 };

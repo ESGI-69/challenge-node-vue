@@ -36,6 +36,7 @@
           :class="{
             'nes-pointer': isPlayerTurn,
             'card-hand__card-wrapper__card--is-usable': playerMana >= element.cost,
+            'card-hand__card-wrapper__card--not-usable': playerMana < element.cost || !isPlayerTurn,
           }"
         >
           <card
@@ -186,6 +187,10 @@ export default {
         position: absolute;
         right: 0;
         top: 0;
+      }
+
+      &--not-usable {
+        cursor: not-allowed;
       }
     }
   }

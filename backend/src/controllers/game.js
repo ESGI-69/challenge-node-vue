@@ -289,6 +289,9 @@ export default {
         throw new Error('Missing cardId in body');
       }
 
+      const opponentBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.second_player_board : req.game.first_player_board);
+      const oppenentCardInstanceCount = await boardService.countCardInstances(opponentBoard);
+      if (oppenentCardInstanceCount > 0) throw new Error('You can\'t attack the player while he has cards on the board', { cause: 'Forbidden' });
       const playerBoard = await boardService.findById(req.game.current_player === req.game.first_player ? req.game.first_player_board : req.game.second_player_board);
       const attackerCardInstance = await cardInstanceService.findByCardAndBoardId(req.body.cardId, playerBoard.id);
       if (!attackerCardInstance) throw new Error('This card is not in your board');
