@@ -126,6 +126,7 @@ export default {
   leave: async (req, res, next) => {
     try {
       if (req.game.isInProgress) {
+        const firstPlayer = await userService.findById(req.game.first_player);
         const secondPlayer = await userService.findById(req.game.second_player);
         /**
          * @type {import('../db/index.js').Game}
@@ -138,8 +139,9 @@ export default {
         if (req.game.first_player === req.user.id) {
           winner = secondPlayer;
         } else {
-          winner = req.user;
+          winner = firstPlayer;
         }
+
         updatedGame = await gameService.forfeit(req.game, winner);
         await userService.addMoney(winner, 50);
         await userService.addXp(winner, 50);
