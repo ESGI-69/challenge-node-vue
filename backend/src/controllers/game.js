@@ -7,6 +7,7 @@ import { users as userSockets } from '../socket/index.js';
 import userService from '../services/user.js';
 import boardService from '../services/board.js';
 import cardInstanceService from '../services/cardInstance.js';
+import cardService from '../services/card.js';
 
 export default {
   /**
