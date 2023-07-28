@@ -469,4 +469,22 @@ export default {
 
   }
 }
+
+.opened{
+  &__common{
+    filter: drop-shadow(0px 0px 25px #6C6C6C);
+  }
+
+  &__rare{
+    filter: drop-shadow(0px 0px 25px #0439AE);
+  }
+
+  &__epic{
+    filter: drop-shadow(0px 0px 25px #A335EE);
+  }
+
+  &__legendary{
+    filter: drop-shadow(0px 0px 25px #FF8000);
+  }
+}
 </style>

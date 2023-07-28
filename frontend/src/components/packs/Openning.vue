@@ -52,6 +52,12 @@
           :key="card.id"
           v-bind="card"
           class="openning__cards__card"
+          :class="{
+            'opened__common': !flippedCards.includes(card.id) && card.rarity === 'common',
+            'opened__rare': !flippedCards.includes(card.id) && card.rarity === 'rare',
+            'opened__epic': !flippedCards.includes(card.id) && card.rarity === 'epic',
+            'opened__legendary': !flippedCards.includes(card.id) && card.rarity === 'legendary',
+          }"
           :is-start-face-down="true"
           :is-flippable="flippedCards.includes(card.id)"
           :is-refunded="duplicatedCardIds.includes(card.id)"
@@ -127,6 +133,7 @@ export default {
         return;
       }
       flippedCards.value = flippedCards.value.filter((cardId) => cardId !== id);
+
       if (flippedCards.value.length === 0) {
         isAPackHasBeenOpen.value = true;
       }
