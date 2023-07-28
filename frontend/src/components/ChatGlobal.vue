@@ -32,7 +32,7 @@
               'is-success': message.user.id === me.id,
             }"
           >
-            {{ message.user.firstname }}:
+            {{ message.user.firstname.slice(0, 30) }}:
           </span>
           <span>
             {{ message.content }}

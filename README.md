@@ -1,6 +1,9 @@
 # Challenge stack 2023 IW4
 
-The goal of this challenge is to create a web card game. The game is a simplified version of ??? game.
+The goal of this challenge is to create a web card game. The game is a simplified version of heartstone game.
+
+## Production
+https://cardgame.bliblablou.day/
 
 ## Notable features
 

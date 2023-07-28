@@ -6,7 +6,7 @@
       :alt="username"
     >
     <div class="user-info__username">
-      {{ username }}
+      {{ "username".slice(0, 30) }}
     </div>
     <div class="user-info__balance">
       <span class="nes-text is-primary">
