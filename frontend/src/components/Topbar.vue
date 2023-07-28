@@ -179,7 +179,7 @@ export default {
 .topbar {
   display: grid;
   grid-template-areas: "left center user-info";
-  grid-template-columns: auto 1fr 300px;
+  grid-template-columns: auto 1fr 320px;
 
   &__left {
     grid-area: left;

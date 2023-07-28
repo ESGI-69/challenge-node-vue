@@ -6,7 +6,7 @@
       :alt="username"
     >
     <div class="user-info__username">
-      {{ username }}
+      {{ username.slice(0, 30) }}
     </div>
     <div class="user-info__balance">
       <span class="nes-text is-primary">
@@ -84,7 +84,8 @@ export default {
   &__username {
     grid-area: username;
     align-self: top;
-    font-size: 1.25rem;
+    font-size: 12px;
+    word-break: break-word;
   }
 
   &__balance {
