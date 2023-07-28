@@ -30,8 +30,8 @@ services:
       SENDINBLUE_NAME: ${SENDINBLUE_NAME}
       STRIPE_SECRET: ${STRIPE_SECRET}
     volumes:
-      - ./card-images:/usr/src/app/src/public/card-images
-      - ./profile-pictures:/usr/src/app/src/public/profile-pictures
+      - ./card-images:/usr/src/app/public/card-images
+      - ./profile-pictures:/usr/src/app/public/profile-pictures
     
   frontend:
     container_name: challenge-2023
