@@ -269,9 +269,9 @@ export default {
     }
 
     &__front {
-      background: red;
+      background: #539840;
       display: grid;
-      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: 13rem minmax(0, 1fr);
       grid-template-columns: 1fr;
       border: 4px solid black;
       transition: transform 0.1s ease-in-out;
@@ -338,41 +338,47 @@ export default {
       &__header {
         font-family: inherit;
         position: relative;
+        height: 13rem;
 
         &__image {
           width: 100%;
-          height: 10rem;
+          height: 13rem;
           background-size: cover;
           background-position: center;
         }
 
         &__name {
+          text-align: center;
+          padding: 0.25rem 0.10rem;
           font-family: inherit;
           box-sizing: border-box;
-          width: calc(100% - 4rem);
-          margin: 0 2rem;
-          background-color: #a600ff;
+          width: calc(100% - 2rem);
+          margin: 0 1rem;
+          background-color: #4E4E4E;
+          border-radius: 1rem;
           color: white;
           position: absolute;
-          height: 1.5rem;
-          font-size: 1.25rem;
-          bottom: 2rem;
+          font-size: 0.75rem;
+          top: 0.5rem;
           display: flex;
           justify-content: center;
+          border: 0.25rem solid #99B744;
         }
 
         &__rarity {
+          padding: 0.1rem;
           font-family: inherit;
           box-sizing: border-box;
-          width: calc(100% - 8rem);
-          margin: 0 4rem;
+          width: calc(100% - 6rem);
+          margin: 0 3rem;
           color: white;
           position: absolute;
-          height: 1rem;
           font-size: 0.75rem;
-          bottom: 1rem;
+          bottom: 0.5rem;
           display: flex;
           justify-content: center;
+          border: solid 0.25rem #99B744;
+          border-radius: 16px;
 
           &--common {
             background-color: #b3b3b3;
@@ -395,12 +401,14 @@ export default {
       &__type {
         font-family: inherit;
         box-sizing: border-box;
-        width: 100%;
-        margin: 0.5rem 0;
-        background-color: #a600ff;
+        width: calc(100% - 8rem);
+        margin: 0 4rem;
+        padding: 0.15rem 0;
+        border-radius: 0.6rem;
+        background-color: goldenrod;
         color: white;
         position: absolute;
-        font-size: 0.75rem;
+        font-size: 0.55rem;
         bottom: 0;
         display: flex;
         justify-content: center;
@@ -408,11 +416,15 @@ export default {
 
       &__content {
         font-family: inherit;
+
         &__description {
+          text-align: center;
+          color: white;
           font-family: inherit;
           box-sizing: border-box;
           padding: 0.5rem;
-          font-size: 0.75rem;
+          padding-bottom: 1.5rem;
+          font-size: 0.65rem;
           overflow-y: scroll;
           height: 100%;
         }
