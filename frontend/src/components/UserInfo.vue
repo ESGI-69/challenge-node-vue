@@ -84,7 +84,8 @@ export default {
   &__username {
     grid-area: username;
     align-self: top;
-    font-size: 1.25rem;
+    font-size: 12px;
+    word-break: break-word;
   }
 
   &__balance {
