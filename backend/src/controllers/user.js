@@ -15,15 +15,11 @@ export default {
    */
   cget: async (req, res, next) => {
     const {
-      _page = 1,
-      _itemsPerPage = 10,
       _sort = {},
       ...criteria
     } = req.query;
     try {
       const users = await userService.findAll(criteria, {
-        offset: (_page - 1) * _itemsPerPage,
-        limit: _itemsPerPage,
         order: _sort,
       });
       res.json(users);
